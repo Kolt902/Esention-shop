@@ -28,6 +28,8 @@ import clothingImg from "@assets/5235752188695933225.jpg";
 import shoesImg from "@assets/5235752188695933225.jpg";
 import accessoriesImg from "@assets/5235759361291318071.jpg";
 import { categoryData } from "@/lib/categoryImages";
+import { simpleCategoryData } from "@/lib/categoryDataSimple";
+import SimpleCategoryCard from "@/components/SimpleCategoryCard";
 
 interface CartItem {
   product: Product;
@@ -443,31 +445,21 @@ export default function StorePage() {
             </div>
           </section>
           
-          {/* Categories with modern layout */}
+          {/* Top Kategorien - в стиле SNIPES */}
           <section className="mb-12">
-            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Категории</h2>
+            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Top Kategorien</h2>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {/* Map through the category data */}
-              {categoryData.map(category => (
-                <CategoryCard 
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+              {/* Отобразим категории в стиле SNIPES */}
+              {simpleCategoryData.map(category => (
+                <SimpleCategoryCard 
                   key={category.id}
                   title={category.title}
-                  description={category.description}
                   imageUrl={category.imageUrl}
                   onClick={() => handleCategoryChange(category.id)}
                   isSelected={selectedCategory === category.id}
                 />
               ))}
-              
-              {/* All Categories */}
-              <CategoryCard 
-                title="Все товары"
-                description="Полный каталог"
-                imageUrl={allCategoriesImg}
-                onClick={() => handleCategoryChange(null)}
-                isSelected={selectedCategory === null}
-              />
             </div>
           </section>
 
