@@ -45,9 +45,9 @@ export default function Header({ title = "FASHION HUB" }: HeaderProps) {
           {/* Left side - Logo */}
           <div className="flex items-center">
             <Link href="/">
-              <a className="flex items-center">
+              <div className="flex items-center cursor-pointer">
                 <EsentionLogo />
-              </a>
+              </div>
             </Link>
           </div>
           
