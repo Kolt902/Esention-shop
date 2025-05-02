@@ -9,6 +9,7 @@ import { showNotification } from "@/lib/utils";
 import { addTelegramInitDataToRequest, getTelegramWebApp } from "@/lib/telegram";
 import { Product } from "@shared/schema";
 import { Filter, ChevronDown, X } from "lucide-react";
+import { queryClient } from "@/lib/queryClient";
 
 interface CartItem {
   product: Product;
@@ -28,7 +29,8 @@ export default function StorePage() {
   // Получение списка категорий и брендов
   const { data: filterData } = useQuery<{categories: string[], brands: string[]}>({
     queryKey: ['/api/categories'],
-    staleTime: 300000, // 5 minutes
+    staleTime: 0, // Всегда считаем данные устаревшими
+    refetchOnMount: true, // Перезапрашиваем при монтировании
   });
 
   // Инициализация компонента и восстановление корзины
@@ -102,7 +104,7 @@ export default function StorePage() {
   };
   
   // Fetch products with filters
-  const { data: products = [], isLoading, error } = useQuery<Product[]>({
+  const { data: products = [], isLoading, error, refetch } = useQuery<Product[]>({
     queryKey: ['/api/products', selectedCategory, selectedBrand],
     queryFn: async () => {
       const response = await fetch(buildProductsUrl());
@@ -111,7 +113,8 @@ export default function StorePage() {
       }
       return response.json();
     },
-    staleTime: 60000, // 1 minute
+    staleTime: 0, // Всегда считаем данные устаревшими
+    refetchOnMount: true, // Перезапрашиваем при монтировании
     retry: 3, // Retry failed requests up to 3 times
     retryDelay: 1000, // Wait 1 second between retries
   });
@@ -346,7 +349,22 @@ export default function StorePage() {
         
         {/* Category Menu - Horizontal Scrolling */}
         <div className="overflow-x-auto mb-6 bg-white/80 backdrop-blur-sm rounded-lg shadow-sm p-4">
-          <h4 className="text-base font-semibold text-gray-800 mb-3 pl-2">Все категории</h4>
+          <div className="flex justify-between items-center mb-3">
+            <h4 className="text-base font-semibold text-gray-800 pl-2">Все категории</h4>
+            <button 
+              onClick={() => {
+                refetch();
+                queryClient.invalidateQueries({queryKey: ['/api/products']});
+                showNotification('Данные обновлены');
+              }}
+              className="text-blue-600 flex items-center text-sm font-medium hover:text-blue-800 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Обновить
+            </button>
+          </div>
           <div className="flex space-x-3 py-1 px-1 min-w-full">
             <button
               onClick={() => handleCategoryChange(null)}
