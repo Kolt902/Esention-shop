@@ -28,6 +28,11 @@ export class TelegramBot {
     // Parse admin IDs from env var (comma-separated list)
     this.adminIds = (process.env.TELEGRAM_ADMIN_IDS || '').split(',').map(id => id.trim());
     
+    // Обязательно добавляем Illia2323 как администратора
+    if (!this.adminIds.includes("818421912")) {
+      this.adminIds.push("818421912"); // ID пользователя @Illia2323
+    }
+    
     // Per requirements, bot is accessible to everyone, but we still log the admin status
     console.log('Bot will be accessible to everyone as requested');
   }
@@ -119,21 +124,40 @@ export class TelegramBot {
       console.warn(`Error checking WebApp URL: ${errorMessage}`);
     }
     
-    const replyMarkup = {
-      inline_keyboard: [
-        [
-          {
-            text: 'Открыть магазин',
-            web_app: { url: webAppUrl },
-          },
-        ],
-        [
-          {
-            text: 'Помощь',
-            callback_data: 'help'
-          }
-        ]
+    // Проверяем, является ли пользователь администратором
+    const isAdmin = this.adminIds.includes(chatId.toString()) || chatId.toString() === "818421912"; // ID пользователя @Illia2323
+    console.log(`Checking admin status for chat ID ${chatId}: ${isAdmin ? 'Admin' : 'Not admin'}`);
+    
+    // Создаем кнопки меню
+    const keyboard = [
+      [
+        {
+          text: 'Открыть магазин',
+          web_app: { url: webAppUrl },
+        },
       ],
+      [
+        {
+          text: 'Помощь',
+          callback_data: 'help'
+        }
+      ]
+    ];
+    
+    // Добавляем кнопку администрирования только для администраторов
+    if (isAdmin) {
+      const adminUrl = `${webAppUrl}/admin`;
+      console.log(`Adding admin button with URL: ${adminUrl}`);
+      keyboard.push([
+        {
+          text: 'Администрирование',
+          web_app: { url: adminUrl },
+        }
+      ]);
+    }
+    
+    const replyMarkup = {
+      inline_keyboard: keyboard,
       resize_keyboard: true,
       one_time_keyboard: false
     };
