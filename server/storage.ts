@@ -326,8 +326,14 @@ export class MemStorage implements IStorage {
       price: 7500,
       category: "hoodies",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/9a8ee4fe-3047-4fee-9b6d-7940c39c5304/sportswear-tech-fleece-mens-full-zip-hoodie-5ZtTtk.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/2f5ec8c4-9764-4d5b-afb6-53a3c5b2a594/sportswear-tech-fleece-mens-full-zip-hoodie-5ZtTtk.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/d12222fe-7c03-40aa-91c7-7b33ac6bf59b/sportswear-tech-fleece-mens-full-zip-hoodie-5ZtTtk.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/b3fd8d02-e3d4-40c1-94e3-fce9c44c6eeb/sportswear-tech-fleece-mens-full-zip-hoodie-5ZtTtk.png"
+      ],
       sizes: ["S", "M", "L", "XL", "XXL"],
       description: "Low-profile, lightweight and warm, Nike Tech Fleece offers innovative comfort that easily transitions between seasons. This zip hoodie hits at the hip and features a lightweight 3-piece scuba hood.",
+      brand: "Nike"
     });
     
     // Добавим штаны
@@ -336,8 +342,14 @@ export class MemStorage implements IStorage {
       price: 5000,
       category: "pants",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/2f6ca908-f593-461b-b1b2-40ee9be57ff6/sportswear-club-fleece-joggers-KflRdQ.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/45d3a1e6-95e1-461f-aad5-c8a8aee839b7/sportswear-club-fleece-joggers-KflRdQ.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/7a717fda-9db1-4986-933e-400e2ead3e53/sportswear-club-fleece-joggers-KflRdQ.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/57ebc946-353b-4a02-a945-95f8852042fc/sportswear-club-fleece-joggers-KflRdQ.png"
+      ],
       sizes: ["S", "M", "L", "XL", "XXL"],
       description: "The Nike Sportswear Club Fleece Joggers combine the comfort of soft fleece fabric with a tailored look that you can wear every day.",
+      brand: "Nike"
     });
     
     this.createProduct({
@@ -345,8 +357,14 @@ export class MemStorage implements IStorage {
       price: 4500,
       category: "pants",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/u1hgnjassyx93bsiogzq/dri-fit-mens-training-pants-VTcVkx.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/z3ld9d6i0qxxgbkwjcjb/dri-fit-mens-training-pants-VTcVkx.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/uyg2dcqmwwrxnzhjv1cp/dri-fit-mens-training-pants-VTcVkx.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/ue1kc1crjlwqshbjnuio/dri-fit-mens-training-pants-VTcVkx.png"
+      ],
       sizes: ["S", "M", "L", "XL", "XXL"],
-      description: "The Nike Dri-FIT Training Pants combine sweat-wicking technology with breathable construction to keep you cool and comfortable for the duration of your workout."
+      description: "The Nike Dri-FIT Training Pants combine sweat-wicking technology with breathable construction to keep you cool and comfortable for the duration of your workout.",
+      brand: "Nike"
     });
     
     // Добавим куртки
@@ -355,8 +373,14 @@ export class MemStorage implements IStorage {
       price: 8000,
       category: "jackets",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/8b8fbbd5-3e9a-4203-835a-40872626bb38/sportswear-windrunner-mens-hooded-jacket-5qQ49n.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/e3d85658-ef39-4a45-a022-a8a25643da34/sportswear-windrunner-mens-hooded-jacket-5qQ49n.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/b47acdd5-7846-4978-befe-adc3d8f50a3f/sportswear-windrunner-mens-hooded-jacket-5qQ49n.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/84f04d49-5ed4-4a05-ac3f-2a28cbf9c0bd/sportswear-windrunner-mens-hooded-jacket-5qQ49n.png"
+      ],
       sizes: ["S", "M", "L", "XL", "XXL"],
       description: "The Nike Sportswear Windrunner Jacket updates our first running windbreaker with lightweight fabric, bright retroinspired colors and a adjustable hood for custom coverage.",
+      brand: "Nike"
     });
     
     // Добавим аксессуары
