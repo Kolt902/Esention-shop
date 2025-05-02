@@ -31,6 +31,15 @@ function App() {
     const inTelegram = isRunningInTelegram();
     console.log(`App running in Telegram: ${inTelegram}`);
     
+    // Проверяем наличие query параметра admin=true, чтобы направить на админ-панель
+    const urlParams = new URLSearchParams(window.location.search);
+    const isAdminRoute = urlParams.get('admin') === 'true';
+    
+    if (isAdminRoute) {
+      console.log("Admin mode detected in URL parameters, will redirect to admin page");
+      // Редирект на админ-панель будет выполнен после инициализации
+    }
+    
     if (inTelegram) {
       // В среде Telegram даем больше времени на инициализацию
       const webApp = getTelegramWebApp();
@@ -64,6 +73,18 @@ function App() {
             console.log("setBackgroundColor not supported in this version");
           }
         }
+        
+        // Если это админ-маршрут, включаем соответствующие UI элементы
+        if (isAdminRoute) {
+          try {
+            // Скрываем кнопку "назад", чтобы пользователь не мог случайно закрыть панель
+            if (webApp.BackButton) {
+              webApp.BackButton.hide();
+            }
+          } catch (e) {
+            console.log("BackButton operations not supported in this version");
+          }
+        }
       } else {
         console.warn("Telegram WebApp object not found, but isRunningInTelegram returned true");
       }
@@ -74,6 +95,11 @@ function App() {
     const timer = setTimeout(() => {
       setIsAppReady(true);
       console.log("App marked as ready after timeout:", timeout);
+      
+      // Если это запрос на админ-панель, перенаправляем пользователя
+      if (isAdminRoute) {
+        window.location.href = "/admin";
+      }
     }, timeout);
     
     return () => clearTimeout(timer);

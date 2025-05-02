@@ -146,7 +146,8 @@ export class TelegramBot {
     
     // Добавляем кнопку администрирования только для администраторов
     if (isAdmin) {
-      const adminUrl = `${webAppUrl}/admin`;
+      // Используем query параметр вместо пути - более надежно в мини-приложениях Telegram
+      const adminUrl = `${webAppUrl}?admin=true`;
       console.log(`Adding admin button with URL: ${adminUrl}`);
       keyboard.push([
         {
