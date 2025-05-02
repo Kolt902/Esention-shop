@@ -2,6 +2,7 @@ import { Home, ShoppingBag, MessageCircle, User, Heart, ShieldCheck } from "luci
 import { openTelegramChat, isRunningInTelegram, getCurrentUser } from "@/lib/telegram";
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
+import { useTranslation } from "@/lib/translations";
 
 interface FooterProps {
   cartCount: number;
@@ -13,6 +14,7 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
   const [activeTab, setActiveTab] = useState<string>("home");
   const [isTelegram, setIsTelegram] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const { t } = useTranslation();
   
   // Стили для кнопок меню
   const activeStyle = "text-[#0088CC] scale-110 font-bold transition-transform";
@@ -97,7 +99,7 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
           >
             {activeTab === "home" && <ActiveIndicator />}
             <Home className="h-6 w-6" />
-            <span className="text-xs font-medium mt-1">Главная</span>
+            <span className="text-xs font-medium mt-1">{t.common.home}</span>
           </button>
 
           <button 
@@ -114,7 +116,7 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
                 {cartCount > 9 ? '9+' : cartCount}
               </span>
             )}
-            <span className="text-xs font-medium mt-1">Корзина</span>
+            <span className="text-xs font-medium mt-1">{t.common.cart}</span>
           </button>
           
           <button 
@@ -126,7 +128,7 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
           >
             {activeTab === "favorites" && <ActiveIndicator />}
             <Heart className="h-6 w-6" />
-            <span className="text-xs font-medium mt-1">Избранное</span>
+            <span className="text-xs font-medium mt-1">{t.profile.favorites}</span>
           </button>
           
           {/* Only show contact button if running in Telegram */}
@@ -140,24 +142,22 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
             >
               {activeTab === "contact" && <ActiveIndicator />}
               <MessageCircle className="h-6 w-6" />
-              <span className="text-xs font-medium mt-1">Связаться</span>
+              <span className="text-xs font-medium mt-1">{t.common.contact || "Связаться"}</span>
             </button>
           )}
 
-          {/* Only show profile in standalone mode, not in Telegram */}
-          {!isTelegram && (
-            <button 
-              onClick={() => handleTabClick("profile")}
-              className={`flex flex-col items-center justify-center transition-all duration-200 relative ${
-                activeTab === "profile" ? activeStyle : inactiveStyle
-              }`}
-              aria-label="Profile"
-            >
-              {activeTab === "profile" && <ActiveIndicator />}
-              <User className="h-6 w-6" />
-              <span className="text-xs font-medium mt-1">Профиль</span>
-            </button>
-          )}
+          {/* Показываем профиль всегда, даже в Telegram */}
+          <button 
+            onClick={() => handleTabClick("profile")}
+            className={`flex flex-col items-center justify-center transition-all duration-200 relative ${
+              activeTab === "profile" ? activeStyle : inactiveStyle
+            }`}
+            aria-label="Profile"
+          >
+            {activeTab === "profile" && <ActiveIndicator />}
+            <User className="h-6 w-6" />
+            <span className="text-xs font-medium mt-1">{t.profile.title}</span>
+          </button>
           
           {/* Show admin button if user is admin */}
           {isAdmin && (
