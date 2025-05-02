@@ -306,6 +306,7 @@ export const styles = pgTable("styles", {
   description: text("description").notNull(),
   imageUrl: text("image_url").notNull(),
   featured: boolean("featured").default(false).notNull(),
+  slug: text("slug").notNull().unique(), // для URL и идентификации
 });
 
 export const insertStyleSchema = createInsertSchema(styles).pick({
@@ -313,6 +314,7 @@ export const insertStyleSchema = createInsertSchema(styles).pick({
   description: true,
   imageUrl: true,
   featured: true,
+  slug: true,
 });
 
 export type InsertStyle = z.infer<typeof insertStyleSchema>;
@@ -326,6 +328,7 @@ export const brands = pgTable("brands", {
   logoUrl: text("logo_url").notNull(),
   websiteUrl: text("website_url"),
   featured: boolean("featured").default(false).notNull(),
+  slug: text("slug").notNull().unique(), // для URL и идентификации
 });
 
 export const insertBrandSchema = createInsertSchema(brands).pick({
@@ -334,6 +337,7 @@ export const insertBrandSchema = createInsertSchema(brands).pick({
   logoUrl: true,
   websiteUrl: true,
   featured: true,
+  slug: true,
 });
 
 export type InsertBrand = z.infer<typeof insertBrandSchema>;

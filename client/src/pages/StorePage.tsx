@@ -320,42 +320,38 @@ export default function StorePage() {
           <div className="container mx-auto px-4">
             <h2 className="text-xl font-bold text-white mb-6 uppercase tracking-wide">Стили</h2>
             
-            {/* Style Categories - Horizontal Scrolling for Mobile */}
+            {/* Style Categories using new StyleCard component */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {/* Old Money Style */}
-              <CategoryCard 
-                title="Old Money" 
-                description="Элегантный и утонченный стиль" 
-                imageUrl={oldMoneyImg}
-                onClick={() => { setLocation("/style/oldmoney"); handleStyleChange('oldmoney'); }}
-                isSelected={selectedStyle === 'oldmoney'}
+              <StyleCard 
+                id={1} 
+                name="Old Money" 
+                imageUrl={oldMoneyImg} 
+                description="Элегантный и утонченный стиль"
               />
               
               {/* Streetwear Style */}
-              <CategoryCard 
-                title="Streetwear" 
-                description="Современный уличный стиль" 
-                imageUrl={streetwearImg}
-                onClick={() => { setLocation("/style/streetwear"); handleStyleChange('streetwear'); }}
-                isSelected={selectedStyle === 'streetwear'}
+              <StyleCard 
+                id={2} 
+                name="Streetwear" 
+                imageUrl={streetwearImg} 
+                description="Современный уличный стиль"
               />
               
               {/* Luxury Style */}
-              <CategoryCard 
-                title="Luxury" 
-                description="Роскошь и премиальные бренды" 
-                imageUrl={luxuryImg}
-                onClick={() => { setLocation("/style/luxury"); handleStyleChange('luxury'); }}
-                isSelected={selectedStyle === 'luxury'}
+              <StyleCard 
+                id={3} 
+                name="Luxury" 
+                imageUrl={luxuryImg} 
+                description="Роскошь и премиальные бренды"
               />
               
               {/* Sport/Athleisure Style */}
-              <CategoryCard 
-                title="Athleisure" 
-                description="Спортивный городской стиль" 
-                imageUrl={sportImg}
-                onClick={() => { setLocation("/style/sport"); handleStyleChange('sport'); }}
-                isSelected={selectedStyle === 'sport'}
+              <StyleCard 
+                id={4} 
+                name="Sport" 
+                imageUrl={sportImg} 
+                description="Спортивный городской стиль"
               />
             </div>
           </div>
