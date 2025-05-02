@@ -267,155 +267,81 @@ export default function StorePage() {
         </div>
         
         {/* Hero Banner - Four Styles Grid in One Row */}
-        <section className="container mx-auto px-4 mb-12 pt-4">
-          <div className="grid grid-cols-4 gap-3">
-            {/* Old Money Style */}
-            <div 
-              className="relative aspect-[2/3] overflow-hidden cursor-pointer group rounded-xl shadow-lg hover:shadow-xl"
-              onClick={() => {
-                handleStyleChange('oldmoney');
-                handleBrandChange(null);
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-b from-emerald-300 to-green-500 flex flex-col">
-                <div className="pt-6 px-3 flex-grow flex flex-col items-center justify-start">
-                  <div className="w-12 h-12 bg-white rounded-full mb-4"></div>
-                  <div className="w-full h-40 flex justify-center">
-                    <svg viewBox="0 0 100 240" className="h-full w-auto">
-                      <path d="M50,10 L55,40 L70,90 L60,100 L65,150 L55,180 L50,220" stroke="#764134" strokeWidth="6" fill="none" />
-                      <path d="M50,90 L40,130" stroke="#764134" strokeWidth="5" fill="none" />
-                      <path d="M70,90 L80,120" stroke="#764134" strokeWidth="5" fill="none" />
-                      <circle cx="50" cy="30" r="1" fill="#fff" opacity="0.8" />
-                      <circle cx="55" cy="50" r="1" fill="#fff" opacity="0.6" />
-                      <circle cx="45" cy="70" r="1" fill="#fff" opacity="0.7" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="h-24 bg-gradient-to-t from-green-600 to-transparent flex items-end p-3">
-                  <div className="w-full">
-                    <div className="mb-1 flex space-x-1">
-                      <div className="w-5 h-5 bg-lime-300 rounded-full"></div>
-                      <div className="w-5 h-5 bg-lime-300 rounded-full"></div>
-                      <div className="w-5 h-5 bg-lime-300 rounded-full"></div>
-                    </div>
+        <section className="container mx-auto px-4 mb-10 pt-4">
+          <h2 className="text-xl font-semibold text-black mb-4 uppercase flex items-center">
+            <span className="bg-black text-white px-3 py-1 rounded-md mr-2 text-sm">СЕЗОНЫ</span>
+            <span>Выберите свой стиль</span>
+          </h2>
+          
+          <div className="relative rounded-xl overflow-hidden cursor-pointer shadow-lg hover:shadow-xl mb-6">
+            <img 
+              src="/assets/seasons-illustration.jpg" 
+              alt="Seasons Style Illustration" 
+              className="w-full h-auto object-cover"
+            />
+            <div className="absolute inset-0 grid grid-cols-4 gap-0">
+              {/* Old Money Style (Spring) */}
+              <div 
+                className="relative overflow-hidden cursor-pointer group"
+                onClick={() => {
+                  handleStyleChange('oldmoney');
+                  handleBrandChange(null);
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                    <h2 className="text-white text-lg font-medium">Old Money</h2>
+                    <p className="text-white/90 text-sm">Весенний стиль</p>
                   </div>
                 </div>
               </div>
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-3">
-                <h2 className="text-white text-base font-medium mb-1">Old Money</h2>
-                <p className="text-white/80 text-xs mb-2">Элегантный стиль</p>
-              </div>
-            </div>
 
-            {/* Streetwear Style */}
-            <div 
-              className="relative aspect-[2/3] overflow-hidden cursor-pointer group rounded-xl shadow-lg hover:shadow-xl"
-              onClick={() => {
-                handleStyleChange('streetwear');
-                handleBrandChange(null);
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-b from-teal-300 to-teal-500 flex flex-col">
-                <div className="pt-6 px-3 flex-grow flex flex-col items-center justify-start">
-                  <div className="w-12 h-12 bg-white rounded-full mb-4"></div>
-                  <div className="w-full h-40 flex justify-center">
-                    <svg viewBox="0 0 100 240" className="h-full w-auto">
-                      <path d="M50,10 L55,40 L65,90 L60,130 L55,180 L50,220" stroke="#53714b" strokeWidth="6" fill="none" />
-                      <path d="M50,90 L35,130" stroke="#53714b" strokeWidth="5" fill="none" />
-                      <path d="M65,90 L75,120" stroke="#53714b" strokeWidth="5" fill="none" />
-                      <path d="M60,130 L45,160" stroke="#53714b" strokeWidth="4" fill="none" />
-                      <circle cx="50" cy="30" r="1" fill="#fff" opacity="0.8" />
-                      <circle cx="55" cy="50" r="1" fill="#fff" opacity="0.6" />
-                      <circle cx="45" cy="70" r="1" fill="#fff" opacity="0.7" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="h-24 bg-gradient-to-t from-teal-600 to-transparent flex items-end p-3">
-                  <div className="w-full">
-                    <div className="mb-1 flex space-x-1">
-                      <div className="w-8 h-3 bg-teal-200 rounded-full"></div>
-                      <div className="w-4 h-3 bg-teal-200 rounded-full"></div>
-                    </div>
+              {/* Streetwear Style (Summer) */}
+              <div 
+                className="relative overflow-hidden cursor-pointer group"
+                onClick={() => {
+                  handleStyleChange('streetwear');
+                  handleBrandChange(null);
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                    <h2 className="text-white text-lg font-medium">Streetwear</h2>
+                    <p className="text-white/90 text-sm">Летний стиль</p>
                   </div>
                 </div>
               </div>
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-3">
-                <h2 className="text-white text-base font-medium mb-1">Streetwear</h2>
-                <p className="text-white/80 text-xs mb-2">Уличный стиль</p>
-              </div>
-            </div>
 
-            {/* Luxury Style */}
-            <div 
-              className="relative aspect-[2/3] overflow-hidden cursor-pointer group rounded-xl shadow-lg hover:shadow-xl"
-              onClick={() => {
-                handleStyleChange('luxury');
-                handleBrandChange(null);
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-b from-amber-300 to-orange-500 flex flex-col">
-                <div className="pt-6 px-3 flex-grow flex flex-col items-center justify-start">
-                  <div className="w-12 h-12 bg-white rounded-full mb-4"></div>
-                  <div className="w-full h-40 flex justify-center">
-                    <svg viewBox="0 0 100 240" className="h-full w-auto">
-                      <path d="M50,10 L55,40 L65,90 L60,130 L55,180 L50,220" stroke="#8B4513" strokeWidth="6" fill="none" />
-                      <path d="M50,90 L35,130" stroke="#8B4513" strokeWidth="5" fill="none" />
-                      <path d="M65,90 L75,120" stroke="#8B4513" strokeWidth="5" fill="none" />
-                      <circle cx="50" cy="30" r="1" fill="#fff" opacity="0.8" />
-                      <circle cx="55" cy="50" r="1" fill="#fff" opacity="0.6" />
-                      <circle cx="45" cy="70" r="1" fill="#fff" opacity="0.7" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="h-24 bg-gradient-to-t from-orange-600 to-transparent flex items-end p-3">
-                  <div className="w-full">
-                    <div className="mb-1 flex space-x-1">
-                      <div className="w-7 h-3 bg-purple-400 rounded-full"></div>
-                      <div className="w-5 h-5 bg-yellow-300 rounded-full"></div>
-                    </div>
+              {/* Luxury Style (Autumn) */}
+              <div 
+                className="relative overflow-hidden cursor-pointer group"
+                onClick={() => {
+                  handleStyleChange('luxury');
+                  handleBrandChange(null);
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                    <h2 className="text-white text-lg font-medium">Luxury</h2>
+                    <p className="text-white/90 text-sm">Осенний стиль</p>
                   </div>
                 </div>
               </div>
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-3">
-                <h2 className="text-white text-base font-medium mb-1">Luxury</h2>
-                <p className="text-white/80 text-xs mb-2">Премиум стиль</p>
-              </div>
-            </div>
 
-            {/* Athleisure Style */}
-            <div 
-              className="relative aspect-[2/3] overflow-hidden cursor-pointer group rounded-xl shadow-lg hover:shadow-xl"
-              onClick={() => {
-                handleStyleChange('athleisure');
-                handleBrandChange(null);
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-b from-blue-300 to-blue-500 flex flex-col">
-                <div className="pt-6 px-3 flex-grow flex flex-col items-center justify-start">
-                  <div className="w-12 h-12 bg-white rounded-full mb-4"></div>
-                  <div className="w-full h-40 flex justify-center">
-                    <svg viewBox="0 0 100 240" className="h-full w-auto">
-                      <path d="M50,10 L54,40 L60,90 L55,130 L50,180 L48,220" stroke="#2c3e50" strokeWidth="6" fill="none" />
-                      <path d="M50,90 L35,110" stroke="#2c3e50" strokeWidth="5" fill="none" />
-                      <circle cx="50" cy="30" r="1" fill="#fff" opacity="0.8" />
-                      <circle cx="60" cy="50" r="2" fill="#fff" opacity="0.6" />
-                      <circle cx="45" cy="70" r="2" fill="#fff" opacity="0.7" />
-                      <circle cx="55" cy="90" r="1" fill="#fff" opacity="0.5" />
-                    </svg>
+              {/* Athleisure Style (Winter) */}
+              <div 
+                className="relative overflow-hidden cursor-pointer group"
+                onClick={() => {
+                  handleStyleChange('athleisure');
+                  handleBrandChange(null);
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                    <h2 className="text-white text-lg font-medium">Athleisure</h2>
+                    <p className="text-white/90 text-sm">Зимний стиль</p>
                   </div>
                 </div>
-                <div className="h-24 bg-gradient-to-t from-blue-600 to-transparent flex items-end p-3">
-                  <div className="w-full">
-                    <div className="mb-1 flex space-x-1">
-                      <div className="w-5 h-5 bg-white rounded-full"></div>
-                      <div className="w-5 h-5 bg-white rounded-full"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-3">
-                <h2 className="text-white text-base font-medium mb-1">Athleisure</h2>
-                <p className="text-white/80 text-xs mb-2">Спортивный стиль</p>
               </div>
             </div>
           </div>
