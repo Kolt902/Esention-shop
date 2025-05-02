@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Product } from "@shared/schema";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
+import { getImagesByCategory, DEFAULT_IMAGE, SNEAKERS_IMAGES } from '@/lib/placeholder-images';
 
 // Функция для проверки валидности URL изображения
 const isValidImageUrl = (url?: string | null): boolean => {
@@ -34,18 +35,30 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
     ? product.additionalImages.filter(url => isValidImageUrl(url)) 
     : [];
   
-  // Создаем типобезопасный массив изображений только со строковыми значениями, без null
-  const allImages: string[] = [
-    ...(validMainImage ? [validMainImage] : []),
-    ...validAdditionalImages
-  ];
+  // Если нет валидных изображений, используем плейсхолдеры по категории
+  let allImages: string[] = [];
   
-  // Если нет ни одного изображения, добавим placeholder
-  const defaultImage = 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg';
-  
-  if (allImages.length === 0) {
-    allImages.push(defaultImage);
+  if (validMainImage || validAdditionalImages.length > 0) {
+    // Если есть валидные изображения, используем их
+    allImages = [
+      ...(validMainImage ? [validMainImage] : []),
+      ...validAdditionalImages
+    ];
+  } else {
+    // Если валидных изображений нет, генерируем резервные изображения по категории
+    const categoryImage = getImagesByCategory(product.category, product.id);
+    
+    // Создаем несколько вариаций изображений для разнообразия
+    allImages = [
+      categoryImage,
+      // Добавляем дополнительные изображения из подходящей категории
+      getImagesByCategory(product.category, product.id + 1),
+      getImagesByCategory(product.category, product.id + 2)
+    ];
   }
+  
+  // Дефолтное изображение, если все варианты не сработают
+  const defaultImage = DEFAULT_IMAGE;
   
   console.log("Validated images array:", allImages);
   
