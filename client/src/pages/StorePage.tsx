@@ -255,7 +255,7 @@ export default function StorePage() {
       
       <main className="flex-grow pb-20">
         {/* Stylish Discount Banner */}
-        <div className="bg-gradient-to-r from-black via-gray-800 to-black text-white py-6 mb-6">
+        <div className="bg-gradient-to-r from-black via-gray-800 to-black text-white py-6 mb-0">
           <div className="container mx-auto px-4 text-center">
             <p className="text-lg md:text-xl font-light tracking-wider uppercase">
               СКИДКА 10% НА ВСЕ ТОВАРЫ
@@ -266,80 +266,147 @@ export default function StorePage() {
           </div>
         </div>
         
-        {/* Hero Banner - Four Styles Grid in One Row */}
-        <section className="container mx-auto px-4 mb-10 pt-4">
-          <h2 className="text-xl font-semibold text-black mb-4 uppercase flex items-center">
-            <span className="bg-black text-white px-3 py-1 rounded-md mr-2 text-sm">СЕЗОНЫ</span>
-            <span>Выберите свой стиль</span>
-          </h2>
+        {/* Hero Banner - Four Styles Grid */}
+        <section className="container mx-auto px-4 mb-10 pt-8">
+          {/* Section header with label */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="inline-flex items-center">
+              <div className="bg-black text-white text-sm px-4 py-2 rounded-l-md uppercase font-bold">
+                СЕЗОНЫ
+              </div>
+              <h2 className="text-xl font-bold uppercase ml-3">
+                ВЫБЕРИТЕ СВОЙ СТИЛЬ
+              </h2>
+            </div>
+            <div className="hidden md:block">
+              <button className="text-sm font-medium text-black hover:underline">Все стили</button>
+            </div>
+          </div>
           
-          <div className="relative rounded-xl overflow-hidden cursor-pointer shadow-lg hover:shadow-xl mb-6">
-            <img 
-              src="/assets/seasons-illustration.jpg" 
-              alt="Seasons Style Illustration" 
-              className="w-full h-auto object-cover"
-            />
-            <div className="absolute inset-0 grid grid-cols-4 gap-0">
-              {/* Old Money Style (Spring) */}
-              <div 
-                className="relative overflow-hidden cursor-pointer group"
-                onClick={() => {
-                  handleStyleChange('oldmoney');
-                  handleBrandChange(null);
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                    <h2 className="text-white text-lg font-medium">Old Money</h2>
-                    <p className="text-white/90 text-sm">Весенний стиль</p>
+          {/* Four style cards in a grid */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            {/* Old Money Style */}
+            <div 
+              className="relative aspect-[3/4] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
+              onClick={() => {
+                handleStyleChange('oldmoney');
+                handleBrandChange(null);
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-b from-green-500/20 via-green-500/10 to-green-900/70"></div>
+              <div className="absolute inset-0 flex flex-col justify-between p-5">
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-full bg-green-600"></div>
+                  </div>
+                  <span className="text-white text-xs px-3 py-1 rounded-full bg-black/30 backdrop-blur-sm">Spring</span>
+                </div>
+                <div>
+                  <h3 className="text-white text-2xl font-bold mb-1">Old Money</h3>
+                  <p className="text-white/80 text-sm mb-3">Элегантный и утонченный стиль</p>
+                  <div className="transform opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                    <button className="bg-white text-black text-sm px-4 py-2 rounded-full font-medium hover:bg-black hover:text-white transition-colors">
+                      Смотреть коллекцию
+                    </button>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Streetwear Style (Summer) */}
-              <div 
-                className="relative overflow-hidden cursor-pointer group"
-                onClick={() => {
-                  handleStyleChange('streetwear');
-                  handleBrandChange(null);
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                    <h2 className="text-white text-lg font-medium">Streetwear</h2>
-                    <p className="text-white/90 text-sm">Летний стиль</p>
+            {/* Streetwear Style */}
+            <div 
+              className="relative aspect-[3/4] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
+              onClick={() => {
+                handleStyleChange('streetwear');
+                handleBrandChange(null);
+              }}
+            >
+              <img 
+                src="/assets/streetwear-brands.jpg" 
+                alt="Streetwear Style" 
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/80"></div>
+              <div className="absolute inset-0 flex flex-col justify-between p-5">
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-full bg-teal-500"></div>
+                  </div>
+                  <span className="text-white text-xs px-3 py-1 rounded-full bg-black/30 backdrop-blur-sm">Summer</span>
+                </div>
+                <div>
+                  <h3 className="text-white text-2xl font-bold mb-1">Streetwear</h3>
+                  <p className="text-white/80 text-sm mb-3">Современный уличный стиль</p>
+                  <div className="transform opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                    <button className="bg-white text-black text-sm px-4 py-2 rounded-full font-medium hover:bg-black hover:text-white transition-colors">
+                      Смотреть коллекцию
+                    </button>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Luxury Style (Autumn) */}
-              <div 
-                className="relative overflow-hidden cursor-pointer group"
-                onClick={() => {
-                  handleStyleChange('luxury');
-                  handleBrandChange(null);
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                    <h2 className="text-white text-lg font-medium">Luxury</h2>
-                    <p className="text-white/90 text-sm">Осенний стиль</p>
+            {/* Luxury Style */}
+            <div 
+              className="relative aspect-[3/4] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
+              onClick={() => {
+                handleStyleChange('luxury');
+                handleBrandChange(null);
+              }}
+            >
+              <img 
+                src="/assets/luxury-bags.jpg" 
+                alt="Luxury Style" 
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/80"></div>
+              <div className="absolute inset-0 flex flex-col justify-between p-5">
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-full bg-amber-500"></div>
+                  </div>
+                  <span className="text-white text-xs px-3 py-1 rounded-full bg-black/30 backdrop-blur-sm">Autumn</span>
+                </div>
+                <div>
+                  <h3 className="text-white text-2xl font-bold mb-1">Luxury</h3>
+                  <p className="text-white/80 text-sm mb-3">Премиальные бренды</p>
+                  <div className="transform opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                    <button className="bg-white text-black text-sm px-4 py-2 rounded-full font-medium hover:bg-black hover:text-white transition-colors">
+                      Смотреть коллекцию
+                    </button>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Athleisure Style (Winter) */}
-              <div 
-                className="relative overflow-hidden cursor-pointer group"
-                onClick={() => {
-                  handleStyleChange('athleisure');
-                  handleBrandChange(null);
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                    <h2 className="text-white text-lg font-medium">Athleisure</h2>
-                    <p className="text-white/90 text-sm">Зимний стиль</p>
+            {/* Athleisure Style */}
+            <div 
+              className="relative aspect-[3/4] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
+              onClick={() => {
+                handleStyleChange('athleisure');
+                handleBrandChange(null);
+              }}
+            >
+              <img 
+                src="/assets/adidas-tags.jpg" 
+                alt="Athleisure Style" 
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/80"></div>
+              <div className="absolute inset-0 flex flex-col justify-between p-5">
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-full bg-blue-600"></div>
+                  </div>
+                  <span className="text-white text-xs px-3 py-1 rounded-full bg-black/30 backdrop-blur-sm">Winter</span>
+                </div>
+                <div>
+                  <h3 className="text-white text-2xl font-bold mb-1">Athleisure</h3>
+                  <p className="text-white/80 text-sm mb-3">Спортивный стиль</p>
+                  <div className="transform opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                    <button className="bg-white text-black text-sm px-4 py-2 rounded-full font-medium hover:bg-black hover:text-white transition-colors">
+                      Смотреть коллекцию
+                    </button>
                   </div>
                 </div>
               </div>
@@ -365,7 +432,7 @@ export default function StorePage() {
               {/* Left side - Luxury shopping bags */}
               <div className="relative overflow-hidden rounded-2xl shadow-lg group">
                 <img 
-                  src="/assets/luxury-brands.jpg" 
+                  src="/assets/luxury-bags.jpg" 
                   alt="Luxury Brands" 
                   className="w-full h-[300px] object-cover transition-transform duration-700 group-hover:scale-105"
                 />
