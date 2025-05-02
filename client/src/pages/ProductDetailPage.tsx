@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
+import { useLocation, useRoute } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { queryClient } from '@/lib/queryClient';
 import { useStore } from '@/lib/StoreContext';
@@ -13,8 +13,11 @@ import { ChevronLeft, ChevronRight, Heart, ShoppingCart } from 'lucide-react';
 export default function ProductDetailPage() {
   const [, setLocation] = useLocation();
   const { language, t } = useStore();
-  const [searchParams] = useState(new URLSearchParams(window.location.search));
-  const productId = searchParams.get('id');
+  
+  // Получаем ID продукта из URL-параметра
+  const productRoute = useRoute<{ id: string }>("/product/:id");
+  const productId = productRoute?.params?.id;
+  
   const { addToCart, removeFromCart, items: cartItems } = useCartStore();
   
   const [selectedImage, setSelectedImage] = useState(0);

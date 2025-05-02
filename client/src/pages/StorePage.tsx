@@ -7,10 +7,11 @@ import CartModal from "@/components/CartModal";
 import CategoryCard from "@/components/CategoryCard";
 import BrandCard from "@/components/BrandCard";
 import { showNotification } from "@/lib/utils";
-import { addTelegramInitDataToRequest, getTelegramWebApp } from "@/lib/telegram";
+import { addTelegramInitDataToRequest, getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
 import { Product } from "@shared/schema";
 import { Filter, ChevronDown, X } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
+import { useLocation, useRoute } from "wouter";
 
 // Импорт изображений
 import oldMoneyImg from "@assets/5235752188695933225.jpg";
@@ -48,6 +49,12 @@ export default function StorePage() {
   const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   
+  // Получаем параметры из URL с использованием wouter
+  const [location] = useLocation();
+  const categoryRoute = useRoute("/category/:category");
+  const brandRoute = useRoute("/brand/:brand");
+  const styleRoute = useRoute("/style/:style");
+  
   // Получение списка категорий, брендов и продуктов
   const { data: filterData, refetch } = useQuery<{
     categories: string[],
@@ -62,6 +69,25 @@ export default function StorePage() {
   // Инициализация компонента и восстановление корзины
   useEffect(() => {
     console.log("StorePage mounted");
+    
+    // Применяем фильтры из URL при наличии
+    const categoryMatch = categoryRoute && categoryRoute[0];
+    if (categoryMatch) {
+      console.log("Category from URL:", categoryRoute[1].category);
+      setSelectedCategory(categoryRoute[1].category);
+    }
+    
+    const brandMatch = brandRoute && brandRoute[0];
+    if (brandMatch) {
+      console.log("Brand from URL:", brandRoute[1].brand);
+      setSelectedBrand(brandRoute[1].brand);
+    }
+    
+    const styleMatch = styleRoute && styleRoute[0];
+    if (styleMatch) {
+      console.log("Style from URL:", styleRoute[1].style);
+      setSelectedStyle(styleRoute[1].style);
+    }
     
     // Восстановление корзины из localStorage (для постоянного хранения)
     try {
@@ -95,7 +121,7 @@ export default function StorePage() {
     if (telegramWebApp && telegramWebApp.MainButton) {
       telegramWebApp.MainButton.hide();
     }
-  }, []);
+  }, [categoryRoute, brandRoute, styleRoute]);
   
   // Сохранение корзины при изменении
   useEffect(() => {

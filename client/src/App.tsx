@@ -20,7 +20,14 @@ function Router() {
       <Route path="/admin" component={AdminPage}/>
       <Route path="/profile" component={ProfilePage}/>
       <Route path="/virtual-fitting" component={VirtualFittingPage}/>
-      <Route path="/product" component={ProductDetailPage}/>
+      <Route path="/product/:id" component={ProductDetailPage}/>
+      
+      {/* Новые маршруты для категорий, брендов и стилей */}
+      <Route path="/category/:category" component={StorePage}/>
+      <Route path="/brand/:brand" component={StorePage}/>
+      <Route path="/style/:style" component={StorePage}/>
+      
+      {/* Обработка всех остальных маршрутов */}
       <Route component={NotFound} />
     </Switch>
   );
