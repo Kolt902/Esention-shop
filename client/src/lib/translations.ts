@@ -1,6 +1,9 @@
 // Supported languages
 export type SupportedLanguage = 'ru' | 'en' | 'pl' | 'cs' | 'de';
 
+// Массив поддерживаемых языков
+export const SUPPORTED_LANGUAGES: SupportedLanguage[] = ['ru', 'en', 'pl', 'cs', 'de'];
+
 // Define translation type
 export type Translation = {
   // Common UI elements
@@ -834,3 +837,39 @@ export const languageNames = {
   cs: 'Čeština',
   de: 'Deutsch',
 };
+
+// Custom hook для использования переводов
+import { useState, useEffect } from 'react';
+
+export function useTranslation() {
+  const [language, setLanguage] = useState<SupportedLanguage>(DEFAULT_LANGUAGE);
+  
+  useEffect(() => {
+    // Восстановление выбранного языка из localStorage
+    const savedLanguage = localStorage.getItem('language') as SupportedLanguage;
+    if (savedLanguage && SUPPORTED_LANGUAGES.includes(savedLanguage)) {
+      setLanguage(savedLanguage);
+    } else {
+      // Автоопределение языка из браузера
+      const browserLang = navigator.language.split('-')[0] as SupportedLanguage;
+      if (SUPPORTED_LANGUAGES.includes(browserLang)) {
+        setLanguage(browserLang);
+      }
+    }
+  }, []);
+  
+  // Функция для изменения языка
+  const changeLanguage = (newLanguage: SupportedLanguage) => {
+    if (SUPPORTED_LANGUAGES.includes(newLanguage)) {
+      setLanguage(newLanguage);
+      localStorage.setItem('language', newLanguage);
+    }
+  };
+  
+  // Возвращаем текущий язык, переводы и функцию изменения языка
+  return { 
+    language, 
+    t: translations[language] || translations[DEFAULT_LANGUAGE], 
+    changeLanguage 
+  };
+}

@@ -1,7 +1,15 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { SupportedLanguage, Translation, translations, DEFAULT_LANGUAGE } from './translations';
+import { Product } from '@shared/schema';
 
 type Theme = 'light' | 'dark';
+
+// Тип для элемента корзины
+export interface CartItem {
+  product: Product;
+  quantity: number;
+  size?: string;
+}
 
 interface StoreContextType {
   // Language
@@ -22,6 +30,13 @@ interface StoreContextType {
   addToFavorites: (productId: number) => void;
   removeFromFavorites: (productId: number) => void;
   isFavorite: (productId: number) => boolean;
+  
+  // Cart
+  cartItems: CartItem[];
+  addToCart: (product: Product, size?: string) => void;
+  removeFromCart: (productId: number) => void;
+  updateCartItemQuantity: (productId: number, quantity: number) => void;
+  clearCart: () => void;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -69,6 +84,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         try {
           return JSON.parse(savedFavorites);
         } catch (e) {
+          return [];
+        }
+      }
+    }
+    return [];
+  });
+  
+  // Cart state
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    // Try to load from localStorage
+    if (typeof window !== 'undefined') {
+      const savedCart = localStorage.getItem('cartItems');
+      if (savedCart) {
+        try {
+          return JSON.parse(savedCart);
+        } catch (e) {
+          console.error('Error parsing cart items from localStorage:', e);
           return [];
         }
       }
@@ -136,6 +168,77 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return favorites.includes(productId);
   };
   
+  // Cart methods
+  const addToCart = (product: Product, size?: string) => {
+    setCartItems(prev => {
+      // Проверяем, существует ли уже такой товар с таким размером
+      const existingItemIndex = prev.findIndex(
+        item => item.product.id === product.id && item.size === size
+      );
+      
+      let newItems;
+      if (existingItemIndex >= 0) {
+        // Увеличиваем количество существующего товара
+        newItems = [...prev];
+        newItems[existingItemIndex] = {
+          ...newItems[existingItemIndex],
+          quantity: newItems[existingItemIndex].quantity + 1
+        };
+      } else {
+        // Добавляем новый товар
+        newItems = [...prev, { product, quantity: 1, size }];
+      }
+      
+      // Сохраняем в localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('cartItems', JSON.stringify(newItems));
+      }
+      
+      return newItems;
+    });
+  };
+  
+  const removeFromCart = (productId: number) => {
+    setCartItems(prev => {
+      const newItems = prev.filter(item => item.product.id !== productId);
+      
+      // Сохраняем в localStorage
+      if (typeof window !== 'undefined') {
+        if (newItems.length === 0) {
+          localStorage.removeItem('cartItems');
+        } else {
+          localStorage.setItem('cartItems', JSON.stringify(newItems));
+        }
+      }
+      
+      return newItems;
+    });
+  };
+  
+  const updateCartItemQuantity = (productId: number, quantity: number) => {
+    setCartItems(prev => {
+      const newItems = prev.map(item => 
+        item.product.id === productId
+          ? { ...item, quantity: Math.max(1, quantity) }
+          : item
+      );
+      
+      // Сохраняем в localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('cartItems', JSON.stringify(newItems));
+      }
+      
+      return newItems;
+    });
+  };
+  
+  const clearCart = () => {
+    setCartItems([]);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('cartItems');
+    }
+  };
+  
   // Apply theme on initial load
   useEffect(() => {
     if (theme === 'dark') {
@@ -160,6 +263,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     addToFavorites,
     removeFromFavorites,
     isFavorite,
+    cartItems,
+    addToCart,
+    removeFromCart,
+    updateCartItemQuantity,
+    clearCart,
   };
   
   return (
