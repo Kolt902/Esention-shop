@@ -463,7 +463,7 @@ export default function StorePage() {
                   key={category.id}
                   title={category.title}
                   imageUrl={category.imageUrl}
-                  onClick={() => handleCategoryChange(category.id)}
+                  categoryId={category.id}
                   isSelected={selectedCategory === category.id}
                 />
               ))}
@@ -495,29 +495,29 @@ export default function StorePage() {
                   <div className="flex-1">
                     <h4 className="font-medium mb-2 text-gray-700">Категории</h4>
                     <div className="space-y-2">
-                      <button
-                        onClick={() => handleCategoryChange(null)}
-                        className={`w-full text-left px-3 py-2 text-sm ${
+                      <a
+                        href="/"
+                        className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedCategory === null 
                             ? 'text-black font-medium underline' 
                             : 'text-gray-700 hover:text-black'
                         }`}
                       >
                         Все категории
-                      </button>
+                      </a>
                       
                       {filterData?.categories?.map((category) => (
-                        <button
+                        <a
                           key={category}
-                          onClick={() => handleCategoryChange(category)}
-                          className={`w-full text-left px-3 py-2 text-sm ${
+                          href={`/category/${category}`}
+                          className={`w-full text-left px-3 py-2 text-sm block ${
                             selectedCategory === category 
                               ? 'text-black font-medium underline' 
                               : 'text-gray-700 hover:text-black'
                           }`}
                         >
                           {category}
-                        </button>
+                        </a>
                       ))}
                     </div>
                   </div>
@@ -526,29 +526,29 @@ export default function StorePage() {
                   <div className="flex-1">
                     <h4 className="font-medium mb-2 text-gray-700">Бренды</h4>
                     <div className="space-y-2">
-                      <button
-                        onClick={() => handleBrandChange(null)}
-                        className={`w-full text-left px-3 py-2 text-sm ${
+                      <a
+                        href="/"
+                        className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedBrand === null 
                             ? 'text-black font-medium underline' 
                             : 'text-gray-700 hover:text-black'
                         }`}
                       >
                         Все бренды
-                      </button>
+                      </a>
                       
                       {filterData?.brands?.map((brand) => (
-                        <button
+                        <a
                           key={brand}
-                          onClick={() => handleBrandChange(brand)}
-                          className={`w-full text-left px-3 py-2 text-sm ${
+                          href={`/brand/${brand}`}
+                          className={`w-full text-left px-3 py-2 text-sm block ${
                             selectedBrand === brand 
                               ? 'text-black font-medium underline' 
                               : 'text-gray-700 hover:text-black'
                           }`}
                         >
                           {brand}
-                        </button>
+                        </a>
                       ))}
                     </div>
                   </div>
@@ -680,7 +680,7 @@ export default function StorePage() {
                       key={product.id} 
                       product={product} 
                       onAddToCart={handleAddToCart}
-                      onClick={() => handleProductClick(product.id)}
+                      asLink={true}
                     />
                   ))
                 ) : (
@@ -717,36 +717,36 @@ export default function StorePage() {
                   Вы можете использовать фильтры для более точного поиска.
                 </p>
                 <div className="flex flex-wrap justify-center gap-3">
-                  <button 
-                    onClick={() => handleCategoryChange('sneakers')}
+                  <a 
+                    href="/category/sneakers"
                     className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
                   >
                     Кроссовки
-                  </button>
-                  <button 
-                    onClick={() => handleCategoryChange('tshirts')}
+                  </a>
+                  <a 
+                    href="/category/tshirts"
                     className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
                   >
                     Футболки
-                  </button>
-                  <button 
-                    onClick={() => handleCategoryChange('hoodies')}
+                  </a>
+                  <a 
+                    href="/category/hoodies"
                     className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
                   >
                     Худи
-                  </button>
-                  <button 
-                    onClick={() => handleBrandChange('Nike')}
+                  </a>
+                  <a 
+                    href="/brand/Nike"
                     className="bg-gray-200 text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-300 transition-colors"
                   >
                     Nike
-                  </button>
-                  <button 
-                    onClick={() => handleBrandChange('Adidas')}
+                  </a>
+                  <a 
+                    href="/brand/Adidas"
                     className="bg-gray-200 text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-300 transition-colors"
                   >
                     Adidas
-                  </button>
+                  </a>
                 </div>
               </div>
             )}
