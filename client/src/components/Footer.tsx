@@ -1,6 +1,7 @@
-import { Home, ShoppingBag, MessageCircle, User, Heart } from "lucide-react";
-import { openTelegramChat, isRunningInTelegram } from "@/lib/telegram";
+import { Home, ShoppingBag, MessageCircle, User, Heart, ShieldCheck } from "lucide-react";
+import { openTelegramChat, isRunningInTelegram, getCurrentUser } from "@/lib/telegram";
 import { useEffect, useState } from "react";
+import { apiRequest } from "@/lib/queryClient";
 
 interface FooterProps {
   cartCount: number;
@@ -11,6 +12,7 @@ interface FooterProps {
 export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterProps) {
   const [activeTab, setActiveTab] = useState<string>("home");
   const [isTelegram, setIsTelegram] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   
   // Стили для кнопок меню
   const activeStyle = "text-[#0088CC] scale-110 font-bold transition-transform";
@@ -24,10 +26,35 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
   // Detect if running in Telegram on mount
   useEffect(() => {
     setIsTelegram(isRunningInTelegram());
+    
+    // Проверка прав администратора
+    const checkAdminStatus = async () => {
+      try {
+        const response = await apiRequest("/api/admin/check", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          }
+        });
+        
+        if (response && response.isAdmin) {
+          setIsAdmin(true);
+        }
+      } catch (error) {
+        console.error("Failed to check admin status:", error);
+        setIsAdmin(false);
+      }
+    };
+    
+    checkAdminStatus();
   }, []);
   
   const handleContactClick = () => {
     openTelegramChat();
+  };
+  
+  const handleAdminClick = () => {
+    window.location.href = "/admin";
   };
   
   const handleTabClick = (tab: string) => {
