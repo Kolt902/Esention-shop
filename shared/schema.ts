@@ -7,7 +7,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
-  telegramId: text("telegram_id").unique(),
+  telegramId: text("telegram_id"),
   isAdmin: boolean("is_admin").default(false).notNull(),
 });
 
@@ -25,10 +25,10 @@ export const products = pgTable("products", {
   price: integer("price").notNull(), // price in cents
   category: text("category").notNull(),
   imageUrl: text("image_url").notNull(),
-  additionalImages: text("additional_images").array(), // Array of additional image URLs
+  additionalImages: text("additional_images").array().default([]).notNull(), // Array of additional image URLs
   sizes: text("sizes").array().notNull(),
-  description: text("description"),
-  brand: text("brand"),
+  description: text("description").default("").notNull(),
+  brand: text("brand").default("").notNull(),
 });
 
 export const insertProductSchema = createInsertSchema(products).pick({
