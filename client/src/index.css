@@ -42,7 +42,8 @@ html, body, #root {
   overflow-x: hidden;
 }
 
-/* Override Telegram blue styles */
+/* Override Telegram blue styles - more aggressive approach */
+/* Target blue buttons */
 button.bg-blue-600, 
 button.bg-blue-500,
 button.bg-blue-400,
@@ -50,10 +51,20 @@ button.bg-blue-300,
 button.bg-blue-200,
 button.bg-blue-100,
 button.bg-blue-50,
-button.bg-\[\#0088CC\] {
+button.bg-\[\#0088CC\],
+button[style*="background"],
+.tg-button,
+.tg-main-button,
+a[href].tg-button,
+div[role="button"].tg-button,
+.telegram-button,
+button.telegram-button {
   background-color: #111111 !important;
+  color: white !important;
+  border-color: #111111 !important;
 }
 
+/* Hover states for buttons */
 button.hover\:bg-blue-800:hover,
 button.hover\:bg-blue-700:hover,
 button.hover\:bg-blue-600:hover,
@@ -62,10 +73,15 @@ button.hover\:bg-blue-400:hover,
 button.hover\:bg-blue-300:hover,
 button.hover\:bg-blue-200:hover,
 button.hover\:bg-blue-100:hover,
-button.hover\:bg-blue-50:hover {
+button.hover\:bg-blue-50:hover,
+button[style*="background"]:hover,
+.tg-button:hover,
+.tg-main-button:hover,
+.telegram-button:hover {
   background-color: #333333 !important;
 }
 
+/* Override blue text */
 .text-blue-900,
 .text-blue-800,
 .text-blue-700,
@@ -260,4 +276,63 @@ button.hover\:bg-blue-50:hover {
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+}
+
+/* More aggressive Telegram specific overrides for mobile */
+/* This targets elements that may be injected by Telegram on mobile */
+*[style*="background-color: rgb(0, 136, 204)"],
+*[style*="background-color: rgb(0, 136, 204, 0.)"],
+*[style*="background-color:#0088cc"],
+*[style*="background-color: #0088cc"],
+*[style*="background-color:rgb(0,136,204)"],
+*[style*="background: rgb(0, 136, 204)"],
+*[style*="background:#0088cc"],
+*[style*="background: #0088cc"],
+*[style*="background:rgb(0,136,204)"],
+*[data-telegram-color="true"] {
+  background-color: #111111 !important;
+  color: white !important;
+  border-color: #111111 !important;
+}
+
+/* Target any native Telegram UI elements */
+*[class*="telegram-"],
+*[class*="tgme_"],
+*[class*="tgme-"],
+*[class*="tg-"],
+nav[role="navigation"] a,
+nav[role="navigation"] button,
+.bottom-bar .bottom-bar__button,
+.navigation-bar .navigation-bar__button {
+  background-color: #111111 !important;
+  color: white !important;
+}
+
+/* Target custom navigation elements that might be on mobile */
+.mobile-navigation-button,
+.mobile-nav,
+.mobile-menu button,
+.telegram-mobile-button,
+.menu-icon-button,
+.bottom-nav-button,
+.tab-button {
+  background-color: #111111 !important;
+  color: white !important;
+  border-color: #111111 !important;
+}
+
+/* Override any Telegram-specific links and icons */
+a[href^="tg://"],
+a[href^="https://t.me/"],
+button[data-telegram-action],
+[class*="telegram-icon"] {
+  color: #111111 !important;
+}
+
+/* Override any color that matches Telegram blue with black */
+*[style*="color: rgb(0, 136, 204)"],
+*[style*="color: #0088cc"],
+*[style*="color:rgb(0,136,204)"],
+*[style*="color:#0088cc"] {
+  color: #111111 !important;
 }
