@@ -54,7 +54,31 @@ export const insertCartItemSchema = createInsertSchema(cartItems).pick({
   size: true,
 });
 
-// Order Schema - could be used for order tracking
+// Delivery Address Schema
+export const deliveryAddresses = pgTable("delivery_addresses", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  fullName: text("full_name").notNull(),
+  phoneNumber: text("phone_number").notNull(),
+  country: text("country").notNull(),
+  city: text("city").notNull(),
+  address: text("address").notNull(),
+  postalCode: text("postal_code").notNull(),
+  isDefault: boolean("is_default").default(false),
+});
+
+export const insertDeliveryAddressSchema = createInsertSchema(deliveryAddresses).pick({
+  userId: true,
+  fullName: true,
+  phoneNumber: true,
+  country: true,
+  city: true,
+  address: true,
+  postalCode: true,
+  isDefault: true,
+});
+
+// Order Schema - enhanced with delivery information
 export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
@@ -62,6 +86,17 @@ export const orders = pgTable("orders", {
   totalPrice: integer("total_price").notNull(),
   items: jsonb("items").notNull(),
   createdAt: text("created_at").notNull(),
+  // Delivery information
+  fullName: text("full_name").notNull(),
+  phoneNumber: text("phone_number").notNull(),
+  country: text("country").notNull(),
+  city: text("city").notNull(),
+  address: text("address").notNull(),
+  postalCode: text("postal_code").notNull(),
+  deliveryNotes: text("delivery_notes"),
+  paymentMethod: text("payment_method").notNull(),
+  // Referral information
+  referralCode: text("referral_code"),
 });
 
 export const insertOrderSchema = createInsertSchema(orders).pick({
@@ -70,6 +105,15 @@ export const insertOrderSchema = createInsertSchema(orders).pick({
   totalPrice: true,
   items: true,
   createdAt: true,
+  fullName: true,
+  phoneNumber: true,
+  country: true,
+  city: true,
+  address: true,
+  postalCode: true,
+  deliveryNotes: true,
+  paymentMethod: true,
+  referralCode: true,
 });
 
 // Types
