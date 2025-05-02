@@ -123,6 +123,78 @@ export class MemStorage implements IStorage {
   
   // Add admin user for @illia2323
   private adminUsernames = ["illia2323", "zakharr99"];
+  
+  private initializeVirtualClothing() {
+    // Футболки
+    this.createVirtualClothingItem({
+      name: "Nike Sportswear T-Shirt",
+      category: "tops",
+      type: "t-shirt",
+      productId: 1,
+      modelPath: "/models/clothing/nike-tshirt.glb",
+      thumbnailUrl: "/images/clothing/nike-tshirt-thumb.jpg",
+      sizes: ["XS", "S", "M", "L", "XL"],
+      colors: ["black", "white", "red", "blue"]
+    });
+    
+    this.createVirtualClothingItem({
+      name: "Adidas Originals Tee",
+      category: "tops",
+      type: "t-shirt",
+      productId: 2,
+      modelPath: "/models/clothing/adidas-tshirt.glb",
+      thumbnailUrl: "/images/clothing/adidas-tshirt-thumb.jpg",
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      colors: ["white", "black", "green"]
+    });
+    
+    // Брюки
+    this.createVirtualClothingItem({
+      name: "Nike Tech Fleece Pants",
+      category: "bottoms",
+      type: "pants",
+      productId: 3,
+      modelPath: "/models/clothing/nike-pants.glb",
+      thumbnailUrl: "/images/clothing/nike-pants-thumb.jpg",
+      sizes: ["XS", "S", "M", "L", "XL"],
+      colors: ["black", "grey", "navy"]
+    });
+    
+    // Обувь
+    this.createVirtualClothingItem({
+      name: "Nike Air Force 1",
+      category: "footwear",
+      type: "sneakers",
+      productId: 1,
+      modelPath: "/models/footwear/nike-af1.glb",
+      thumbnailUrl: "/images/footwear/nike-af1-thumb.jpg",
+      sizes: ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"],
+      colors: ["white", "black", "custom"]
+    });
+    
+    this.createVirtualClothingItem({
+      name: "Adidas Originals Superstar",
+      category: "footwear",
+      type: "sneakers",
+      productId: 4,
+      modelPath: "/models/footwear/adidas-superstar.glb",
+      thumbnailUrl: "/images/footwear/adidas-superstar-thumb.jpg",
+      sizes: ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"],
+      colors: ["white", "black", "gold"]
+    });
+    
+    // Верхняя одежда
+    this.createVirtualClothingItem({
+      name: "Nike Windrunner Jacket",
+      category: "outerwear",
+      type: "jacket",
+      productId: 5,
+      modelPath: "/models/clothing/nike-jacket.glb",
+      thumbnailUrl: "/images/clothing/nike-jacket-thumb.jpg",
+      sizes: ["S", "M", "L", "XL"],
+      colors: ["black", "blue", "red"]
+    });
+  }
 
   constructor() {
     this.users = new Map();
