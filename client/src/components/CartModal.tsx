@@ -1,7 +1,9 @@
-import { X, ShoppingBag } from "lucide-react";
+import { X, ShoppingBag, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/utils";
 import { Product } from "@shared/schema";
+import { useEffect } from "react";
+import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
 
 interface CartItem {
   product: Product;
@@ -24,11 +26,33 @@ export default function CartModal({
   onRemoveItem,
   onCheckout,
 }: CartModalProps) {
+  // Использовать кнопку Telegram при открытии корзины
+  useEffect(() => {
+    if (isOpen && items.length > 0) {
+      const telegramApp = getTelegramWebApp();
+      
+      if (telegramApp && telegramApp.MainButton) {
+        telegramApp.MainButton.text = "Оформить заказ";
+        telegramApp.MainButton.show();
+        telegramApp.MainButton.onClick(onCheckout);
+        
+        // Убираем кнопку при закрытии корзины
+        return () => {
+          telegramApp.MainButton.hide();
+          telegramApp.MainButton.offClick(onCheckout);
+        };
+      }
+    }
+  }, [isOpen, items.length, onCheckout]);
+  
   // Calculate total
   const total = items.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
     0
   );
+  
+  // Проверяем, запущено ли приложение в Telegram
+  const inTelegram = isRunningInTelegram();
 
   if (!isOpen) return null;
 
