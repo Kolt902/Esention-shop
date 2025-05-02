@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
-import { Heart, ShoppingCart, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, ShoppingCart, ChevronLeft, ChevronRight, ImageOff } from "lucide-react";
 import { cn, formatPrice, showNotification } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Product } from "@shared/schema";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
+
+// Функция для проверки валидности URL изображения
+const isValidImageUrl = (url?: string | null): boolean => {
+  if (!url) return false;
+  return url.startsWith('http://') || url.startsWith('https://');
+};
 
 interface ProductCardProps {
   product: Product;
@@ -19,15 +25,32 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
   const [isAdding, setIsAdding] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
-  // Создаем массив всех изображений продукта
+  // Сохраняем отладочную информацию
   console.log("Product data:", JSON.stringify(product, null, 2));
   
-  const allImages = [
-    product.imageUrl,
-    ...(Array.isArray(product.additionalImages) ? product.additionalImages : [])
-  ].filter(Boolean); // Удаляем пустые значения из массива
+  // Создаем массив всех изображений продукта с проверкой на валидность URL
+  const validMainImage = isValidImageUrl(product.imageUrl) ? product.imageUrl : null;
+  const validAdditionalImages = Array.isArray(product.additionalImages) 
+    ? product.additionalImages.filter(url => isValidImageUrl(url)) 
+    : [];
   
-  console.log("All images array:", allImages);
+  // Создаем типобезопасный массив изображений только со строковыми значениями, без null
+  const allImages: string[] = [
+    ...(validMainImage ? [validMainImage] : []),
+    ...validAdditionalImages
+  ];
+  
+  // Если нет ни одного изображения, добавим placeholder
+  const defaultImage = 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg';
+  
+  if (allImages.length === 0) {
+    allImages.push(defaultImage);
+  }
+  
+  console.log("Validated images array:", allImages);
+  
+  // Состояние для отслеживания ошибок загрузки изображений
+  const [imageError, setImageError] = useState(false);
   
   // Функции для переключения изображений
   const nextImage = (e: React.MouseEvent) => {
@@ -82,13 +105,29 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
   return (
     <Card className="product-card overflow-hidden mb-4 transition-transform duration-200 active:scale-[0.98]">
       <div className="relative h-64 overflow-hidden">
-        {/* Отображаем текущее изображение */}
-        <img
-          src={allImages[currentImageIndex]}
-          alt={`${product.name} - изображение ${currentImageIndex + 1}`}
-          className="w-full h-full object-cover transition-opacity duration-300"
-          loading="lazy"
-        />
+        {/* Отображаем текущее изображение с обработкой ошибок */}
+        {imageError ? (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100">
+            <ImageOff className="h-12 w-12 text-gray-400 mb-2" />
+            <p className="text-sm text-gray-500">Изображение недоступно</p>
+          </div>
+        ) : (
+          <img
+            src={allImages[currentImageIndex]}
+            alt={`${product.name} - изображение ${currentImageIndex + 1}`}
+            className="w-full h-full object-cover transition-opacity duration-300"
+            loading="lazy"
+            onError={(e) => {
+              console.error(`Ошибка загрузки изображения: ${allImages[currentImageIndex]}`);
+              // Если ошибка в основном изображении продукта - показываем запасное
+              if (allImages[currentImageIndex] === product.imageUrl) {
+                e.currentTarget.src = defaultImage;
+              } else {
+                setImageError(true);
+              }
+            }}
+          />
+        )}
         
         {/* Кнопки навигации по изображениям - показываем только если есть несколько изображений */}
         {allImages.length > 1 && (

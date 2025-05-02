@@ -623,7 +623,24 @@ export class MemStorage implements IStorage {
   
   async createOrder(insertOrder: InsertOrder): Promise<Order> {
     const id = this.currentOrderId++;
-    const order: Order = { ...insertOrder, id };
+    // Обрабатываем обязательные поля и устанавливаем значения по умолчанию
+    const order: Order = { 
+      id,
+      userId: insertOrder.userId,
+      status: insertOrder.status || "pending",
+      totalPrice: insertOrder.totalPrice,
+      items: insertOrder.items,
+      createdAt: insertOrder.createdAt,
+      fullName: insertOrder.fullName,
+      phoneNumber: insertOrder.phoneNumber,
+      country: insertOrder.country,
+      city: insertOrder.city,
+      address: insertOrder.address,
+      postalCode: insertOrder.postalCode,
+      deliveryNotes: insertOrder.deliveryNotes || null,
+      paymentMethod: insertOrder.paymentMethod,
+      referralCode: insertOrder.referralCode || null
+    };
     this.orders.set(id, order);
     return order;
   }
