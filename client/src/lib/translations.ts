@@ -56,6 +56,37 @@ export type Translation = {
     noFavorites: string;
     noFavoritesDescription: string;
     exploreCatalog: string;
+    // Virtual fitting translations
+    virtualFitting: string;
+    bodyParams: string;
+    bodyParamsDesc: string;
+    height: string;
+    weight: string;
+    bodyType: string;
+    gender: string;
+    slim: string;
+    regular: string;
+    athletic: string;
+    male: string;
+    female: string;
+    tops: string;
+    bottoms: string;
+    footwear: string;
+    accessories: string;
+    tryOn: string;
+    addToWardrobe: string;
+    myWardrobe: string;
+    emptyWardrobe: string;
+    tryItemsAndAdd: string;
+    wardrobeDesc: string;
+    comingSoon: string;
+    selectItemsBelow: string;
+    avatarSaved: string;
+    avatarSavedDesc: string;
+    avatarSaveError: string;
+    selectColorAndSize: string;
+    addedToWardrobe: string;
+    errorAddingToWardrobe: string;
   };
   
   // Address related translations
@@ -204,6 +235,37 @@ export const ru: Translation = {
     noFavorites: 'Нет избранных товаров',
     noFavoritesDescription: 'Вы еще не добавили товары в избранное',
     exploreCatalog: 'Просмотреть каталог',
+    // Переводы для виртуальной примерочной
+    virtualFitting: 'Виртуальная примерочная',
+    bodyParams: 'Параметры тела',
+    bodyParamsDesc: 'Укажите ваши физические параметры для более точной примерки',
+    height: 'Рост',
+    weight: 'Вес',
+    bodyType: 'Телосложение',
+    gender: 'Пол',
+    slim: 'Худощавое',
+    regular: 'Среднее',
+    athletic: 'Атлетическое',
+    male: 'Мужской',
+    female: 'Женский',
+    tops: 'Верхняя одежда',
+    bottoms: 'Брюки и шорты',
+    footwear: 'Обувь',
+    accessories: 'Аксессуары',
+    tryOn: 'Примерить',
+    addToWardrobe: 'В гардероб',
+    myWardrobe: 'Мой гардероб',
+    emptyWardrobe: 'Ваш гардероб пуст',
+    tryItemsAndAdd: 'Примерьте вещи и добавьте их в гардероб',
+    wardrobeDesc: 'Здесь будут храниться ваши любимые виртуальные вещи',
+    comingSoon: 'Скоро',
+    selectItemsBelow: 'Выберите вещи для примерки из каталога ниже',
+    avatarSaved: 'Параметры сохранены',
+    avatarSavedDesc: 'Ваши параметры успешно сохранены',
+    avatarSaveError: 'Ошибка при сохранении параметров',
+    selectColorAndSize: 'Выберите цвет и размер',
+    addedToWardrobe: 'Добавлено в гардероб',
+    errorAddingToWardrobe: 'Ошибка при добавлении в гардероб',
   },
   addresses: {
     default: 'По умолчанию',
@@ -337,6 +399,37 @@ export const en: Translation = {
     noFavorites: 'No Favorites',
     noFavoritesDescription: 'You have not added any products to your favorites yet',
     exploreCatalog: 'Explore Catalog',
+    // Virtual fitting translations
+    virtualFitting: 'Virtual Fitting Room',
+    bodyParams: 'Body Parameters',
+    bodyParamsDesc: 'Enter your physical parameters for a more accurate fitting',
+    height: 'Height',
+    weight: 'Weight',
+    bodyType: 'Body Type',
+    gender: 'Gender',
+    slim: 'Slim',
+    regular: 'Regular',
+    athletic: 'Athletic',
+    male: 'Male',
+    female: 'Female',
+    tops: 'Tops',
+    bottoms: 'Bottoms',
+    footwear: 'Footwear',
+    accessories: 'Accessories',
+    tryOn: 'Try On',
+    addToWardrobe: 'Add to Wardrobe',
+    myWardrobe: 'My Wardrobe',
+    emptyWardrobe: 'Your wardrobe is empty',
+    tryItemsAndAdd: 'Try on items and add them to your wardrobe',
+    wardrobeDesc: 'Your favorite virtual items will be stored here',
+    comingSoon: 'Coming Soon',
+    selectItemsBelow: 'Select items to try on from the catalog below',
+    avatarSaved: 'Parameters Saved',
+    avatarSavedDesc: 'Your parameters have been successfully saved',
+    avatarSaveError: 'Error saving parameters',
+    selectColorAndSize: 'Select Color and Size',
+    addedToWardrobe: 'Added to Wardrobe',
+    errorAddingToWardrobe: 'Error adding to wardrobe',
   },
   addresses: {
     default: 'Default',

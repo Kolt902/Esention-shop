@@ -40,6 +40,8 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
       setActiveTab("favorites");
     } else if (location === "/admin") {
       setActiveTab("admin");
+    } else if (location === "/virtual-fitting") {
+      setActiveTab("virtual-fitting");
     }
     
     // Проверка прав администратора
@@ -95,6 +97,10 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
         break;
       case "admin":
         handleAdminClick();
+        break;
+      case "virtual-fitting":
+        // Переход на страницу виртуальной примерочной
+        setLocation("/virtual-fitting");
         break;
     }
   };
@@ -172,6 +178,19 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
             {activeTab === "profile" && <ActiveIndicator />}
             <User className="h-6 w-6" />
             <span className="text-xs font-medium mt-1">{t.profile.title}</span>
+          </button>
+          
+          {/* Кнопка виртуальной примерочной */}
+          <button 
+            onClick={() => handleTabClick("virtual-fitting")}
+            className={`flex flex-col items-center justify-center transition-all duration-200 relative ${
+              activeTab === "virtual-fitting" ? activeStyle : inactiveStyle
+            }`}
+            aria-label="Virtual Fitting"
+          >
+            {activeTab === "virtual-fitting" && <ActiveIndicator />}
+            <Shirt className="h-6 w-6" />
+            <span className="text-xs font-medium mt-1">Примерка</span>
           </button>
           
           {/* Show admin button if user is admin */}
