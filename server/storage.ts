@@ -174,8 +174,14 @@ export class MemStorage implements IStorage {
       price,
       category: "lifestyle",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/c96f77e1-9c8d-4f2e-9c9f-8a3a886aa3c1/dunk-low-shoes-t4Lk3P.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/f095a5a5-7e8b-408a-b83b-cae692f04c91/dunk-low-shoes-t4Lk3P.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/2adde5e2-e715-4735-a8e7-f7acf93f395c/dunk-low-shoes-t4Lk3P.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/8c9c2c82-71ee-449c-934a-8760c31cff5d/dunk-low-shoes-t4Lk3P.png"
+      ],
       sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
       description: "Created for the hardwood but taken to the streets, this '80s basketball icon returns with perfectly shined overlays and classic team colors. With its iconic hoops design, the Nike Dunk Low channels vintage style back onto the streets.",
+      brand: "Nike"
     });
     
     this.createProduct({
@@ -183,8 +189,14 @@ export class MemStorage implements IStorage {
       price,
       category: "running",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/c3e2c568-a726-4ded-8a1e-25098e7a994e/pegasus-40-mens-road-running-shoes-bRqpc7.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/e0c08734-caa0-4021-97ec-90b9209e5c0f/pegasus-40-mens-road-running-shoes-bRqpc7.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/36766fc5-e60b-466d-8ee3-24e61306198c/pegasus-40-mens-road-running-shoes-bRqpc7.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/84d7333c-a88d-4c5c-8c9a-52ed2f5e53b2/pegasus-40-mens-road-running-shoes-bRqpc7.png"
+      ],
       sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
       description: "Let the Nike Pegasus 40 help you ascend to new heights. This trusted trainer has the same reliable fit and feel that's helped runners for decades.",
+      brand: "Nike"
     });
     
     this.createProduct({
@@ -192,8 +204,14 @@ export class MemStorage implements IStorage {
       price,
       category: "running",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/670f2ae5-8933-4d93-9354-d03bf6ce2a55/react-infinity-3-mens-road-running-shoes-1bRm03.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/7441f11a-6832-4de9-a477-f5135d329047/react-infinity-3-mens-road-running-shoes-1bRm03.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/3d85a910-e267-4c8f-9f17-9c62166e95f8/react-infinity-3-mens-road-running-shoes-1bRm03.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/c84c0664-2279-4ffa-8897-3e7d17a5ffe2/react-infinity-3-mens-road-running-shoes-1bRm03.png"
+      ],
       sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
       description: "The Nike React Infinity delivers a smooth ride during your run. These shoes are cushioned for comfort, while the design provides enhanced stability from heel to toe.",
+      brand: "Nike"
     });
     
     this.createProduct({
@@ -201,8 +219,14 @@ export class MemStorage implements IStorage {
       price,
       category: "lifestyle",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/d4b8cd01-09cb-4191-8703-a8a1ec2a82d0/blazer-mid-77-vintage-mens-shoes-nw30B2.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/1cbf6e93-9686-47a0-aaaf-cc3f4188afa7/blazer-mid-77-vintage-mens-shoes-nw30B2.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/22995310-67d9-4a74-8ee1-2c5aaee50898/blazer-mid-77-vintage-mens-shoes-nw30B2.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/d55b60be-3a69-483e-ad1b-c20a2a59e39b/blazer-mid-77-vintage-mens-shoes-nw30B2.png"
+      ],
       sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
       description: "In the '70s, Nike was the new shoe on the block. So new in fact, we were still testing prototypes on elite runners. Of course, the design improved over the years, but the name stuck.",
+      brand: "Nike"
     });
     
     this.createProduct({
@@ -210,8 +234,14 @@ export class MemStorage implements IStorage {
       price,
       category: "basketball",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/62831c9e-0b69-436a-bf03-76cf4a71435e/lebron-witness-7-basketball-shoes-XPRc4M.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/9c5172dc-4c14-458b-b3a3-9b5c2901a877/lebron-witness-7-basketball-shoes-XPRc4M.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/36c0e411-4b96-4715-a9d7-4195657e8c57/lebron-witness-7-basketball-shoes-XPRc4M.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/4c2ed572-e4a0-4b78-816a-97ce33f61e88/lebron-witness-7-basketball-shoes-XPRc4M.png"
+      ],
       sizes: ["40", "41", "42", "43", "44", "45", "46", "47"],
       description: "LeBron thrives when the pressure's high and his back's against the wall. The LeBron Witness series is designed to support your game when you pull out clutch plays inspired by the King.",
+      brand: "Nike"
     });
     
     this.createProduct({
@@ -219,8 +249,14 @@ export class MemStorage implements IStorage {
       price,
       category: "basketball",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/1eb91968-f03c-4dce-bfa7-b6b1fe561879/precision-6-basketball-shoes-V704hS.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/aa231073-c7ce-4134-bbf2-5ecc19a6c90c/precision-6-basketball-shoes-V704hS.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/47b2f201-5591-4f3e-96de-9324e9e2c6db/precision-6-basketball-shoes-V704hS.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/f0a39818-ff91-4c76-88a8-920fdfa563d1/precision-6-basketball-shoes-V704hS.png"
+      ],
       sizes: ["40", "41", "42", "43", "44", "45", "46"],
       description: "The Nike Precision is made for players who beat opponents with skill and strategy more than power, as if they're playing chess while everyone else is playing checkers.",
+      brand: "Nike"
     });
     
     this.createProduct({
@@ -228,8 +264,14 @@ export class MemStorage implements IStorage {
       price,
       category: "lifestyle",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/vqpbkqglfrtpgxushseg/air-max-270-mens-shoes-KkLcGR.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/i1-6b4d1ee2-95a4-4e98-a476-1069a8967627/air-max-270-mens-shoes-KkLcGR.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/i1-71bc507a-95e1-4e78-8ea1-ce21bbf469d2/air-max-270-mens-shoes-KkLcGR.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/i1-30dd4772-04ae-4a14-9d73-c49599fc8a7c/air-max-270-mens-shoes-KkLcGR.png"
+      ],
       sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
       description: "Nike's first lifestyle Air Max brings you style, comfort and big attitude in the Nike Air Max 270. The design draws inspiration from Air Max icons, showcasing Nike's greatest innovation with its large window and fresh array of colors.",
+      brand: "Nike"
     });
     
     // Добавим футболки
@@ -238,8 +280,14 @@ export class MemStorage implements IStorage {
       price: 2500,
       category: "tshirts",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/5d8b1a7a-bc3e-483e-a89c-2b021c278724/sportswear-club-mens-t-shirt-ShrJfX.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/b4bb9a9e-aeca-48ee-9e31-100fc16bc1d1/sportswear-club-mens-t-shirt-ShrJfX.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/2aebe14d-6ae2-4071-87c3-716e3a0736c9/sportswear-club-mens-t-shirt-ShrJfX.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/a28123a5-fb79-46a0-b1ed-e53f97e6764e/sportswear-club-mens-t-shirt-ShrJfX.png"
+      ],
       sizes: ["S", "M", "L", "XL", "XXL"],
       description: "The Nike Sportswear Club T-Shirt is made with our everyday cotton fabric and a classic fit for a familiar feel right out of the bag. An embroidered Futura logo on the chest provides a signature Nike look.",
+      brand: "Nike"
     });
     
     this.createProduct({
@@ -247,8 +295,14 @@ export class MemStorage implements IStorage {
       price: 3000,
       category: "tshirts",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/49c07831-df25-4122-bd15-de9794095bd0/dri-fit-legend-mens-training-t-shirt-VJGcGZ.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/dbafd5e0-46c7-409f-be1e-2248ed2d5d25/dri-fit-legend-mens-training-t-shirt-VJGcGZ.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/aaf6860a-1c76-4a01-97e4-23d85cc644cc/dri-fit-legend-mens-training-t-shirt-VJGcGZ.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/2b095cb3-4a23-439e-822e-2d91ad4f833d/dri-fit-legend-mens-training-t-shirt-VJGcGZ.png"
+      ],
       sizes: ["S", "M", "L", "XL", "XXL"],
       description: "The Nike Dri-FIT Legend T-Shirt delivers a soft feel, sweat-wicking performance and great range of motion to get you through your workout in total comfort.",
+      brand: "Nike"
     });
     
     // Добавим кофты (толстовки)
@@ -257,8 +311,14 @@ export class MemStorage implements IStorage {
       price: 5500,
       category: "hoodies",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/4c9eafe3-18c6-41bb-9cef-104a523f4d66/sportswear-club-fleece-pullover-hoodie-5ZcD7G.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/3df5b14d-7eee-449f-9b56-0fc23cc65e82/sportswear-club-fleece-pullover-hoodie-5ZcD7G.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/c00d3354-6eee-44cf-a69d-02a46f6d82e0/sportswear-club-fleece-pullover-hoodie-5ZcD7G.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/1ee17b06-fa5d-46e3-9e1c-46f9a4d9dae3/sportswear-club-fleece-pullover-hoodie-5ZcD7G.png"
+      ],
       sizes: ["S", "M", "L", "XL", "XXL"],
       description: "The Nike Sportswear Club Fleece Pullover Hoodie combines soft fleece fabric with a classic silhouette and minimalist design details to create an essential for your daily wardrobe.",
+      brand: "Nike"
     });
     
     this.createProduct({
