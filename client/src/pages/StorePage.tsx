@@ -309,19 +309,46 @@ export default function StorePage() {
         </div>
         
         <div className="container mx-auto px-4">
-          {/* Latest Products Section */}
-          <section className="mb-12 mt-6">
-            <h2 className="text-xl font-bold text-black mb-8 uppercase tracking-wide">Новые поступления</h2>
+          {/* Categories with Images */}
+          <section className="mb-10 mt-6">
+            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Категории товаров</h2>
             
-            {/* Product Grid - Optimized for mobile with 2 columns */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {filterData?.products?.slice(0, 8).map((product) => (
-                <ProductCard 
-                  key={product.id} 
-                  product={product} 
-                  onAddToCart={handleAddToCart}
-                />
-              ))}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {/* All Categories */}
+              <CategoryCard 
+                title="Все товары" 
+                description="Все категории" 
+                imageUrl={allCategoriesImg}
+                onClick={() => handleCategoryChange(null)}
+                isSelected={selectedCategory === null}
+              />
+              
+              {/* Clothing */}
+              <CategoryCard 
+                title="Одежда" 
+                description="Футболки, худи, куртки" 
+                imageUrl={clothingImg}
+                onClick={() => handleCategoryChange('tshirts')}
+                isSelected={selectedCategory === 'tshirts'}
+              />
+              
+              {/* Shoes */}
+              <CategoryCard 
+                title="Обувь" 
+                description="Кроссовки, ботинки" 
+                imageUrl={shoesImg}
+                onClick={() => handleCategoryChange('shoes')}
+                isSelected={selectedCategory === 'shoes'}
+              />
+              
+              {/* Accessories */}
+              <CategoryCard 
+                title="Аксессуары" 
+                description="Сумки, головные уборы" 
+                imageUrl={accessoriesImg}
+                onClick={() => handleCategoryChange('accessories')}
+                isSelected={selectedCategory === 'accessories'}
+              />
             </div>
           </section>
           
@@ -350,7 +377,7 @@ export default function StorePage() {
               <div className="snap-center min-w-[220px] sm:min-w-[260px]">
                 <BrandCard 
                   name="Nike" 
-                  imageUrl="./assets/5235752188695932056.jpg"
+                  imageUrl={nikeImg}
                   onClick={() => handleBrandChange('Nike')}
                   isSelected={selectedBrand === 'Nike'}
                 />
@@ -360,7 +387,7 @@ export default function StorePage() {
               <div className="snap-center min-w-[220px] sm:min-w-[260px]">
                 <BrandCard 
                   name="Adidas" 
-                  imageUrl="./assets/5235752188695932008.jpg"
+                  imageUrl={adidasImg}
                   onClick={() => handleBrandChange('Adidas')}
                   isSelected={selectedBrand === 'Adidas'}
                 />
@@ -370,7 +397,7 @@ export default function StorePage() {
               <div className="snap-center min-w-[220px] sm:min-w-[260px]">
                 <BrandCard 
                   name="Jordan" 
-                  imageUrl="./assets/5235752188695932040.jpg"
+                  imageUrl={jordanImg}
                   onClick={() => handleBrandChange('Jordan')}
                   isSelected={selectedBrand === 'Jordan'}
                 />
@@ -380,7 +407,7 @@ export default function StorePage() {
               <div className="snap-center min-w-[220px] sm:min-w-[260px]">
                 <BrandCard 
                   name="Stussy" 
-                  imageUrl="./assets/5233500388882249248.jpg"
+                  imageUrl={stussyImg}
                   onClick={() => handleBrandChange('Stussy')}
                   isSelected={selectedBrand === 'Stussy'}
                 />
@@ -390,7 +417,7 @@ export default function StorePage() {
               <div className="snap-center min-w-[220px] sm:min-w-[260px]">
                 <BrandCard 
                   name="Balenciaga" 
-                  imageUrl="./assets/5235826719263420314.jpg"
+                  imageUrl={balenciagaImg}
                   onClick={() => handleBrandChange('Balenciaga')}
                   isSelected={selectedBrand === 'Balenciaga'}
                 />
@@ -400,54 +427,11 @@ export default function StorePage() {
               <div className="snap-center min-w-[220px] sm:min-w-[260px]">
                 <BrandCard 
                   name="Все бренды" 
-                  imageUrl="./assets/5235689757051321832.jpg"
+                  imageUrl={allBrandsImg}
                   onClick={() => handleBrandChange(null)}
                   isSelected={selectedBrand === null}
                 />
               </div>
-            </div>
-          </section>
-          
-          {/* Categories with Images */}
-          <section className="mb-10">
-            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Категории товаров</h2>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {/* All Categories */}
-              <CategoryCard 
-                title="Все товары" 
-                description="Все категории" 
-                imageUrl="./assets/5235752188695933189.jpg"
-                onClick={() => handleCategoryChange(null)}
-                isSelected={selectedCategory === null}
-              />
-              
-              {/* Clothing */}
-              <CategoryCard 
-                title="Одежда" 
-                description="Футболки, худи, куртки" 
-                imageUrl="./assets/5235752188695932083.jpg"
-                onClick={() => handleCategoryChange('tshirts')}
-                isSelected={selectedCategory === 'tshirts'}
-              />
-              
-              {/* Shoes */}
-              <CategoryCard 
-                title="Обувь" 
-                description="Кроссовки, ботинки" 
-                imageUrl="./assets/5235752188695931952.jpg"
-                onClick={() => handleCategoryChange('shoes')}
-                isSelected={selectedCategory === 'shoes'}
-              />
-              
-              {/* Accessories */}
-              <CategoryCard 
-                title="Аксессуары" 
-                description="Сумки, головные уборы" 
-                imageUrl="./assets/5235759361291318073.jpg"
-                onClick={() => handleCategoryChange('accessories')}
-                isSelected={selectedCategory === 'accessories'}
-              />
             </div>
           </section>
 
