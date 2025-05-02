@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Helmet } from "react-helmet";
 import {
   Table,
   TableBody,
@@ -49,8 +48,13 @@ export default function AdminPage() {
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        await apiRequest("/api/admin/orders");
-        setIsAdmin(true);
+        const response = await apiRequest("/api/admin/check", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          }
+        });
+        setIsAdmin(response && response.isAdmin);
       } catch (error) {
         console.error("Admin access error:", error);
         setIsAdmin(false);
@@ -66,8 +70,12 @@ export default function AdminPage() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const data = await apiRequest("/api/admin/orders");
-      setOrders(data || []);
+      const response = await apiRequest("/api/admin/orders");
+      if (response && Array.isArray(response)) {
+        setOrders(response);
+      } else {
+        setOrders([]);
+      }
     } catch (error) {
       console.error("Error fetching orders:", error);
       toast({
@@ -84,8 +92,12 @@ export default function AdminPage() {
   const fetchOnlineUsers = async () => {
     try {
       setLoading(true);
-      const data = await apiRequest("/api/admin/online-users");
-      setOnlineUsers(data || []);
+      const response = await apiRequest("/api/admin/online-users");
+      if (response && Array.isArray(response)) {
+        setOnlineUsers(response);
+      } else {
+        setOnlineUsers([]);
+      }
     } catch (error) {
       console.error("Error fetching online users:", error);
       toast({
@@ -115,6 +127,9 @@ export default function AdminPage() {
       setUpdating(orderId);
       await apiRequest(`/api/admin/orders/${orderId}`, {
         method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ status }),
       });
       
@@ -170,10 +185,6 @@ export default function AdminPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Админ-панель | Nike Store</title>
-      </Helmet>
-
       <div className="container mx-auto py-6 px-4 max-w-6xl">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Админ-панель</h1>

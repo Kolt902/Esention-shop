@@ -31,7 +31,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import DeliveryForm, { DeliveryFormData } from "./DeliveryForm";
-import { CartItem } from "@/pages/StorePage";
+// Используем тот же тип CartItem что и в CartModal
+interface CartItem {
+  product: {
+    id: number;
+    name: string;
+    price: number;
+    imageUrl: string;
+  };
+  quantity: number;
+  size?: string;
+}
 
 // Схема валидации для формы заказа
 const orderFormSchema = z.object({
@@ -101,12 +111,17 @@ export default function CheckoutModal({
       // Submit order to API
       const response = await apiRequest("/api/orders", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(orderData),
       });
 
+      const orderId = response && typeof response === 'object' ? response.id : 'new';
+      
       toast({
         title: t.cart.orderSuccess,
-        description: `Заказ #${response.id} успешно оформлен`,
+        description: `Заказ #${orderId} успешно оформлен`,
       });
 
       onClose();

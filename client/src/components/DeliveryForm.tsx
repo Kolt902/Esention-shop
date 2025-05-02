@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -65,12 +65,14 @@ export default function DeliveryForm({
   });
 
   // Fetch saved addresses on component mount
-  useState(() => {
+  useEffect(() => {
     const fetchAddresses = async () => {
       setLoadingSavedAddresses(true);
       try {
-        const addresses = await apiRequest('/api/delivery-addresses');
-        setSavedAddresses(addresses);
+        const response = await apiRequest('/api/delivery-addresses');
+        if (response && Array.isArray(response)) {
+          setSavedAddresses(response);
+        }
       } catch (error) {
         console.error('Error fetching saved addresses:', error);
         toast({
@@ -84,7 +86,7 @@ export default function DeliveryForm({
     };
     
     fetchAddresses();
-  }, []);
+  }, [toast, t.cart.orderError]);
   
   // Handler for selecting a saved address
   const handleSelectSavedAddress = (addressId: number) => {
