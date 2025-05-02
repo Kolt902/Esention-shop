@@ -13,20 +13,21 @@ import { Filter, ChevronDown, X } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 
 // Импорт изображений
-import oldMoneyImg from "@/assets/5235752188695933225.jpg";
-import streetwearImg from "@/assets/5235826719263420314.jpg"; 
-import luxuryImg from "@/assets/5235759361291318071.jpg";
-import sportImg from "@/assets/5235759361291318073.jpg";
-import nikeImg from "@/assets/5235752188695933225.jpg";
-import adidasImg from "@/assets/5235759361291318073.jpg";
-import jordanImg from "@/assets/5235752188695933225.jpg";
-import stussyImg from "@/assets/5235826719263420314.jpg";
-import balenciagaImg from "@/assets/5235759361291318071.jpg";
-import allBrandsImg from "@/assets/5235689757051321832.jpg";
-import allCategoriesImg from "@/assets/5235689757051321832.jpg";
-import clothingImg from "@/assets/5235752188695933225.jpg";
-import shoesImg from "@/assets/5235752188695933225.jpg";
-import accessoriesImg from "@/assets/5235759361291318071.jpg";
+import oldMoneyImg from "@assets/5235752188695933225.jpg";
+import streetwearImg from "@assets/5235826719263420314.jpg"; 
+import luxuryImg from "@assets/5235759361291318071.jpg";
+import sportImg from "@assets/5235759361291318073.jpg";
+import nikeImg from "@assets/5235752188695933225.jpg";
+import adidasImg from "@assets/5235759361291318073.jpg";
+import jordanImg from "@assets/5235752188695933225.jpg";
+import stussyImg from "@assets/5235826719263420314.jpg";
+import balenciagaImg from "@assets/5235759361291318071.jpg";
+import allBrandsImg from "@assets/5235689757051321832.jpg";
+import allCategoriesImg from "@assets/5235689757051321832.jpg";
+import clothingImg from "@assets/5235752188695933225.jpg";
+import shoesImg from "@assets/5235752188695933225.jpg";
+import accessoriesImg from "@assets/5235759361291318071.jpg";
+import { categoryData } from "@/lib/categoryImages";
 
 interface CartItem {
   product: Product;
@@ -446,54 +447,27 @@ export default function StorePage() {
           <section className="mb-12">
             <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Категории</h2>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Map through the category data */}
+              {categoryData.map(category => (
+                <CategoryCard 
+                  key={category.id}
+                  title={category.title}
+                  description={category.description}
+                  imageUrl={category.imageUrl}
+                  onClick={() => handleCategoryChange(category.id)}
+                  isSelected={selectedCategory === category.id}
+                />
+              ))}
+              
               {/* All Categories */}
-              <button 
+              <CategoryCard 
+                title="Все товары"
+                description="Полный каталог"
+                imageUrl={allCategoriesImg}
                 onClick={() => handleCategoryChange(null)}
-                className={`flex items-center justify-center p-4 border rounded-xl transition-all ${
-                  selectedCategory === null 
-                    ? 'border-black shadow-md bg-black text-white' 
-                    : 'border-gray-200 hover:border-gray-400'
-                }`}
-              >
-                <span className="font-medium">Все товары</span>
-              </button>
-              
-              {/* Clothing */}
-              <button 
-                onClick={() => handleCategoryChange('tshirts')}
-                className={`flex items-center justify-center p-4 border rounded-xl transition-all ${
-                  selectedCategory === 'tshirts' 
-                    ? 'border-black shadow-md bg-black text-white' 
-                    : 'border-gray-200 hover:border-gray-400'
-                }`}
-              >
-                <span className="font-medium">Одежда</span>
-              </button>
-              
-              {/* Shoes */}
-              <button 
-                onClick={() => handleCategoryChange('shoes')}
-                className={`flex items-center justify-center p-4 border rounded-xl transition-all ${
-                  selectedCategory === 'shoes' 
-                    ? 'border-black shadow-md bg-black text-white' 
-                    : 'border-gray-200 hover:border-gray-400'
-                }`}
-              >
-                <span className="font-medium">Обувь</span>
-              </button>
-              
-              {/* Accessories */}
-              <button 
-                onClick={() => handleCategoryChange('accessories')}
-                className={`flex items-center justify-center p-4 border rounded-xl transition-all ${
-                  selectedCategory === 'accessories' 
-                    ? 'border-black shadow-md bg-black text-white' 
-                    : 'border-gray-200 hover:border-gray-400'
-                }`}
-              >
-                <span className="font-medium">Аксессуары</span>
-              </button>
+                isSelected={selectedCategory === null}
+              />
             </div>
           </section>
 
