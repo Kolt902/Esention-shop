@@ -7,6 +7,7 @@ import StorePage from "@/pages/StorePage";
 import NotFound from "@/pages/not-found";
 import { useEffect, useState } from "react";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
+import { StoreProvider } from "@/lib/StoreContext";
 
 function Router() {
   return (
@@ -95,8 +96,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Router />
+        <StoreProvider>
+          <Toaster />
+          <Router />
+        </StoreProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
