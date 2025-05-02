@@ -850,7 +850,12 @@ export class MemStorage implements IStorage {
     const id = this.currentWardrobeItemId++;
     const wardrobeItem: UserVirtualWardrobe = {
       id,
-      ...item
+      userId: item.userId,
+      clothingItemId: item.clothingItemId,
+      selectedColor: item.selectedColor,
+      selectedSize: item.selectedSize,
+      dateAdded: item.dateAdded,
+      isFavorite: item.isFavorite ?? false
     };
     this.userVirtualWardrobe.set(id, wardrobeItem);
     return wardrobeItem;
