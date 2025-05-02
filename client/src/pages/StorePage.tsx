@@ -22,14 +22,26 @@ export default function StorePage() {
   useEffect(() => {
     console.log("StorePage mounted");
     
-    // Восстановление корзины из sessionStorage
+    // Восстановление корзины из localStorage (для постоянного хранения)
     try {
-      const savedCart = sessionStorage.getItem('cartItems');
+      const savedCart = localStorage.getItem('cartItems');
       if (savedCart) {
         const parsedCart = JSON.parse(savedCart);
         if (Array.isArray(parsedCart) && parsedCart.length > 0) {
           setCartItems(parsedCart);
-          console.log("Корзина восстановлена из sessionStorage", parsedCart);
+          console.log("Корзина восстановлена из localStorage", parsedCart);
+        }
+      } else {
+        // Поиск в sessionStorage как запасной вариант (обратная совместимость)
+        const sessionCart = sessionStorage.getItem('cartItems');
+        if (sessionCart) {
+          const parsedSessionCart = JSON.parse(sessionCart);
+          if (Array.isArray(parsedSessionCart) && parsedSessionCart.length > 0) {
+            setCartItems(parsedSessionCart);
+            // Перенос данных из sessionStorage в localStorage
+            localStorage.setItem('cartItems', sessionCart);
+            console.log("Корзина восстановлена из sessionStorage и перенесена в localStorage", parsedSessionCart);
+          }
         }
       }
     } catch (error) {
@@ -39,12 +51,23 @@ export default function StorePage() {
   
   // Сохранение корзины при ее изменении
   useEffect(() => {
-    if (cartItems.length > 0) {
-      try {
-        sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
-      } catch (error) {
-        console.error("Ошибка при сохранении корзины:", error);
+    try {
+      // Сохранение в localStorage для постоянного хранения
+      if (cartItems.length > 0) {
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      } else {
+        // Если корзина пуста, удаляем данные
+        localStorage.removeItem('cartItems');
       }
+      
+      // Дублируем в sessionStorage для обратной совместимости
+      if (cartItems.length > 0) {
+        sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
+      } else {
+        sessionStorage.removeItem('cartItems');
+      }
+    } catch (error) {
+      console.error("Ошибка при сохранении корзины:", error);
     }
   }, [cartItems]);
 
@@ -82,12 +105,6 @@ export default function StorePage() {
 
       console.log("Добавляем товар в корзину:", product.id, size);
       
-      // Сохраняем в sessionStorage
-      const savedCart = sessionStorage.getItem('cartItems');
-      const parsedCart = savedCart ? JSON.parse(savedCart) : [];
-      const updatedCart = [...parsedCart, { product, quantity: 1, size }];
-      sessionStorage.setItem('cartItems', JSON.stringify(updatedCart));
-      
     } catch (error) {
       console.error("Ошибка при добавлении товара в корзину:", error);
       showNotification("Не удалось добавить товар в корзину. Попробуйте еще раз.");
@@ -102,13 +119,7 @@ export default function StorePage() {
         prevItems.filter((item) => item.product.id !== productId)
       );
       
-      // Обновление в sessionStorage
-      const savedCart = sessionStorage.getItem('cartItems');
-      if (savedCart) {
-        const parsedCart = JSON.parse(savedCart);
-        const updatedCart = parsedCart.filter((item: CartItem) => item.product.id !== productId);
-        sessionStorage.setItem('cartItems', JSON.stringify(updatedCart));
-      }
+      // Обработку хранилища автоматически выполняют эффекты
       
       console.log("Товар удален из корзины:", productId);
     } catch (error) {
@@ -129,17 +140,7 @@ export default function StorePage() {
         )
       );
       
-      // Обновление в sessionStorage
-      const savedCart = sessionStorage.getItem('cartItems');
-      if (savedCart) {
-        const parsedCart = JSON.parse(savedCart);
-        const updatedCart = parsedCart.map((item: CartItem) => 
-          item.product.id === productId 
-            ? { ...item, quantity: newQuantity } 
-            : item
-        );
-        sessionStorage.setItem('cartItems', JSON.stringify(updatedCart));
-      }
+      // Обработку хранилища автоматически выполняют эффекты
       
       console.log("Количество обновлено:", productId, newQuantity);
     } catch (error) {
@@ -158,9 +159,6 @@ export default function StorePage() {
       
       // Use Telegram MainButton if available
       if (telegramApp && telegramApp.MainButton) {
-        // Save cart items to sessionStorage for persistence
-        sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
-        
         // Show processing UI in Telegram
         telegramApp.MainButton.text = "Оформление заказа...";
         telegramApp.MainButton.show();
@@ -178,7 +176,8 @@ export default function StorePage() {
           setCartItems([]);
           setIsCartOpen(false);
           
-          // Clear sessionStorage
+          // Clear all storage
+          localStorage.removeItem('cartItems');
           sessionStorage.removeItem('cartItems');
         }, 1500);
       } else {
@@ -186,6 +185,10 @@ export default function StorePage() {
         showNotification("Заказ оформлен! Это демо-версия.");
         setCartItems([]);
         setIsCartOpen(false);
+        
+        // Clear all storage
+        localStorage.removeItem('cartItems');
+        sessionStorage.removeItem('cartItems');
       }
     } catch (error) {
       console.error("Error during checkout:", error);
