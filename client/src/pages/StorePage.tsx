@@ -540,9 +540,9 @@ export default function StorePage() {
                       </button>
                       
                       {filterData?.categories?.map((category) => (
-                        <a
+                        <button
                           key={category}
-                          href={`/category/${category}`}
+                          onClick={() => setLocation(`/category/${category}`)}
                           className={`w-full text-left px-3 py-2 text-sm block ${
                             selectedCategory === category 
                               ? 'text-black font-medium underline' 
@@ -550,7 +550,7 @@ export default function StorePage() {
                           }`}
                         >
                           {category}
-                        </a>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -559,8 +559,8 @@ export default function StorePage() {
                   <div className="flex-1">
                     <h4 className="font-medium mb-2 text-gray-700">Бренды</h4>
                     <div className="space-y-2">
-                      <a
-                        href="/category/mens"
+                      <button
+                        onClick={() => setLocation("/category/mens")}
                         className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedBrand === null 
                             ? 'text-black font-medium underline' 
@@ -568,12 +568,12 @@ export default function StorePage() {
                         }`}
                       >
                         Все бренды
-                      </a>
+                      </button>
                       
                       {filterData?.brands?.map((brand) => (
-                        <a
+                        <button
                           key={brand}
-                          href={`/brand/${brand}`}
+                          onClick={() => setLocation(`/brand/${brand}`)}
                           className={`w-full text-left px-3 py-2 text-sm block ${
                             selectedBrand === brand 
                               ? 'text-black font-medium underline' 
@@ -581,7 +581,7 @@ export default function StorePage() {
                           }`}
                         >
                           {brand}
-                        </a>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -590,8 +590,8 @@ export default function StorePage() {
                   <div className="flex-1">
                     <h4 className="font-medium mb-2 text-gray-700">Стили</h4>
                     <div className="space-y-2">
-                      <a
-                        href="/category/mens"
+                      <button
+                        onClick={() => setLocation("/category/mens")}
                         className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedStyle === null 
                             ? 'text-black font-medium underline' 
@@ -599,10 +599,10 @@ export default function StorePage() {
                         }`}
                       >
                         Все стили
-                      </a>
+                      </button>
                       
-                      <a
-                        href="/style/oldmoney"
+                      <button
+                        onClick={() => setLocation("/style/oldmoney")}
                         className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedStyle === 'oldmoney' 
                             ? 'text-black font-medium underline' 
@@ -610,10 +610,10 @@ export default function StorePage() {
                         }`}
                       >
                         Old Money
-                      </a>
+                      </button>
                       
-                      <a
-                        href="/style/streetwear"
+                      <button
+                        onClick={() => setLocation("/style/streetwear")}
                         className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedStyle === 'streetwear' 
                             ? 'text-black font-medium underline' 
@@ -621,10 +621,10 @@ export default function StorePage() {
                         }`}
                       >
                         Streetwear
-                      </a>
+                      </button>
                       
-                      <a
-                        href="/style/luxury"
+                      <button
+                        onClick={() => setLocation("/style/luxury")}
                         className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedStyle === 'luxury' 
                             ? 'text-black font-medium underline' 
@@ -632,7 +632,7 @@ export default function StorePage() {
                         }`}
                       >
                         Luxury
-                      </a>
+                      </button>
                       
                       <a
                         href="/style/sport"
@@ -742,36 +742,36 @@ export default function StorePage() {
                   Вы можете использовать фильтры для более точного поиска.
                 </p>
                 <div className="flex flex-wrap justify-center gap-3">
-                  <a 
-                    href="/category/sneakers"
+                  <button 
+                    onClick={() => setLocation("/category/sneakers")}
                     className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
                   >
                     Кроссовки
-                  </a>
-                  <a 
-                    href="/category/tshirts"
+                  </button>
+                  <button 
+                    onClick={() => setLocation("/category/tshirts")}
                     className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
                   >
                     Футболки
-                  </a>
-                  <a 
-                    href="/category/hoodies"
+                  </button>
+                  <button 
+                    onClick={() => setLocation("/category/hoodies")}
                     className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
                   >
                     Худи
-                  </a>
-                  <a 
-                    href="/brand/Nike"
+                  </button>
+                  <button 
+                    onClick={() => setLocation("/brand/Nike")}
                     className="bg-gray-200 text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-300 transition-colors"
                   >
                     Nike
-                  </a>
-                  <a 
-                    href="/brand/Adidas"
+                  </button>
+                  <button 
+                    onClick={() => setLocation("/brand/Adidas")}
                     className="bg-gray-200 text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-300 transition-colors"
                   >
                     Adidas
-                  </a>
+                  </button>
                 </div>
               </div>
             )}
