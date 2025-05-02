@@ -41,12 +41,25 @@ function App() {
           webApp.MainButton.hide();
         }
         
-        // Устанавливаем цвета заголовка для Telegram
-        try {
-          webApp.setHeaderColor('#FFFFFF');
-          webApp.setBackgroundColor('#FFFFFF');
-        } catch (e) {
-          console.error("Error setting Telegram colors:", e);
+        // Настраиваем взаимодействие с Telegram WebApp
+        // В версии 6.0 Telegram WebApp некоторые методы устарели, 
+        // поэтому добавляем проверки перед вызовом
+        
+        // Проверяем поддержку функций перед вызовом
+        if (typeof webApp.setHeaderColor === 'function') {
+          try {
+            webApp.setHeaderColor('#FFFFFF');
+          } catch (e) {
+            console.log("setHeaderColor not supported in this version");
+          }
+        }
+        
+        if (typeof webApp.setBackgroundColor === 'function') {
+          try {
+            webApp.setBackgroundColor('#FFFFFF');
+          } catch (e) {
+            console.log("setBackgroundColor not supported in this version");
+          }
         }
       } else {
         console.warn("Telegram WebApp object not found, but isRunningInTelegram returned true");

@@ -1,5 +1,6 @@
 // Interface for Telegram WebApp object
 interface TelegramWebApp {
+  version?: string;  // Добавляем поле версии
   ready: () => void;
   close: () => void;
   expand: () => void;
@@ -55,10 +56,22 @@ interface TelegramWebApp {
   setBackgroundColor: (color: string) => void;
 }
 
-// Get the WebApp object from the window
+// Get the WebApp object from the window with version detection
 export function getTelegramWebApp(): TelegramWebApp | null {
-  if (typeof window !== 'undefined' && 'Telegram' in window && 'WebApp' in (window as any).Telegram) {
-    return (window as any).Telegram.WebApp;
+  if (typeof window === 'undefined') return null;
+  
+  if ('Telegram' in window && 'WebApp' in (window as any).Telegram) {
+    const webApp = (window as any).Telegram.WebApp;
+    
+    // Лог версии для отладки
+    try {
+      const versionInfo = webApp.version || 'unknown';
+      console.log(`Detected Telegram WebApp version: ${versionInfo}`);
+    } catch (e) {
+      console.log("Couldn't detect Telegram WebApp version");
+    }
+    
+    return webApp;
   }
   return null;
 }
@@ -146,11 +159,12 @@ export function initTelegramWebApp(): boolean {
       
       // Настройка кнопки возврата (Back Button)
       try {
-        if (webApp.BackButton) {
+        // Проверяем наличие BackButton и поддержку его методов
+        if (webApp.BackButton && typeof webApp.BackButton.hide === 'function') {
           webApp.BackButton.hide();
         }
       } catch (backError) {
-        console.error("Error with back button:", backError);
+        console.log("BackButton is not supported in this version");
       }
       
       console.log("Telegram Web App initialization complete");

@@ -39,6 +39,19 @@ html, body, #root {
   background-color: var(--tg-theme-bg-color, #ffffff);
   color: var(--tg-theme-text-color, #000000);
   z-index: 9999;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Ensure text is visible even on dark or image backgrounds */
+.loading-screen p {
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  font-weight: 500;
+  color: #0088CC;
+  max-width: 80%;
 }
 
 :root {

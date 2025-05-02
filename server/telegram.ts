@@ -109,6 +109,16 @@ export class TelegramBot {
       console.log(`Using REPLIT_DOMAINS for WebApp URL: ${webAppUrl}`);
     }
     
+    // Проверка доступности URL
+    try {
+      const response = await fetch(webAppUrl, { method: 'HEAD' });
+      console.log(`WebApp URL status check: ${response.status} ${response.statusText}`);
+    } catch (e) {
+      // Безопасно обрабатываем ошибку как любой тип
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      console.warn(`Error checking WebApp URL: ${errorMessage}`);
+    }
+    
     const replyMarkup = {
       inline_keyboard: [
         [
