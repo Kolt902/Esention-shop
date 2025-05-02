@@ -588,48 +588,48 @@ export function generateJordanProducts(startId: number): Product[] {
     },
     {
       name: "Air Jordan 4 Retro",
-      price: 16990,
+      price: 169.90,
       category: "sneakers",
       description: "Культовые кроссовки Air Jordan 4 с характерным дизайном, включающим видимую воздушную подушку и элементы поддержки на шнуровке.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesJordan[3],
-      additionalImages: officialProductImagesJordan.slice(3, 6)
+      imageUrl: getOfficialProductImages("Air Jordan 4", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Air Jordan 4", "sneakers")
     },
     {
       name: "Air Jordan 11 Retro",
-      price: 18990,
+      price: 189.90,
       category: "sneakers",
       description: "Легендарные баскетбольные кроссовки с лакированной кожей, которые Michael Jordan носил во время своего триумфального возвращения в NBA.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesJordan[6],
-      additionalImages: officialProductImagesJordan.slice(6, 9)
+      imageUrl: getOfficialProductImages("Air Jordan 11", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Air Jordan 11", "sneakers")
     },
     {
       name: "Air Jordan 3 Retro",
-      price: 16990,
+      price: 169.90,
       category: "sneakers",
       description: "Первые кроссовки Air Jordan, разработанные Tinker Hatfield, с характерным принтом 'слоновья кожа' и видимой воздушной подушкой.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesJordan[9],
-      additionalImages: officialProductImagesJordan.slice(9, 12)
+      imageUrl: getOfficialProductImages("Air Jordan 3", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Air Jordan 3", "sneakers")
     },
     {
       name: "Jordan Why Not Zer0.5",
-      price: 12990,
+      price: 129.90,
       category: "sneakers",
       description: "Баскетбольные кроссовки от Russell Westbrook, разработанные для взрывных и атлетичных игроков.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesJordan[12],
-      additionalImages: officialProductImagesJordan.slice(12, 15)
+      imageUrl: getOfficialProductImages("Jordan Why Not", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Jordan Why Not", "sneakers")
     },
     {
       name: "Jordan Delta 2",
-      price: 10990,
+      price: 109.90,
       category: "sneakers",
       description: "Современные кроссовки Jordan с технологичной подошвой React и футуристическим дизайном для повседневной носки.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesJordan[15],
-      additionalImages: officialProductImagesJordan.slice(15, 18)
+      imageUrl: getOfficialProductImages("Jordan Delta", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Jordan Delta", "sneakers")
     }
   ];
   
@@ -637,30 +637,30 @@ export function generateJordanProducts(startId: number): Product[] {
   const jordanTshirts = [
     {
       name: "Jordan Jumpman",
-      price: 3490,
+      price: 34.90,
       category: "tshirts",
       description: "Классическая футболка с культовым силуэтом Jumpman, ставшим символом бренда Jordan.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesJordan[18],
-      additionalImages: officialProductImagesJordan.slice(18, 21)
+      imageUrl: getOfficialProductImages("Jordan Jumpman Shirt", "tshirts")[0],
+      additionalImages: getOfficialProductImages("Jordan Jumpman Shirt", "tshirts")
     },
     {
       name: "Jordan 23 Engineered",
-      price: 4990,
+      price: 49.90,
       category: "tshirts",
       description: "Современная футболка из линейки 23 Engineered с техническими деталями и инновационным кроем.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesJordan[21],
-      additionalImages: officialProductImagesJordan.slice(21, 24)
+      imageUrl: getOfficialProductImages("Jordan 23 Engineered Shirt", "tshirts")[0],
+      additionalImages: getOfficialProductImages("Jordan 23 Engineered Shirt", "tshirts")
     },
     {
       name: "Jordan Air",
-      price: 3990,
+      price: 39.90,
       category: "tshirts",
       description: "Стильная футболка с графикой, вдохновленной наследием Michael Jordan и классической линейкой Air Jordan.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesJordan[24],
-      additionalImages: officialProductImagesJordan.slice(24, 27)
+      imageUrl: getOfficialProductImages("Jordan Air Shirt", "tshirts")[0],
+      additionalImages: getOfficialProductImages("Jordan Air Shirt", "tshirts")
     }
   ];
   
@@ -668,12 +668,12 @@ export function generateJordanProducts(startId: number): Product[] {
   const jordanHoodies = [
     {
       name: "Jordan Jumpman Fleece",
-      price: 7990,
+      price: 79.90,
       category: "hoodies",
       description: "Классическая толстовка Jordan с капюшоном, большим логотипом Jumpman и карманом-кенгуру.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesJordan[27],
-      additionalImages: officialProductImagesJordan.slice(27, 30)
+      imageUrl: getOfficialProductImages("Jordan Jumpman Hoodie", "hoodies")[0],
+      additionalImages: getOfficialProductImages("Jordan Jumpman Hoodie", "hoodies")
     },
     {
       name: "Jordan Flight",
