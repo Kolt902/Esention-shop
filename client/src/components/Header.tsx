@@ -24,11 +24,6 @@ export default function Header({ title = "FASHION HUB" }: HeaderProps) {
 
   return (
     <>
-      {/* Top notification bar - Modernized */}
-      <div className="bg-black py-1.5 px-4 text-center text-xs font-medium text-white">
-        <span>Premium Delivery • Free Returns • Official Guarantee</span>
-      </div>
-
       {/* Main header */}
       <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
