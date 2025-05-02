@@ -7,8 +7,6 @@ import { Product } from "@shared/schema";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
 import { getOfficialProductImages } from '@/lib/official-product-images';
 
-// Используем импортированную функцию проверки URL из utils
-
 interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product, size?: string) => void;
