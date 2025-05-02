@@ -1,5 +1,5 @@
 import { Product } from './productDatabase';
-import { officialProductImagesNike, officialProductImagesAdidas, officialProductImagesJordan, officialProductImagesStussy, officialProductImagesBalenciaga, officialProductImagesGucci } from './official-product-images';
+import { getOfficialProductImages } from './official-product-images';
 
 // Базовые данные для генерации продуктов
 type ProductTemplate = {
@@ -58,89 +58,89 @@ export function generateNikeProducts(startId: number): Product[] {
       category: "sneakers",
       description: "Классические кроссовки Nike Air Force 1 в белом цвете - легендарная модель, которая никогда не выходит из моды.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesNike[0],
-      additionalImages: officialProductImagesNike.slice(0, 3)
+      imageUrl: getOfficialProductImages("Nike Air Force 1", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Nike Air Force 1", "sneakers")
     },
     {
       name: "Nike Air Max 97",
-      price: 13990,
+      price: 139.90,
       category: "sneakers",
       description: "Культовые Nike Air Max 97 с полноразмерной воздушной подушкой и волнообразным дизайном.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesNike[3],
-      additionalImages: officialProductImagesNike.slice(3, 6)
+      imageUrl: getOfficialProductImages("Nike Air Max", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Nike Air Max", "sneakers")
     },
     {
       name: "Nike Dunk Low",
-      price: 9990,
+      price: 99.90,
       category: "sneakers",
       description: "Классические баскетбольные кроссовки Nike Dunk Low в современном исполнении.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesNike[6],
-      additionalImages: officialProductImagesNike.slice(6, 9)
+      imageUrl: getOfficialProductImages("Nike Dunk", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Nike Dunk", "sneakers")
     },
     {
       name: "Nike Air Jordan 1 Low",
-      price: 10990,
+      price: 109.90,
       category: "sneakers",
       description: "Легендарные Nike Air Jordan 1 в низком исполнении, созданные для повседневной носки.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesNike[9],
-      additionalImages: officialProductImagesNike.slice(9, 12)
+      imageUrl: getOfficialProductImages("Nike Jordan", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Nike Jordan", "sneakers")
     },
     {
       name: "Nike Air VaporMax Plus",
-      price: 17990,
+      price: 179.90,
       category: "sneakers",
       description: "Инновационные кроссовки с уникальной системой амортизации VaporMax и футуристическим дизайном.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesNike[12],
-      additionalImages: officialProductImagesNike.slice(12, 15)
+      imageUrl: getOfficialProductImages("Nike", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Nike", "sneakers")
     },
     {
       name: "Nike Revolution 6",
-      price: 5990,
+      price: 59.90,
       category: "sneakers",
       description: "Легкие беговые кроссовки Nike Revolution 6 для ежедневных пробежек.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesNike[15],
-      additionalImages: officialProductImagesNike.slice(15, 18)
+      imageUrl: getOfficialProductImages("Nike", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Nike", "sneakers")
     },
     {
       name: "Nike Air Max 270",
-      price: 12990,
+      price: 129.90,
       category: "sneakers",
       description: "Стильные Nike Air Max 270 с самой высокой воздушной подушкой в линейке Air Max.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesNike[18],
-      additionalImages: officialProductImagesNike.slice(18, 21)
+      imageUrl: getOfficialProductImages("Nike Air Max", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Nike Air Max", "sneakers")
     },
     {
       name: "Nike Blazer Mid '77",
-      price: 9490,
+      price: 94.90,
       category: "sneakers",
       description: "Культовые высокие кеды Nike Blazer с ретро-дизайном, впервые представленные в 1977 году.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesNike[21],
-      additionalImages: officialProductImagesNike.slice(21, 24)
+      imageUrl: getOfficialProductImages("Nike", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Nike", "sneakers")
     },
     {
       name: "Nike PG 6",
-      price: 10990,
+      price: 109.90,
       category: "sneakers",
       description: "Баскетбольные кроссовки Paul George с превосходной амортизацией и отличным сцеплением.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesNike[24],
-      additionalImages: officialProductImagesNike.slice(24, 27)
+      imageUrl: getOfficialProductImages("Nike", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Nike", "sneakers")
     },
     {
       name: "Nike SB Dunk High",
-      price: 11990,
+      price: 119.90,
       category: "sneakers",
       description: "Высокие кроссовки Nike SB Dunk, разработанные специально для скейтбординга.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesNike[27],
-      additionalImages: officialProductImagesNike.slice(27, 30)
+      imageUrl: getOfficialProductImages("Nike Dunk", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Nike Dunk", "sneakers")
     }
   ];
   
@@ -148,48 +148,48 @@ export function generateNikeProducts(startId: number): Product[] {
   const nikeTshirts = [
     {
       name: "Nike Sportswear Club",
-      price: 2990,
+      price: 29.90,
       category: "tshirts",
       description: "Классическая футболка Nike Sportswear с логотипом Swoosh, выполненная из мягкого хлопкового материала.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[30],
-      additionalImages: officialProductImagesNike.slice(30, 33)
+      imageUrl: getOfficialProductImages("Nike", "tshirts")[0],
+      additionalImages: getOfficialProductImages("Nike", "tshirts")
     },
     {
       name: "Nike Dri-FIT Legend",
-      price: 3490,
+      price: 34.90,
       category: "tshirts",
       description: "Спортивная футболка с технологией Dri-FIT, которая отводит влагу и обеспечивает комфорт во время тренировок.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[33],
-      additionalImages: officialProductImagesNike.slice(33, 36)
+      imageUrl: getOfficialProductImages("Nike", "tshirts")[0],
+      additionalImages: getOfficialProductImages("Nike", "tshirts")
     },
     {
       name: "Nike Air",
-      price: 3290,
+      price: 32.90,
       category: "tshirts",
       description: "Стильная футболка Nike Air с крупным принтом на груди.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[36],
-      additionalImages: officialProductImagesNike.slice(36, 39)
+      imageUrl: getOfficialProductImages("Nike", "tshirts")[0],
+      additionalImages: getOfficialProductImages("Nike", "tshirts")
     },
     {
       name: "Nike Jordan Jumpman",
-      price: 3590,
+      price: 35.90,
       category: "tshirts",
       description: "Футболка с культовым силуэтом Jumpman - идеальный выбор для фанатов баскетбола и бренда Jordan.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[39],
-      additionalImages: officialProductImagesNike.slice(39, 42)
+      imageUrl: getOfficialProductImages("Nike Jordan", "tshirts")[0],
+      additionalImages: getOfficialProductImages("Nike Jordan", "tshirts")
     },
     {
       name: "Nike KD",
-      price: 3790,
+      price: 37.90,
       category: "tshirts",
       description: "Баскетбольная футболка из линейки Kevin Durant, выполненная из легкого дышащего материала.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[42],
-      additionalImages: officialProductImagesNike.slice(42, 45)
+      imageUrl: getOfficialProductImages("Nike", "tshirts")[0],
+      additionalImages: getOfficialProductImages("Nike", "tshirts")
     }
   ];
   
@@ -197,39 +197,39 @@ export function generateNikeProducts(startId: number): Product[] {
   const nikeHoodies = [
     {
       name: "Nike Sportswear Club Fleece",
-      price: 6990,
+      price: 69.90,
       category: "hoodies",
       description: "Теплая толстовка с капюшоном Nike Sportswear из мягкой ткани с начесом для комфорта и тепла.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[45],
-      additionalImages: officialProductImagesNike.slice(45, 48)
+      imageUrl: getOfficialProductImages("Nike", "hoodies")[0],
+      additionalImages: getOfficialProductImages("Nike", "hoodies")
     },
     {
       name: "Nike Therma-FIT",
-      price: 7990,
+      price: 79.90,
       category: "hoodies",
       description: "Худи Nike с технологией Therma-FIT, которая сохраняет тепло тела для максимального комфорта в холодную погоду.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[48],
-      additionalImages: officialProductImagesNike.slice(48, 51)
+      imageUrl: getOfficialProductImages("Nike", "hoodies")[0],
+      additionalImages: getOfficialProductImages("Nike", "hoodies")
     },
     {
       name: "Nike SB Icon",
-      price: 6490,
+      price: 64.90,
       category: "hoodies",
       description: "Скейтерская толстовка Nike SB с карманом-кенгуру и регулируемым капюшоном.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[51],
-      additionalImages: officialProductImagesNike.slice(51, 54)
+      imageUrl: getOfficialProductImages("Nike", "hoodies")[0],
+      additionalImages: getOfficialProductImages("Nike", "hoodies")
     },
     {
       name: "Nike Tech Fleece",
-      price: 8990,
+      price: 89.90,
       category: "hoodies",
       description: "Премиальная толстовка Nike Tech Fleece из инновационного материала, который обеспечивает тепло без лишнего веса.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[54],
-      additionalImages: officialProductImagesNike.slice(54, 57)
+      imageUrl: getOfficialProductImages("Nike", "hoodies")[0],
+      additionalImages: getOfficialProductImages("Nike", "hoodies")
     }
   ];
   
@@ -237,30 +237,30 @@ export function generateNikeProducts(startId: number): Product[] {
   const nikePants = [
     {
       name: "Nike Sportswear Club Fleece",
-      price: 5990,
+      price: 59.90,
       category: "pants",
       description: "Удобные флисовые брюки Nike Sportswear с эластичным поясом и карманами для повседневной носки.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[57],
-      additionalImages: officialProductImagesNike.slice(57, 60)
+      imageUrl: getOfficialProductImages("Nike", "pants")[0],
+      additionalImages: getOfficialProductImages("Nike", "pants")
     },
     {
       name: "Nike Dri-FIT Academy",
-      price: 4990,
+      price: 49.90,
       category: "pants",
       description: "Тренировочные брюки Nike Dri-FIT Academy, которые обеспечивают свободу движений во время занятий спортом.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[60],
-      additionalImages: officialProductImagesNike.slice(60, 63)
+      imageUrl: getOfficialProductImages("Nike", "pants")[0],
+      additionalImages: getOfficialProductImages("Nike", "pants")
     },
     {
       name: "Nike Tech Fleece",
-      price: 7990,
+      price: 79.90,
       category: "pants",
       description: "Джоггеры Nike Tech Fleece из легкого, но теплого материала с зауженным силуэтом и карманами на молнии.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[63],
-      additionalImages: officialProductImagesNike.slice(63, 66)
+      imageUrl: getOfficialProductImages("Nike", "pants")[0],
+      additionalImages: getOfficialProductImages("Nike", "pants")
     }
   ];
   
@@ -268,30 +268,30 @@ export function generateNikeProducts(startId: number): Product[] {
   const nikeJackets = [
     {
       name: "Nike Sportswear Windrunner",
-      price: 8490,
+      price: 84.90,
       category: "jackets",
       description: "Классическая куртка Windrunner с шевронным дизайном и капюшоном, выполненная из легкой ткани.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[66],
-      additionalImages: officialProductImagesNike.slice(66, 69)
+      imageUrl: getOfficialProductImages("Nike", "jackets")[0] || getOfficialProductImages("Nike", "hoodies")[0],
+      additionalImages: getOfficialProductImages("Nike", "jackets") || getOfficialProductImages("Nike", "hoodies")
     },
     {
       name: "Nike Therma-FIT Repel",
-      price: 10990,
+      price: 109.90,
       category: "jackets",
       description: "Зимняя куртка Nike с водоотталкивающим покрытием и технологией Therma-FIT для сохранения тепла.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[69],
-      additionalImages: officialProductImagesNike.slice(69, 72)
+      imageUrl: getOfficialProductImages("Nike", "jackets")[0] || getOfficialProductImages("Nike", "hoodies")[0],
+      additionalImages: getOfficialProductImages("Nike", "jackets") || getOfficialProductImages("Nike", "hoodies")
     },
     {
       name: "Nike ACG",
-      price: 12990,
+      price: 129.90,
       category: "jackets",
       description: "Куртка Nike ACG (All Conditions Gear), разработанная для активного отдыха на природе и экстремальных погодных условий.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesNike[72],
-      additionalImages: officialProductImagesNike.slice(72, 75)
+      imageUrl: getOfficialProductImages("Nike", "jackets")[0] || getOfficialProductImages("Nike", "hoodies")[0],
+      additionalImages: getOfficialProductImages("Nike", "jackets") || getOfficialProductImages("Nike", "hoodies")
     }
   ];
 
@@ -339,21 +339,21 @@ export function generateAdidasProducts(startId: number): Product[] {
   const adidasShoes = [
     {
       name: "Adidas Superstar",
-      price: 8990,
+      price: 89.90,
       category: "sneakers",
       description: "Культовые кроссовки Adidas Superstar с узнаваемым резиновым мыском, которые уже более 50 лет не выходят из моды.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesAdidas[0],
-      additionalImages: officialProductImagesAdidas.slice(0, 3)
+      imageUrl: getOfficialProductImages("Adidas Superstar", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Adidas Superstar", "sneakers")
     },
     {
       name: "Adidas Stan Smith",
-      price: 8490,
+      price: 84.90,
       category: "sneakers",
       description: "Легендарные кроссовки Adidas Stan Smith с минималистичным дизайном и перфорацией в виде трех полосок.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesAdidas[3],
-      additionalImages: officialProductImagesAdidas.slice(3, 6)
+      imageUrl: getOfficialProductImages("Adidas Stan Smith", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Adidas Stan Smith", "sneakers")
     },
     {
       name: "Adidas Ultraboost",
