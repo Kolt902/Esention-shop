@@ -73,29 +73,15 @@ app.use((req, res, next) => {
       console.log("Bot will be accessible to everyone as requested");
       
       try {
-        // Get the current Replit URL
-        const replitHostname = process.env.REPL_SLUG ? 
-          `${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co` : 
-          null;
-          
-        // If we're on Replit, set up webhook
-        if (replitHostname) {
-          const webhookUrl = `https://${replitHostname}/webhook`;
-          console.log(`Setting up Telegram webhook to ${webhookUrl}`);
-          
-          const webhookResult = await telegramBot.setWebhook(webhookUrl);
-          if (webhookResult) {
-            console.log("Successfully set up Telegram webhook");
-            
-            // Get webhook info for verification
-            const webhookInfo = await telegramBot.getWebhookInfo();
-            console.log("Webhook info:", webhookInfo);
-          } else {
-            console.error("Failed to set up Telegram webhook");
-          }
-        } else {
-          console.log("Not running on Replit, skipping webhook setup");
-        }
+        // Start polling for updates instead of using webhook
+        console.log("Starting Telegram polling (long-polling mode)");
+        
+        // Start polling in background
+        telegramBot.startPolling().catch(error => {
+          console.error("Error in polling main loop:", error);
+        });
+        
+        console.log("Telegram bot initialized in polling mode");
       } catch (error) {
         console.error("Error setting up Telegram webhook:", error);
       }
