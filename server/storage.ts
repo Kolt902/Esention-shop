@@ -34,6 +34,8 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByTelegramId(telegramId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  getAllUsers(): Promise<User[]>;
+  updateUserAdminStatus(userId: number, isAdmin: boolean): Promise<User | undefined>;
   
   // Product Operations
   getProducts(): Promise<Product[]>;
@@ -67,6 +69,9 @@ export interface IStorage {
   addOnlineUser(user: OnlineUser): Promise<void>;
   removeOnlineUser(userId: number): Promise<void>;
   updateUserActivity(userId: number): Promise<void>;
+  
+  // Admin Operations
+  isAdmin(userId: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -388,6 +393,24 @@ export class MemStorage implements IStorage {
     
     // Check if user is admin or has specific username
     return user.isAdmin || user.username === this.adminUsername;
+  }
+  
+  async getAllUsers(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
+  
+  async updateUserAdminStatus(userId: number, isAdmin: boolean): Promise<User | undefined> {
+    const user = await this.getUser(userId);
+    if (!user) return undefined;
+    
+    // Prevent removing admin status from user @illia2323
+    if (user.username === this.adminUsername && !isAdmin) {
+      return user; // Don't change admin status for main admin
+    }
+    
+    const updatedUser = { ...user, isAdmin };
+    this.users.set(userId, updatedUser);
+    return updatedUser;
   }
 }
 
