@@ -129,8 +129,14 @@ export class MemStorage implements IStorage {
       price,
       category: "lifestyle",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/air-force-1-07-mens-shoes-jBrhbr.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/33533fe2-1157-4001-896e-1803b30659c8/air-force-1-07-mens-shoes-jBrhbr.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/a0a300da-2e16-4483-ba64-9a22fcc77580/air-force-1-07-mens-shoes-jBrhbr.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/120a31b0-efa7-41c7-9a84-87b1e56ab9c3/air-force-1-07-mens-shoes-jBrhbr.png"
+      ],
       sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
       description: "The radiance lives on in the Nike Air Force 1, the basketball icon that puts a fresh spin on what you know best: crisp leather, bold colors and the perfect amount of flash.",
+      brand: "Nike"
     });
     
     this.createProduct({
@@ -138,8 +144,14 @@ export class MemStorage implements IStorage {
       price,
       category: "lifestyle",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/a895df73-5f78-4a1d-9d69-663f2491a5d5/air-max-90-mens-shoes-6n3vKB.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/30e7815e-da97-472b-b90b-37fcb3bbecf5/air-max-90-mens-shoes-6n3vKB.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/84c3adca-93a4-4960-8c82-8b3637a6c458/air-max-90-mens-shoes-6n3vKB.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/5c0bb96f-b591-4d1d-a137-50b8723ef069/air-max-90-mens-shoes-6n3vKB.png"
+      ],
       sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
       description: "Lace up and feel the legacy with the Nike Air Max 90. Featuring the same iconic Waffle sole, stitched overlays and classic TPU details as the original, it lets you walk among the pantheon of Air Max greats.",
+      brand: "Nike"
     });
     
     this.createProduct({
@@ -147,8 +159,14 @@ export class MemStorage implements IStorage {
       price,
       category: "basketball",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/5653944b-9b93-4e57-ad13-cc816a776a9e/air-jordan-1-mid-shoes-86f1ZW.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/01c445a4-71e3-448c-9c95-6e09d2b0ada5/air-jordan-1-mid-shoes-86f1ZW.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/32df5710-75c7-48ef-9bc2-964be2f7c0d0/air-jordan-1-mid-shoes-86f1ZW.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/b1bd1e36-73a9-4699-800a-c6fbaa75be93/air-jordan-1-mid-shoes-86f1ZW.png"
+      ],
       sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
       description: "The Air Jordan 1 Mid brings full-court style and premium comfort to an iconic look. Its Air-Sole unit cushions play on the hardwood, while the padded collar gives you a supportive feel.",
+      brand: "Jordan"
     });
     
     this.createProduct({
@@ -288,7 +306,39 @@ export class MemStorage implements IStorage {
       category: "accessories",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/80a3db1f-7e3f-4915-94ba-d7c9cc8fd0a0/heritage-crossbody-bag-xKv3Gk.png",
       sizes: ["One Size"],
-      description: "The Nike Heritage Crossbody Bag has a main compartment with a small zippered pocket. The shoulder strap is removable and adjustable so you can carry it close to your body or in your hand."
+      description: "The Nike Heritage Crossbody Bag has a main compartment with a small zippered pocket. The shoulder strap is removable and adjustable so you can carry it close to your body or in your hand.",
+      brand: "Nike"
+    });
+    
+    // Добавим Adidas кроссовки
+    this.createProduct({
+      name: "Adidas Ultraboost",
+      price: 8500,
+      category: "running",
+      imageUrl: "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/ce8a6f3aa6294de988d7aee901127106_9366/Ultraboost_Light_Shoes_Black_HQ6351_01_standard.jpg",
+      additionalImages: [
+        "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/270e30d32e0a4a0d8554aee901127d09_9366/Ultraboost_Light_Shoes_Black_HQ6351_02_standard_hover.jpg",
+        "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/33f1775a6a85406f9c16aee90112863b_9366/Ultraboost_Light_Shoes_Black_HQ6351_03_standard.jpg",
+        "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/1a85c897a3204cb5a6f4aee901129108_9366/Ultraboost_Light_Shoes_Black_HQ6351_04_standard.jpg"
+      ],
+      sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
+      description: "Ultraboost Light is exactly what it sounds like: the lightest Ultraboost ever. The magic lies in the Light BOOST midsole, a new generation of adidas BOOST. Its unique molecule design achieves the lightest BOOST foam to date.",
+      brand: "Adidas"
+    });
+    
+    this.createProduct({
+      name: "Adidas Stan Smith",
+      price: 6500,
+      category: "lifestyle",
+      imageUrl: "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/68ae7ea7849b43eca70aac1e00f5146d_9366/Stan_Smith_Shoes_White_FX5502_01_standard.jpg",
+      additionalImages: [
+        "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/d02dad63187a4606b1cdac1e00f51e08_9366/Stan_Smith_Shoes_White_FX5502_02_standard_hover.jpg",
+        "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/c0b98a79bcc34a38a325ac1e00f527c8_9366/Stan_Smith_Shoes_White_FX5502_03_standard.jpg",
+        "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/b47d77eba6f945ea8dabac1e00f53298_9366/Stan_Smith_Shoes_White_FX5502_04_standard.jpg"
+      ],
+      sizes: ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"],
+      description: "Clean, classic and versatile, the Stan Smith is a sneaker that's kept a low profile with a sleek upper shape for over 50 years. This pair stays true to the 1972 trailblazer, with a smooth leather upper, minimalist styling and a casual rubber cupsole.",
+      brand: "Adidas"
     });
   }
 
