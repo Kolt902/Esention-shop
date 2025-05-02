@@ -47,11 +47,13 @@ export class TelegramBot {
       return process.env.WEB_APP_URL;
     }
     
-    // For development and testing in Telegram
-    // We use a basic URL that will always redirect to the webview 
-    // in Replit environment
-    return 'https://replit.com/@' + process.env.REPL_OWNER + '/' + 
-           process.env.REPL_SLUG;
+    // Use replit.dev domain when available
+    if (process.env.REPL_SLUG && process.env.REPL_OWNER) {
+      return `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.replit.dev`;
+    }
+    
+    // Fallback for local development
+    return 'http://localhost:5000';
   }
 
   // Send message to a user
@@ -102,6 +104,56 @@ export class TelegramBot {
       'Добро пожаловать в магазин одежды! Нажмите кнопку ниже, чтобы открыть каталог.',
       replyMarkup
     );
+  }
+  
+  // Set up webhook for the bot
+  public async setWebhook(webhookUrl: string): Promise<boolean> {
+    try {
+      console.log(`Setting webhook to: ${webhookUrl}`);
+      
+      const url = `${this.apiBaseUrl}/setWebhook`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: webhookUrl,
+          drop_pending_updates: true,
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Failed to set webhook: ${JSON.stringify(errorData)}`);
+      }
+      
+      const data = await response.json();
+      console.log('Webhook set response:', data);
+      
+      return data.ok;
+    } catch (error) {
+      console.error('Error setting webhook:', error);
+      return false;
+    }
+  }
+  
+  // Get current webhook info
+  public async getWebhookInfo(): Promise<any> {
+    try {
+      const url = `${this.apiBaseUrl}/getWebhookInfo`;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Failed to get webhook info: ${JSON.stringify(errorData)}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error getting webhook info:', error);
+      return { ok: false, error: 'Failed to get webhook info' };
+    }
   }
 
   // Validate Telegram data

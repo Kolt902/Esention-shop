@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { telegramBot } from "./telegram";
 
 const app = express();
 app.use(express.json());
@@ -64,7 +65,42 @@ app.use((req, res, next) => {
     port,
     host: "0.0.0.0",
     reusePort: true,
-  }, () => {
+  }, async () => {
     log(`serving on port ${port}`);
+    
+    // Check if bot token is available
+    if (process.env.TELEGRAM_BOT_TOKEN) {
+      console.log("Bot will be accessible to everyone as requested");
+      
+      try {
+        // Get the current Replit URL
+        const replitHostname = process.env.REPL_SLUG ? 
+          `${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.replit.dev` : 
+          null;
+          
+        // If we're on Replit, set up webhook
+        if (replitHostname) {
+          const webhookUrl = `https://${replitHostname}/webhook`;
+          console.log(`Setting up Telegram webhook to ${webhookUrl}`);
+          
+          const webhookResult = await telegramBot.setWebhook(webhookUrl);
+          if (webhookResult) {
+            console.log("Successfully set up Telegram webhook");
+            
+            // Get webhook info for verification
+            const webhookInfo = await telegramBot.getWebhookInfo();
+            console.log("Webhook info:", webhookInfo);
+          } else {
+            console.error("Failed to set up Telegram webhook");
+          }
+        } else {
+          console.log("Not running on Replit, skipping webhook setup");
+        }
+      } catch (error) {
+        console.error("Error setting up Telegram webhook:", error);
+      }
+    } else {
+      console.warn("TELEGRAM_BOT_TOKEN not provided, bot functionality will be limited");
+    }
   });
 })();

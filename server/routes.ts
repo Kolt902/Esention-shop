@@ -176,6 +176,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
   
+  // Telegram webhook endpoint
+  app.post('/webhook', express.json(), async (req, res) => {
+    try {
+      const update = req.body;
+      
+      // Log received update for debugging
+      console.log('Received Telegram update:', JSON.stringify(update, null, 2));
+      
+      // Check if this is a message update with the /start command
+      if (update.message && update.message.text && update.message.text.startsWith('/start')) {
+        const chatId = update.message.chat.id;
+        
+        console.log(`Sending welcome message to chat ID: ${chatId}`);
+        
+        // Send welcome message with WebApp button
+        await telegramBot.sendWelcomeMessage(chatId);
+      }
+      
+      // Always respond with 200 OK to Telegram
+      res.sendStatus(200);
+    } catch (error) {
+      console.error('Error handling webhook:', error);
+      res.sendStatus(200); // Still return 200 to Telegram
+    }
+  });
+  
   // Mount API router
   app.use('/api', apiRouter);
 
