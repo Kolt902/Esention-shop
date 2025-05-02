@@ -30,6 +30,7 @@ import accessoriesImg from "@assets/5235759361291318071.jpg";
 import { categoryData } from "@/lib/categoryImages";
 import { simpleCategoryData } from "@/lib/categoryDataSimple";
 import SimpleCategoryCard from "@/components/SimpleCategoryCard";
+import BrandCategoryList from "@/components/BrandCategoryList";
 
 interface CartItem {
   product: Product;
@@ -463,12 +464,12 @@ export default function StorePage() {
             </div>
           </section>
 
-          {/* Products with filter controls */}
+          {/* Catalog by Brands and Categories */}
           <section className="mb-8">
             <div className="relative mb-12 pb-4 overflow-hidden">
               <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
               <h3 className="text-xl uppercase text-black relative inline-block py-4 font-bold after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:bg-black">
-                Каталог товаров
+                Каталог товаров по брендам
               </h3>
               
               <button 
@@ -664,39 +665,47 @@ export default function StorePage() {
               </div>
             )}
             
-            {/* Products Grid - Modern design with hover effects */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              {filteredProducts && filteredProducts.length > 0 ? (
-                filteredProducts.map((product) => (
-                  <ProductCard 
-                    key={product.id} 
-                    product={product} 
-                    onAddToCart={handleAddToCart}
-                    onClick={() => handleProductClick(product.id)}
-                  />
-                ))
-              ) : (
-                <div className="col-span-2 md:col-span-3 lg:col-span-4 py-16 text-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7V5a2 2 0 012-2h14a2 2 0 012 2v2M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M3 7h18" />
-                  </svg>
-                  <h3 className="text-xl font-bold mb-2">Товары не найдены</h3>
-                  <p className="text-gray-500 max-w-md mx-auto">
-                    По выбранным фильтрам товаров не найдено. Попробуйте изменить параметры фильтрации.
-                  </p>
-                  <button
-                    onClick={() => {
-                      handleCategoryChange(null);
-                      handleBrandChange(null);
-                      handleStyleChange(null);
-                    }}
-                    className="mt-6 bg-black text-white py-2 px-6 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
-                  >
-                    Сбросить фильтры
-                  </button>
-                </div>
-              )}
-            </div>
+            {/* Brand-Category Organized Product List */}
+            {(selectedCategory || selectedBrand || selectedStyle) ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                {filteredProducts && filteredProducts.length > 0 ? (
+                  filteredProducts.map((product) => (
+                    <ProductCard 
+                      key={product.id} 
+                      product={product} 
+                      onAddToCart={handleAddToCart}
+                      onClick={() => handleProductClick(product.id)}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-2 md:col-span-3 lg:col-span-4 py-16 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7V5a2 2 0 012-2h14a2 2 0 012 2v2M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M3 7h18" />
+                    </svg>
+                    <h3 className="text-xl font-bold mb-2">Товары не найдены</h3>
+                    <p className="text-gray-500 max-w-md mx-auto">
+                      По выбранным фильтрам товаров не найдено. Попробуйте изменить параметры фильтрации.
+                    </p>
+                    <button
+                      onClick={() => {
+                        handleCategoryChange(null);
+                        handleBrandChange(null);
+                        handleStyleChange(null);
+                      }}
+                      className="mt-6 bg-black text-white py-2 px-6 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
+                    >
+                      Сбросить фильтры
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              // Показываем организованный каталог, если фильтры не выбраны
+              <BrandCategoryList 
+                onAddToCart={handleAddToCart}
+                onProductClick={handleProductClick}
+              />
+            )}
           </section>
         </div>
       </main>
