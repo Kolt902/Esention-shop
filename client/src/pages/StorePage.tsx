@@ -267,35 +267,40 @@ export default function StorePage() {
         </div>
         
         {/* Full-width background banner for styles */}
-        <div className="w-full bg-gradient-to-b from-gray-100 to-gray-200 py-8 mb-8">
+        <div className="w-full bg-gradient-to-b from-gray-800 to-gray-900 py-10 mb-8">
           {/* Hero Banner - Four Styles Grid */}
           <div className="container mx-auto px-4">
             {/* Section header with label */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-8">
               <div className="inline-flex items-center">
-                <div className="bg-black text-white text-sm px-4 py-2 rounded-l-md uppercase font-bold">
+                <div className="bg-gray-900 text-white text-sm px-4 py-2 rounded-l-md uppercase font-bold border-l-2 border-t-2 border-b-2 border-gray-700">
                   СТИЛИ
                 </div>
-                <h2 className="text-xl font-bold uppercase ml-3">
+                <h2 className="text-xl font-bold uppercase ml-3 text-white">
                   ВЫБЕРИТЕ СВОЙ СТИЛЬ
                 </h2>
               </div>
             </div>
             
             {/* Four style cards in a grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               {/* Old Money Style */}
               <div 
-                className="relative aspect-[2/3] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
+                className="relative aspect-[3/4] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
                 onClick={() => {
                   handleStyleChange('oldmoney');
                   handleBrandChange(null);
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-b from-green-400/20 via-green-500/20 to-green-800/60"></div>
+                <img 
+                  src="/assets/oldmoney-style.jpg" 
+                  alt="Old Money Style" 
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/80"></div>
                 <div className="absolute inset-0 flex flex-col justify-end p-5">
-                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
-                    <div className="w-8 h-8 rounded-full bg-green-600"></div>
+                  <div className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center mb-3">
+                    <div className="w-8 h-8 rounded-full bg-gray-300"></div>
                   </div>
                   <div>
                     <h3 className="text-white text-2xl font-bold mb-1">Old Money</h3>
@@ -311,7 +316,7 @@ export default function StorePage() {
 
               {/* Streetwear Style */}
               <div 
-                className="relative aspect-[2/3] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
+                className="relative aspect-[3/4] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
                 onClick={() => {
                   handleStyleChange('streetwear');
                   handleBrandChange(null);
@@ -322,10 +327,10 @@ export default function StorePage() {
                   alt="Streetwear Style" 
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/70"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/80"></div>
                 <div className="absolute inset-0 flex flex-col justify-end p-5">
-                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
-                    <div className="w-8 h-8 rounded-full bg-teal-500"></div>
+                  <div className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center mb-3">
+                    <div className="w-8 h-8 rounded-full bg-gray-300"></div>
                   </div>
                   <div>
                     <h3 className="text-white text-2xl font-bold mb-1">Streetwear</h3>
@@ -341,16 +346,21 @@ export default function StorePage() {
 
               {/* Luxury Style */}
               <div 
-                className="relative aspect-[2/3] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
+                className="relative aspect-[3/4] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
                 onClick={() => {
                   handleStyleChange('luxury');
                   handleBrandChange(null);
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-b from-amber-400/20 via-amber-500/20 to-amber-800/60"></div>
+                <img 
+                  src="/assets/luxury-style.jpg" 
+                  alt="Luxury Style" 
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/80"></div>
                 <div className="absolute inset-0 flex flex-col justify-end p-5">
-                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
-                    <div className="w-8 h-8 rounded-full bg-amber-500"></div>
+                  <div className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center mb-3">
+                    <div className="w-8 h-8 rounded-full bg-gray-300"></div>
                   </div>
                   <div>
                     <h3 className="text-white text-2xl font-bold mb-1">Luxury</h3>
@@ -366,7 +376,7 @@ export default function StorePage() {
 
               {/* Athleisure Style */}
               <div 
-                className="relative aspect-[2/3] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
+                className="relative aspect-[3/4] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
                 onClick={() => {
                   handleStyleChange('athleisure');
                   handleBrandChange(null);
@@ -377,10 +387,10 @@ export default function StorePage() {
                   alt="Athleisure Style" 
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/70"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/80"></div>
                 <div className="absolute inset-0 flex flex-col justify-end p-5">
-                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
-                    <div className="w-8 h-8 rounded-full bg-blue-600"></div>
+                  <div className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center mb-3">
+                    <div className="w-8 h-8 rounded-full bg-gray-300"></div>
                   </div>
                   <div>
                     <h3 className="text-white text-2xl font-bold mb-1">Athleisure</h3>
@@ -403,8 +413,8 @@ export default function StorePage() {
           <section className="mb-12 pt-2">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-black uppercase tracking-wide inline-flex items-center">
-                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-1.5 rounded-full mr-2 text-sm">КАТЕГОРИИ</span>
-                <span>ПОПУЛЯРНЫЕ НАПРАВЛЕНИЯ</span>
+                <span className="bg-gradient-to-r from-gray-700 to-gray-900 text-white px-4 py-1.5 rounded-l-md mr-2 text-sm border-r border-gray-600">КАТЕГОРИИ</span>
+                <span>ПОПУЛЯРНЫЕ КАТЕГОРИИ</span>
               </h2>
               <div className="hidden md:block">
                 <button className="text-sm font-medium text-black hover:underline">Все категории</button>
@@ -420,16 +430,16 @@ export default function StorePage() {
                 >
                   {/* Category background color based on category */}
                   <div className={`absolute inset-0 ${
-                    category === 'lifestyle' ? 'bg-gradient-to-br from-emerald-500 to-teal-700' :
-                    category === 'basketball' ? 'bg-gradient-to-br from-red-500 to-orange-700' :
-                    category === 'running' ? 'bg-gradient-to-br from-blue-500 to-indigo-700' :
-                    category === 'soccer' ? 'bg-gradient-to-br from-lime-500 to-green-700' :
-                    'bg-gradient-to-br from-gray-500 to-gray-700'
+                    category === 'lifestyle' ? 'bg-gradient-to-br from-gray-700 to-gray-900' :
+                    category === 'basketball' ? 'bg-gradient-to-br from-gray-800 to-gray-950' :
+                    category === 'running' ? 'bg-gradient-to-br from-gray-700 to-gray-900' :
+                    category === 'soccer' ? 'bg-gradient-to-br from-gray-800 to-gray-950' :
+                    'bg-gradient-to-br from-gray-700 to-gray-900'
                   }`}></div>
                   
                   {/* Category Icon */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                    <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
+                    <div className="w-16 h-16 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center mb-3 border border-gray-600">
                       {category === 'lifestyle' && (
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -485,7 +495,7 @@ export default function StorePage() {
           <section className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-black uppercase tracking-wide inline-flex items-center">
-                <span className="bg-gradient-to-r from-amber-500 to-red-500 text-white px-4 py-1.5 rounded-full mr-2 text-sm">БРЕНДЫ</span>
+                <span className="bg-gradient-to-r from-gray-700 to-gray-900 text-white px-4 py-1.5 rounded-l-md mr-2 text-sm border-r border-gray-600">БРЕНДЫ</span>
                 <span>ПОПУЛЯРНЫЕ БРЕНДЫ</span>
               </h2>
               <div className="hidden md:block">
@@ -497,7 +507,7 @@ export default function StorePage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <button 
                 onClick={() => handleBrandChange('Nike')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-800 to-slate-950 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 p-6 text-center group shadow-md hover:shadow-lg transition-all border border-gray-700"
               >
                 <div className="transform group-hover:scale-110 transition-transform duration-300">
                   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png" alt="Nike" className="h-10 mx-auto invert" />
@@ -509,7 +519,7 @@ export default function StorePage() {
               
               <button 
                 onClick={() => handleBrandChange('Adidas')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-indigo-800 to-indigo-950 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-800 to-gray-950 p-6 text-center group shadow-md hover:shadow-lg transition-all border border-gray-700"
               >
                 <div className="transform group-hover:scale-110 transition-transform duration-300">
                   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/1280px-Adidas_Logo.svg.png" alt="Adidas" className="h-10 mx-auto invert" />
@@ -521,7 +531,7 @@ export default function StorePage() {
               
               <button 
                 onClick={() => handleBrandChange('Gucci')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-emerald-800 to-emerald-950 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-700 to-gray-900 p-6 text-center group shadow-md hover:shadow-lg transition-all border border-gray-700"
               >
                 <div className="transform group-hover:scale-110 transition-transform duration-300">
                   <span className="text-2xl font-bold text-white">GUCCI</span>
@@ -533,7 +543,7 @@ export default function StorePage() {
               
               <button 
                 onClick={() => handleBrandChange('Jordan')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-red-800 to-red-950 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-800 to-gray-950 p-6 text-center group shadow-md hover:shadow-lg transition-all border border-gray-700"
               >
                 <div className="transform group-hover:scale-110 transition-transform duration-300">
                   <img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png" alt="Jordan" className="h-12 mx-auto invert" />
@@ -545,98 +555,22 @@ export default function StorePage() {
             </div>
           </section>
           
-          {/* Latest Products */}
-          <section className="mb-12">
-            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Популярные категории</h2>
+          {/* Latest Products Section */}
+          <section className="mb-12 mt-6">
+            <h2 className="text-xl font-bold text-black mb-8 uppercase tracking-wide">Новые поступления</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Women's Category - Large */}
-              <div 
-                className="relative aspect-[4/3] overflow-hidden cursor-pointer group"
-                onClick={() => handleCategoryChange('tshirts')}
-              >
-                <img 
-                  src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3" 
-                  alt="Women's Collection" 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            {/* Product Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {filterData?.products.slice(0, 8).map((product) => (
+                <ProductCard 
+                  key={product.id} 
+                  product={product} 
+                  onAddToCart={handleAddToCart}
+                  onProductClick={handleProductClick}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-6">
-                  <h3 className="text-white text-2xl font-light mb-2">Женская коллекция</h3>
-                  <p className="text-white/80 font-light">Изысканные новинки сезона</p>
-                </div>
-              </div>
-              
-              {/* Men's & Shoes - 2-row grid */}
-              <div className="grid grid-rows-2 gap-4">
-                {/* Men's Category */}
-                <div 
-                  className="relative aspect-[4/3] overflow-hidden cursor-pointer group"
-                  onClick={() => handleCategoryChange('hoodies')}
-                >
-                  <img 
-                    src="https://images.unsplash.com/photo-1505022610485-0249ba5b3675?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" 
-                    alt="Men's Collection" 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
-                    <h3 className="text-white text-xl font-light">Мужская коллекция</h3>
-                  </div>
-                </div>
-                
-                {/* Shoes Category */}
-                <div 
-                  className="relative aspect-[4/3] overflow-hidden cursor-pointer group"
-                  onClick={() => handleCategoryChange('sneakers')}
-                >
-                  <img 
-                    src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3" 
-                    alt="Shoes Collection" 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
-                    <h3 className="text-white text-xl font-light">Обувь</h3>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Streetwear & Accessories - 2-row grid */}
-              <div className="grid grid-rows-2 gap-4">
-                {/* Streetwear Category */}
-                <div 
-                  className="relative aspect-[4/3] overflow-hidden cursor-pointer group"
-                  onClick={() => handleCategoryChange('streetwear')}
-                >
-                  <img 
-                    src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" 
-                    alt="Streetwear Collection" 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
-                    <h3 className="text-white text-xl font-light">Streetwear</h3>
-                  </div>
-                </div>
-                
-                {/* Accessories Category */}
-                <div 
-                  className="relative aspect-[4/3] overflow-hidden cursor-pointer group"
-                  onClick={() => handleCategoryChange('accessories')}
-                >
-                  <img 
-                    src="https://images.unsplash.com/photo-1509319117193-57bab727e09d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3" 
-                    alt="Accessories Collection" 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
-                    <h3 className="text-white text-xl font-light">Аксессуары</h3>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </section>
-          
-          {/* Featured Brands Showcase */}
-          <section className="mb-12">
-            <h2 className="text-xl font-normal text-black mb-6 uppercase">Популярные бренды</h2>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
               {/* Nike */}
