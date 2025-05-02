@@ -1,4 +1,4 @@
-import { Home, ShoppingBag, MessageCircle, User, Heart, ShieldCheck } from "lucide-react";
+import { Home, ShoppingBag, MessageCircle, User, Heart, ShieldCheck, Shirt } from "lucide-react";
 import { openTelegramChat, isRunningInTelegram, getCurrentUser } from "@/lib/telegram";
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/lib/queryClient";

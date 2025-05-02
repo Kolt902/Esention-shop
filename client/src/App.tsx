@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import StorePage from "@/pages/StorePage";
 import AdminPage from "@/pages/AdminPage";
 import ProfilePage from "@/pages/ProfilePage";
+import VirtualFittingPage from "@/pages/VirtualFittingPage";
 import NotFound from "@/pages/not-found";
 import { useEffect, useState } from "react";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/" component={StorePage}/>
       <Route path="/admin" component={AdminPage}/>
       <Route path="/profile" component={ProfilePage}/>
+      <Route path="/virtual-fitting" component={VirtualFittingPage}/>
       <Route component={NotFound} />
     </Switch>
   );

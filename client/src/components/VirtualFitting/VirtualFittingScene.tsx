@@ -1,18 +1,22 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, PerspectiveCamera, Html } from '@react-three/drei';
+import { OrbitControls, Environment, PerspectiveCamera, Html, Center } from '@react-three/drei';
 import { AvatarModel } from './AvatarModel';
 import { useTranslation } from '@/lib/translations';
+import { Button } from '@/components/ui/button';
+import { Loader2, RotateCcw, ZoomIn, ZoomOut, Move } from 'lucide-react';
 
 // Определение типов для одежды и аксессуаров
 interface ClothingItem {
   id: number;
   name: string;
-  type: 'top' | 'bottom' | 'shoes' | 'accessory';
+  type: string;
+  category: string;
+  productId: number;
   modelPath: string;
   thumbnailUrl: string;
-  color: string;
-  size: string;
+  colors?: string[];
+  sizes?: string[];
 }
 
 interface VirtualFittingSceneProps {
@@ -23,11 +27,18 @@ interface VirtualFittingSceneProps {
     bodyType: 'athletic' | 'slim' | 'regular';
     gender: 'male' | 'female';
   };
-  availableClothing?: ClothingItem[];
+  selectedItems?: {
+    top?: ClothingItem;
+    bottom?: ClothingItem;
+    shoes?: ClothingItem;
+    accessory?: ClothingItem;
+  };
+  selectedColors?: Record<number, string>;
+  selectedSizes?: Record<number, string>;
   onSave?: (params: any) => void;
 }
 
-export function VirtualFittingScene({ 
+const VirtualFittingScene = ({ 
   userId,
   initialBodyParams = {
     height: 175,
@@ -35,60 +46,46 @@ export function VirtualFittingScene({
     bodyType: 'regular',
     gender: 'male'
   },
-  availableClothing = [],
+  selectedItems = {},
+  selectedColors = {},
+  selectedSizes = {},
   onSave
-}: VirtualFittingSceneProps) {
+}: VirtualFittingSceneProps) => {
   const { t } = useTranslation();
   
   // Состояние для параметров тела
   const [bodyParams, setBodyParams] = useState(initialBodyParams);
   
-  // Состояние для выбранной одежды
-  const [selectedClothing, setSelectedClothing] = useState<{
-    top?: ClothingItem;
-    bottom?: ClothingItem;
-    shoes?: ClothingItem;
-    accessories: ClothingItem[];
-  }>({
-    accessories: []
-  });
+  // Обновляем параметры когда изменяются входные данные
+  useEffect(() => {
+    setBodyParams(initialBodyParams);
+  }, [initialBodyParams]);
   
   // Состояние загрузки
   const [loading, setLoading] = useState(false);
   
-  // Флаг для отображения панели настройки
-  const [showSettings, setShowSettings] = useState(false);
+  // Управление камерой
+  const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, 1.5, 4]);
+  const [cameraControl, setCameraControl] = useState('rotate'); // 'rotate', 'zoom', 'pan'
   
-  // Обработчик изменения параметров тела
-  const handleBodyParamChange = (param: string, value: number | string) => {
-    setBodyParams(prev => ({
-      ...prev,
-      [param]: value
-    }));
-  };
-  
-  // Обработчик выбора одежды
-  const handleClothingSelect = (item: ClothingItem) => {
-    setSelectedClothing(prev => {
-      if (item.type === 'accessory') {
-        // Для аксессуаров добавляем в массив
-        const accessories = [...prev.accessories];
-        const existingIndex = accessories.findIndex(a => a.id === item.id);
-        
-        if (existingIndex >= 0) {
-          // Если уже выбран - удаляем
-          accessories.splice(existingIndex, 1);
-        } else {
-          // Иначе добавляем
-          accessories.push(item);
-        }
-        
-        return { ...prev, accessories };
-      } else {
-        // Для основных типов одежды заменяем текущий выбор
-        return { ...prev, [item.type]: prev[item.type]?.id === item.id ? undefined : item };
-      }
-    });
+  // Подготовка данных о предметах одежды для 3D модели
+  const clothingForAvatar = {
+    top: selectedItems.top ? {
+      modelPath: selectedItems.top.modelPath,
+      color: selectedColors[selectedItems.top.id] || 'default'
+    } : undefined,
+    bottom: selectedItems.bottom ? {
+      modelPath: selectedItems.bottom.modelPath,
+      color: selectedColors[selectedItems.bottom.id] || 'default'
+    } : undefined,
+    shoes: selectedItems.shoes ? {
+      modelPath: selectedItems.shoes.modelPath,
+      color: selectedColors[selectedItems.shoes.id] || 'default'
+    } : undefined,
+    accessory: selectedItems.accessory ? {
+      modelPath: selectedItems.accessory.modelPath,
+      color: selectedColors[selectedItems.accessory.id] || 'default'
+    } : undefined
   };
   
   // Функция сохранения настроек аватара
@@ -100,11 +97,13 @@ export function VirtualFittingScene({
       const settings = {
         bodyParams,
         clothing: {
-          top: selectedClothing.top?.id,
-          bottom: selectedClothing.bottom?.id,
-          shoes: selectedClothing.shoes?.id,
-          accessories: selectedClothing.accessories.map(a => a.id)
-        }
+          top: selectedItems.top?.id,
+          bottom: selectedItems.bottom?.id,
+          shoes: selectedItems.shoes?.id,
+          accessory: selectedItems.accessory?.id
+        },
+        selectedColors,
+        selectedSizes
       };
       
       onSave(settings);
@@ -112,153 +111,97 @@ export function VirtualFittingScene({
     }
   };
   
-  // Преобразуем выбранную одежду в формат для компонента AvatarModel
-  const clothingForAvatar = {
-    top: selectedClothing.top?.modelPath,
-    bottom: selectedClothing.bottom?.modelPath,
-    shoes: selectedClothing.shoes?.modelPath,
-    accessories: selectedClothing.accessories.map(a => a.modelPath)
+  // Функция сброса настроек просмотра
+  const resetCamera = () => {
+    setCameraPosition([0, 1.5, 4]);
   };
   
   return (
-    <div className="w-full h-[600px] relative bg-gray-100 rounded-lg overflow-hidden">
-      {/* Панель управления */}
-      <div className="absolute top-4 left-4 z-10 bg-white p-4 rounded-lg shadow-md">
-        <button 
-          onClick={() => setShowSettings(!showSettings)}
-          className="mb-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+    <div className="w-full h-full relative rounded-lg overflow-hidden bg-gradient-to-b from-background to-muted">
+      {/* Панель инструментов просмотра */}
+      <div className="absolute top-4 right-4 z-10 bg-background/80 p-2 rounded-lg shadow-md backdrop-blur-sm flex flex-col gap-2">
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={() => setCameraControl('rotate')}
+          className={cameraControl === 'rotate' ? 'bg-primary text-primary-foreground' : ''}
         >
-          {showSettings ? t.common.close : t.settings.title}
-        </button>
+          <RotateCcw className="h-4 w-4" />
+        </Button>
         
-        {showSettings && (
-          <div className="mt-4 space-y-4">
-            <h3 className="font-bold text-lg">{t.profile.bodyParams}</h3>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">{t.profile.height}</label>
-              <input 
-                type="range" 
-                min="150" 
-                max="200" 
-                step="1"
-                value={bodyParams.height}
-                onChange={(e) => handleBodyParamChange('height', Number(e.target.value))}
-                className="w-full"
-              />
-              <span>{bodyParams.height} см</span>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">{t.profile.weight}</label>
-              <input 
-                type="range" 
-                min="40" 
-                max="120" 
-                step="1"
-                value={bodyParams.weight}
-                onChange={(e) => handleBodyParamChange('weight', Number(e.target.value))}
-                className="w-full"
-              />
-              <span>{bodyParams.weight} кг</span>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">{t.profile.bodyType}</label>
-              <select 
-                value={bodyParams.bodyType}
-                onChange={(e) => handleBodyParamChange('bodyType', e.target.value)}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-              >
-                <option value="slim">{t.profile.slim}</option>
-                <option value="regular">{t.profile.regular}</option>
-                <option value="athletic">{t.profile.athletic}</option>
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">{t.profile.gender}</label>
-              <select 
-                value={bodyParams.gender}
-                onChange={(e) => handleBodyParamChange('gender', e.target.value)}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-              >
-                <option value="male">{t.profile.male}</option>
-                <option value="female">{t.profile.female}</option>
-              </select>
-            </div>
-            
-            <button 
-              onClick={saveAvatarSettings}
-              disabled={loading}
-              className="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition disabled:bg-gray-400"
-            >
-              {loading ? t.common.saving : t.common.save}
-            </button>
-          </div>
-        )}
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={() => setCameraControl('zoom')}
+          className={cameraControl === 'zoom' ? 'bg-primary text-primary-foreground' : ''}
+        >
+          <ZoomIn className="h-4 w-4" />
+        </Button>
+        
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={() => setCameraControl('pan')}
+          className={cameraControl === 'pan' ? 'bg-primary text-primary-foreground' : ''}
+        >
+          <Move className="h-4 w-4" />
+        </Button>
+        
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={resetCamera}
+        >
+          <RotateCcw className="h-4 w-4" />
+        </Button>
       </div>
       
       {/* 3D Canvas */}
-      <Canvas shadows dpr={[1, 2]}>
+      <Canvas shadows dpr={[1, 2]} className="touch-none">
         <Suspense fallback={
           <Html center>
-            <div className="text-white bg-blue-500 px-4 py-2 rounded-md">
-              {t.common.loading}...
+            <div className="flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 rounded-lg shadow-lg">
+              <Loader2 className="mr-2 h-5 w-5 animate-spin text-primary" />
+              <span>{t.common.loading}...</span>
             </div>
           </Html>
         }>
-          <PerspectiveCamera makeDefault position={[0, 1.5, 4]} />
+          <PerspectiveCamera makeDefault position={cameraPosition} />
           <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} intensity={1} castShadow />
+          <pointLight position={[10, 10, 10]} intensity={1.5} castShadow />
           
-          <AvatarModel 
-            modelPath="/models/default-avatar.glb"
-            bodyType={bodyParams.bodyType}
-            height={bodyParams.height}
-            gender={bodyParams.gender as 'male' | 'female'}
-            clothing={clothingForAvatar}
-            position={[0, -1, 0]}
-          />
+          <Center position={[0, 0, 0]}>
+            <AvatarModel 
+              modelPath="/models/default-avatar.glb"
+              bodyType={bodyParams.bodyType}
+              height={bodyParams.height}
+              weight={bodyParams.weight}
+              gender={bodyParams.gender}
+              clothing={clothingForAvatar}
+              position={[0, -1, 0]}
+            />
+          </Center>
           
           <Environment preset="city" />
           <OrbitControls 
-            enablePan={false}
-            maxPolarAngle={Math.PI / 2}
-            minPolarAngle={Math.PI / 6}
-            enableZoom={true}
+            enablePan={cameraControl === 'pan'}
+            enableRotate={cameraControl === 'rotate'}
+            enableZoom={cameraControl === 'zoom'}
+            maxPolarAngle={Math.PI - 0.1}
+            minPolarAngle={0.1}
             makeDefault
           />
         </Suspense>
       </Canvas>
       
-      {/* Селектор одежды (внизу экрана) */}
-      {availableClothing.length > 0 && (
-        <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 p-4">
-          <div className="flex items-center space-x-2 overflow-x-auto pb-2">
-            {availableClothing.map((item) => (
-              <div 
-                key={item.id}
-                onClick={() => handleClothingSelect(item)}
-                className={`
-                  cursor-pointer flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2
-                  ${(item.type === 'top' && selectedClothing.top?.id === item.id) ||
-                    (item.type === 'bottom' && selectedClothing.bottom?.id === item.id) ||
-                    (item.type === 'shoes' && selectedClothing.shoes?.id === item.id) ||
-                    (item.type === 'accessory' && selectedClothing.accessories.some(a => a.id === item.id))
-                      ? 'border-blue-500' : 'border-transparent'}
-                `}
-              >
-                <img 
-                  src={item.thumbnailUrl} 
-                  alt={item.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
+      {/* Информационное сообщение если не выбрана одежда */}
+      {!selectedItems.top && !selectedItems.bottom && !selectedItems.shoes && !selectedItems.accessory && (
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-background/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-md text-center">
+          <p>{t.profile.selectItemsBelow}</p>
         </div>
       )}
     </div>
   );
-}
+};
+
+export default VirtualFittingScene;
