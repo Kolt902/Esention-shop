@@ -114,9 +114,7 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
   // as Telegram has its own navigation controls
   return (
     <footer className="bg-black text-white rounded-t-[30px] border-t border-gray-800 py-4 fixed bottom-0 left-0 right-0 shadow-xl z-50 transition-all duration-300" style={{ backgroundColor: '#000000' }}>
-      {/* Декоративная линия вверху футера */}
-      <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-600 rounded-full"></div>
-      <div className="container mx-auto px-4 pt-1">
+      <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
           <button 
             onClick={() => handleTabClick("home")}
