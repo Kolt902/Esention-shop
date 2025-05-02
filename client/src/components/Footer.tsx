@@ -19,12 +19,12 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
   const [location, setLocation] = useLocation();
   
   // Стили для кнопок меню
-  const activeStyle = "text-[#0088CC] scale-110 font-bold transition-transform";
-  const inactiveStyle = "text-gray-500 hover:text-gray-700 hover:scale-105";
+  const activeStyle = "text-white scale-110 font-bold transition-transform";
+  const inactiveStyle = "text-gray-400 hover:text-gray-200 hover:scale-105";
   
   // Вспомогательный компонент для индикатора активной вкладки
   const ActiveIndicator = () => (
-    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-6 h-1.5 bg-[#0088CC] rounded-b-lg shadow-sm animate-pulse"></div>
+    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-white rounded-full shadow-sm"></div>
   );
   
   // Detect if running in Telegram on mount and set active tab based on current location
@@ -113,8 +113,10 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
   // In Telegram, we might not need all the navigation items
   // as Telegram has its own navigation controls
   return (
-    <footer className="bg-white bg-opacity-95 backdrop-blur-md border-t border-gray-200 py-3 fixed bottom-0 left-0 right-0 shadow-lg z-50 transition-all duration-300">
-      <div className="container mx-auto px-4">
+    <footer className="bg-black text-white rounded-t-[30px] border-t border-gray-800 py-4 fixed bottom-0 left-0 right-0 shadow-xl z-50 transition-all duration-300" style={{ backgroundColor: '#000000' }}>
+      {/* Декоративная линия вверху футера */}
+      <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-600 rounded-full"></div>
+      <div className="container mx-auto px-4 pt-1">
         <div className="flex justify-between items-center">
           <button 
             onClick={() => handleTabClick("home")}
