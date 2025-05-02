@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import CartModal from "@/components/CartModal";
 import { showNotification } from "@/lib/utils";
-import { addTelegramInitDataToRequest } from "@/lib/telegram";
+import { addTelegramInitDataToRequest, getTelegramWebApp } from "@/lib/telegram";
 import { Product } from "@shared/schema";
 
 interface CartItem {
@@ -61,11 +61,49 @@ export default function StorePage() {
     );
   };
 
-  // Checkout handler
+  // Checkout handler with Telegram integration
   const handleCheckout = () => {
-    showNotification("Заказ оформлен! Это демо-версия.");
-    setCartItems([]);
-    setIsCartOpen(false);
+    // In a real application, we would send the order to the backend
+    // For now, we'll just show a notification
+    
+    try {
+      const telegramApp = getTelegramWebApp();
+      
+      // Use Telegram MainButton if available
+      if (telegramApp && telegramApp.MainButton) {
+        // Save cart items to sessionStorage for persistence
+        sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
+        
+        // Show processing UI in Telegram
+        telegramApp.MainButton.text = "Оформление заказа...";
+        telegramApp.MainButton.show();
+        telegramApp.MainButton.showProgress(true);
+        
+        // Simulate processing
+        setTimeout(() => {
+          telegramApp.MainButton.hideProgress();
+          telegramApp.MainButton.hide();
+          
+          // Show success notification
+          showNotification("Заказ успешно оформлен! Спасибо за покупку!");
+          
+          // Clear cart
+          setCartItems([]);
+          setIsCartOpen(false);
+          
+          // Clear sessionStorage
+          sessionStorage.removeItem('cartItems');
+        }, 1500);
+      } else {
+        // Fallback for non-Telegram environment
+        showNotification("Заказ оформлен! Это демо-версия.");
+        setCartItems([]);
+        setIsCartOpen(false);
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+      showNotification("Произошла ошибка при оформлении заказа. Пожалуйста, попробуйте еще раз.");
+    }
   };
 
   return (

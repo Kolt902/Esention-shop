@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Heart } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Heart, ShoppingCart } from "lucide-react";
 import { cn, formatPrice, showNotification } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Product } from "@shared/schema";
+import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
 
 interface ProductCardProps {
   product: Product;

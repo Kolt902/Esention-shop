@@ -63,52 +63,88 @@ export function getTelegramWebApp(): TelegramWebApp | null {
   return null;
 }
 
-// Initialize Telegram WebApp
-export function initTelegramWebApp(): void {
+// Initialize Telegram WebApp with enhanced error handling
+export function initTelegramWebApp(): boolean {
   try {
     console.log("Initializing Telegram Web App...");
     const webApp = getTelegramWebApp();
     
     if (webApp) {
+      // Call ready() to notify Telegram that we're ready
       console.log("Telegram Web App found, calling ready()");
-      webApp.ready();
+      
+      try {
+        webApp.ready();
+      } catch (readyError) {
+        console.error("Error calling WebApp.ready():", readyError);
+        // Continue anyway, as the app can still function
+      }
+      
+      // Ensure the viewport is expanded in Telegram
+      try {
+        if (webApp.expand && !webApp.isExpanded) {
+          console.log("Expanding Telegram WebApp viewport");
+          webApp.expand();
+        }
+      } catch (expandError) {
+        console.error("Error expanding Telegram viewport:", expandError);
+        // Continue anyway, as this is not critical
+      }
       
       // Apply theme colors if available
       if (webApp.themeParams) {
         console.log("Applying Telegram theme parameters:", webApp.themeParams);
-        if (webApp.themeParams.bg_color) {
-          document.documentElement.style.setProperty('--tg-theme-bg-color', webApp.themeParams.bg_color);
-        }
-        if (webApp.themeParams.text_color) {
-          document.documentElement.style.setProperty('--tg-theme-text-color', webApp.themeParams.text_color);
-        }
-        if (webApp.themeParams.button_color) {
-          document.documentElement.style.setProperty('--tg-theme-button-color', webApp.themeParams.button_color);
-        }
-        if (webApp.themeParams.button_text_color) {
-          document.documentElement.style.setProperty('--tg-theme-button-text-color', webApp.themeParams.button_text_color);
-        }
+        
+        // Set CSS variables for theming
+        const themeMapping = {
+          bg_color: '--tg-theme-bg-color',
+          text_color: '--tg-theme-text-color',
+          button_color: '--tg-theme-button-color',
+          button_text_color: '--tg-theme-button-text-color',
+          hint_color: '--tg-theme-hint-color',
+          link_color: '--tg-theme-link-color'
+        };
+        
+        // Apply all available theme parameters
+        Object.entries(themeMapping).forEach(([key, cssVar]) => {
+          const value = webApp.themeParams[key as keyof typeof webApp.themeParams];
+          if (value) {
+            document.documentElement.style.setProperty(cssVar, value);
+          }
+        });
       } else {
-        console.log("No Telegram theme parameters found");
+        console.log("No Telegram theme parameters found, using defaults");
+        setFallbackColors();
       }
       
       console.log("Telegram Web App initialization complete");
+      return true;
     } else {
       console.log("Telegram Web App not found in window, running in standalone mode");
-      // Set fallback colors for standalone mode
-      document.documentElement.style.setProperty('--tg-theme-bg-color', '#ffffff');
-      document.documentElement.style.setProperty('--tg-theme-text-color', '#000000');
-      document.documentElement.style.setProperty('--tg-theme-button-color', '#0088CC');
-      document.documentElement.style.setProperty('--tg-theme-button-text-color', '#ffffff');
+      setFallbackColors();
+      return false;
     }
   } catch (error) {
     console.error("Error initializing Telegram Web App:", error);
-    // Set fallback colors in case of error
-    document.documentElement.style.setProperty('--tg-theme-bg-color', '#ffffff');
-    document.documentElement.style.setProperty('--tg-theme-text-color', '#000000');
-    document.documentElement.style.setProperty('--tg-theme-button-color', '#0088CC');
-    document.documentElement.style.setProperty('--tg-theme-button-text-color', '#ffffff');
+    setFallbackColors();
+    return false;
   }
+}
+
+// Set fallback colors for standalone mode or error cases
+function setFallbackColors(): void {
+  const fallbackColors = {
+    '--tg-theme-bg-color': '#ffffff',
+    '--tg-theme-text-color': '#000000',
+    '--tg-theme-button-color': '#0088CC',
+    '--tg-theme-button-text-color': '#ffffff',
+    '--tg-theme-hint-color': '#999999',
+    '--tg-theme-link-color': '#0088CC'
+  };
+  
+  Object.entries(fallbackColors).forEach(([cssVar, color]) => {
+    document.documentElement.style.setProperty(cssVar, color);
+  });
 }
 
 // Open chat with the bot
