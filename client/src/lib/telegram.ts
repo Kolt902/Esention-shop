@@ -202,10 +202,21 @@ function initializeWebAppWithRetries(maxRetries: number, method: string): boolea
             link_color: '--tg-theme-link-color'
           };
           
-          // Применяем все доступные параметры темы
+          // Применяем все доступные параметры темы, но переопределяем цвета кнопок на черные
           Object.entries(themeMapping).forEach(([key, cssVar]) => {
+            // Получаем значение из Telegram темы
             const value = webApp.themeParams[key as keyof typeof webApp.themeParams];
-            if (value) {
+            
+            // Для кнопок всегда устанавливаем черный цвет, независимо от параметров Telegram
+            if (key === 'button_color') {
+              document.documentElement.style.setProperty(cssVar, '#111111');
+            } 
+            // Для ссылок тоже устанавливаем черный цвет
+            else if (key === 'link_color') {
+              document.documentElement.style.setProperty(cssVar, '#111111');
+            }
+            // Для остальных параметров используем оригинальные значения
+            else if (value) {
               document.documentElement.style.setProperty(cssVar, value);
             }
           });
@@ -260,15 +271,44 @@ function setFallbackColors(): void {
   const fallbackColors = {
     '--tg-theme-bg-color': '#ffffff',
     '--tg-theme-text-color': '#000000',
-    '--tg-theme-button-color': '#0088CC',
+    '--tg-theme-button-color': '#111111', // Changed from #0088CC to black
     '--tg-theme-button-text-color': '#ffffff',
     '--tg-theme-hint-color': '#999999',
-    '--tg-theme-link-color': '#0088CC'
+    '--tg-theme-link-color': '#111111' // Changed from #0088CC to black
   };
   
   Object.entries(fallbackColors).forEach(([cssVar, color]) => {
     document.documentElement.style.setProperty(cssVar, color);
   });
+  
+  // Override default Telegram button styles directly
+  const styleTag = document.createElement('style');
+  styleTag.textContent = `
+    /* Force black buttons for Telegram interfaces */
+    .telegram-button,
+    .telegram-webapp button,
+    .telegram-container button,
+    *[style*="background-color: rgb(0, 136, 204)"],
+    *[style*="background-color:#0088cc"],
+    button[style*="background"],
+    .tgme_widget_button,
+    .web_app_button,
+    .tgme_action_button_new,
+    .tgme_widget_message_link,
+    .tgme_widget_login_button {
+      background-color: #111111 !important;
+      border-color: #111111 !important;
+    }
+    
+    /* Force black text links */
+    *[style*="color: rgb(0, 136, 204)"],
+    *[style*="color:#0088cc"],
+    a[href^="tg://"],
+    a[href^="https://t.me/"] {
+      color: #111111 !important;
+    }
+  `;
+  document.head.appendChild(styleTag);
 }
 
 // Open chat with the bot

@@ -70,5 +70,61 @@
     <script type="module" src="/src/main.tsx"></script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
+    <!-- Скрипт для принудительного изменения стилей Telegram на мобильных устройствах -->
+    <script>
+      // Функция для принудительного применения черного стиля ко всем элементам Telegram
+      function forceTelegramStylesBlack() {
+        try {
+          // Переопределяем стили Telegram Web App если он доступен
+          if (window.Telegram && window.Telegram.WebApp) {
+            // Запрещаем стандартные темы Telegram
+            window.Telegram.WebApp.setHeaderColor('bg_color');
+            window.Telegram.WebApp.setBackgroundColor('#FFFFFF');
+            
+            // Заменяем стандартные цвета Telegram в CSS переменных
+            document.documentElement.style.setProperty('--tg-theme-button-color', '#111111');
+            document.documentElement.style.setProperty('--tg-theme-button-text-color', '#FFFFFF');
+          }
+          
+          // Находим все элементы с Telegram-специфичными классами и стилями
+          const elementsToCheck = [
+            'button', 'a', '[role="button"]', '[class*="telegram"]', '[class*="tg-"]',
+            '.bottom-bar__button', '.navigation-bar__button', '.tgme_', '.mobile-nav',
+            '[style*="color:#0088cc"]', '[style*="color: #0088cc"]', '[style*="color: rgb(0, 136, 204)"]',
+            '[style*="background-color:#0088cc"]', '[style*="background-color: #0088cc"]', 
+            '[style*="background-color: rgb(0, 136, 204)"]', '[style*="background:#0088cc"]'
+          ];
+          
+          elementsToCheck.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+              const computedStyle = window.getComputedStyle(el);
+              const bgColor = computedStyle.backgroundColor;
+              const color = computedStyle.color;
+              
+              // Если элемент имеет синий фон Telegram (приблизительное значение)
+              if (bgColor.includes('rgb(0, 136, 204)') || bgColor.includes('rgb(0,136,204)')) {
+                el.style.backgroundColor = '#111111';
+                el.style.borderColor = '#111111';
+                el.style.color = '#FFFFFF';
+              }
+              
+              // Если текст синего цвета Telegram
+              if (color.includes('rgb(0, 136, 204)') || color.includes('rgb(0,136,204)')) {
+                el.style.color = '#111111';
+              }
+            });
+          });
+        } catch (error) {
+          console.error('Ошибка при применении стилей:', error);
+        }
+      }
+      
+      // Запускаем функцию при загрузке страницы
+      document.addEventListener('DOMContentLoaded', forceTelegramStylesBlack);
+      
+      // Запускаем функцию каждую секунду для новых элементов
+      setInterval(forceTelegramStylesBlack, 1000);
+    </script>
   </body>
 </html>
