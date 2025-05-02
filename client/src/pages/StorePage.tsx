@@ -468,7 +468,7 @@ export default function StorePage() {
               
               {/* All Brands */}
               <a 
-                href="/"
+                href="/category/mens"
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === null 
                     ? 'border-black shadow-md bg-black text-white' 
