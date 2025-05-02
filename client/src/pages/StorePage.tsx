@@ -430,8 +430,11 @@ export default function StorePage() {
               </button>
               
               {/* Adidas */}
-              <a 
-                href="/brand/Adidas"
+              <button 
+                onClick={() => { 
+                  setLocation("/brand/Adidas"); 
+                  handleBrandChange('Adidas');
+                }}
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === 'Adidas' 
                     ? 'border-black shadow-md bg-black text-white' 
@@ -439,11 +442,14 @@ export default function StorePage() {
                 }`}
               >
                 <span className="font-medium text-sm">Adidas</span>
-              </a>
+              </button>
               
               {/* Jordan */}
-              <a 
-                href="/brand/Jordan"
+              <button 
+                onClick={() => { 
+                  setLocation("/brand/Jordan"); 
+                  handleBrandChange('Jordan');
+                }}
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === 'Jordan' 
                     ? 'border-black shadow-md bg-black text-white' 
@@ -451,11 +457,14 @@ export default function StorePage() {
                 }`}
               >
                 <span className="font-medium text-sm">Jordan</span>
-              </a>
+              </button>
               
               {/* Stussy */}
-              <a 
-                href="/brand/Stussy"
+              <button 
+                onClick={() => { 
+                  setLocation("/brand/Stussy"); 
+                  handleBrandChange('Stussy');
+                }}
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === 'Stussy' 
                     ? 'border-black shadow-md bg-black text-white' 
@@ -463,11 +472,14 @@ export default function StorePage() {
                 }`}
               >
                 <span className="font-medium text-sm">Stussy</span>
-              </a>
+              </button>
               
               {/* Balenciaga */}
-              <a 
-                href="/brand/Balenciaga"
+              <button 
+                onClick={() => { 
+                  setLocation("/brand/Balenciaga"); 
+                  handleBrandChange('Balenciaga');
+                }}
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === 'Balenciaga' 
                     ? 'border-black shadow-md bg-black text-white' 
@@ -475,7 +487,7 @@ export default function StorePage() {
                 }`}
               >
                 <span className="font-medium text-sm">Balenciaga</span>
-              </a>
+              </button>
               
               {/* All Brands */}
               <button 
