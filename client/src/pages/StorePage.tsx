@@ -48,13 +48,13 @@ export default function StorePage() {
   const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   
-  // Получение списка категорий и брендов
+  // Получение списка категорий, брендов и продуктов
   const { data: filterData, refetch } = useQuery<{
     categories: string[],
     brands: string[],
     products: Product[]
   }>({
-    queryKey: ['/api/categories'],
+    queryKey: ['/api/categories', selectedCategory, selectedBrand, selectedStyle],
     staleTime: 0, // Всегда считаем данные устаревшими
     refetchOnMount: true, // Перезапрашиваем при монтировании
   });
@@ -338,12 +338,12 @@ export default function StorePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent flex flex-col justify-end p-6">
                   <h3 className="text-2xl font-bold text-white mb-2">MEN</h3>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <button 
-                      onClick={() => handleCategoryChange('mens')}
-                      className="bg-white text-black text-sm font-medium px-3 py-1.5 rounded-full hover:bg-gray-200 transition"
+                    <a 
+                      href="/category/mens" 
+                      className="bg-white text-black text-sm font-medium px-3 py-1.5 rounded-full hover:bg-gray-200 transition inline-block"
                     >
                       Смотреть все
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -358,12 +358,12 @@ export default function StorePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent flex flex-col justify-end p-6">
                   <h3 className="text-2xl font-bold text-white mb-2">WOMEN</h3>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <button 
-                      onClick={() => handleCategoryChange('womens')}
-                      className="bg-white text-black text-sm font-medium px-3 py-1.5 rounded-full hover:bg-gray-200 transition"
+                    <a 
+                      href="/category/womens" 
+                      className="bg-white text-black text-sm font-medium px-3 py-1.5 rounded-full hover:bg-gray-200 transition inline-block"
                     >
                       Смотреть все
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -379,8 +379,8 @@ export default function StorePage() {
             {/* Brand Cards Grid - Scrollable on mobile with modern design */}
             <div className="grid grid-cols-3 md:grid-cols-6 gap-3 mb-4">
               {/* Nike */}
-              <button 
-                onClick={() => handleBrandChange('Nike')}
+              <a 
+                href="/brand/Nike"
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === 'Nike' 
                     ? 'border-black shadow-md bg-black text-white' 
@@ -388,11 +388,11 @@ export default function StorePage() {
                 }`}
               >
                 <span className="font-medium text-sm">Nike</span>
-              </button>
+              </a>
               
               {/* Adidas */}
-              <button 
-                onClick={() => handleBrandChange('Adidas')}
+              <a 
+                href="/brand/Adidas"
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === 'Adidas' 
                     ? 'border-black shadow-md bg-black text-white' 
@@ -400,11 +400,11 @@ export default function StorePage() {
                 }`}
               >
                 <span className="font-medium text-sm">Adidas</span>
-              </button>
+              </a>
               
               {/* Jordan */}
-              <button 
-                onClick={() => handleBrandChange('Jordan')}
+              <a 
+                href="/brand/Jordan"
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === 'Jordan' 
                     ? 'border-black shadow-md bg-black text-white' 
@@ -412,11 +412,11 @@ export default function StorePage() {
                 }`}
               >
                 <span className="font-medium text-sm">Jordan</span>
-              </button>
+              </a>
               
               {/* Stussy */}
-              <button 
-                onClick={() => handleBrandChange('Stussy')}
+              <a 
+                href="/brand/Stussy"
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === 'Stussy' 
                     ? 'border-black shadow-md bg-black text-white' 
@@ -424,11 +424,11 @@ export default function StorePage() {
                 }`}
               >
                 <span className="font-medium text-sm">Stussy</span>
-              </button>
+              </a>
               
               {/* Balenciaga */}
-              <button 
-                onClick={() => handleBrandChange('Balenciaga')}
+              <a 
+                href="/brand/Balenciaga"
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === 'Balenciaga' 
                     ? 'border-black shadow-md bg-black text-white' 
@@ -436,11 +436,11 @@ export default function StorePage() {
                 }`}
               >
                 <span className="font-medium text-sm">Balenciaga</span>
-              </button>
+              </a>
               
               {/* All Brands */}
-              <button 
-                onClick={() => handleBrandChange(null)}
+              <a 
+                href="/"
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === null 
                     ? 'border-black shadow-md bg-black text-white' 
@@ -448,7 +448,7 @@ export default function StorePage() {
                 }`}
               >
                 <span className="font-medium text-sm">Все</span>
-              </button>
+              </a>
             </div>
           </section>
           

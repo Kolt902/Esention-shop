@@ -243,22 +243,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint to get all unique categories and brands
   apiRouter.get('/categories', async (req, res) => {
     try {
+      // Получаем параметры фильтрации
+      const { category, brand, style } = req.query;
+      
+      // Получаем полный список продуктов
       const products = await storage.getProducts();
       
-      // Extract unique categories
+      // Извлекаем уникальные категории
       const categoriesSet = new Set<string>();
       products.forEach(p => categoriesSet.add(p.category));
       const categories = Array.from(categoriesSet);
       
-      // Extract brands from product database
+      // Извлекаем бренды из базы продуктов
       const brandSet = new Set<string>();
       products.forEach(p => {
         if (p.brand) brandSet.add(p.brand);
       });
       const brands = Array.from(brandSet);
       
-      // Return products along with categories and brands
-      res.json({ categories, brands, products });
+      // Устанавливаем заголовки для предотвращения кэширования
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.setHeader('Surrogate-Control', 'no-store');
+      
+      // Возвращаем продукты вместе с категориями и брендами
+      res.json({ categories, brands, products, timestamp: Date.now() });
     } catch (error) {
       console.error('Error fetching categories and brands:', error);
       res.status(500).json({ message: 'Failed to fetch categories and brands' });
