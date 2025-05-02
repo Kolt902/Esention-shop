@@ -9,6 +9,23 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   telegramId: text("telegram_id"),
   isAdmin: boolean("is_admin").default(false).notNull(),
+  email: text("email"),
+  fullName: text("full_name"),
+  phone: text("phone"),
+  avatarUrl: text("avatar_url"),
+  // Referral program fields
+  referralCode: text("referral_code"),
+  referredBy: text("referred_by"),
+  referralCount: integer("referral_count").default(0).notNull(),
+  referralDiscount: integer("referral_discount").default(0).notNull(), // in percentage
+  // Notification settings
+  notificationSettings: jsonb("notification_settings").default({
+    orderUpdates: true,
+    promotions: true,
+    newArrivals: true,
+    priceDrops: false
+  }).notNull(),
+  createdAt: text("created_at"),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -16,6 +33,16 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
   telegramId: true,
   isAdmin: true,
+  email: true,
+  fullName: true,
+  phone: true,
+  avatarUrl: true,
+  referralCode: true,
+  referredBy: true,
+  referralCount: true,
+  referralDiscount: true,
+  notificationSettings: true,
+  createdAt: true,
 });
 
 // Product Schema
@@ -29,10 +56,14 @@ export const products = pgTable("products", {
   sizes: text("sizes").array().notNull(),
   description: text("description").default("").notNull(),
   brand: text("brand").default("").notNull(),
+  style: text("style"), // Old Money, Vintage, Streetwear, Sport, Casual
+  gender: text("gender").default("unisex").notNull(), // men, women, unisex
   isNew: boolean("is_new").default(false).notNull(),
   discount: integer("discount").default(0).notNull(),
   rating: integer("rating").default(0).notNull(),
   inStock: boolean("in_stock").default(true).notNull(),
+  originalUrl: text("original_url"), // Ссылка на оригинал (для перехода к официальному сайту)
+  colors: text("colors").array().default([]).notNull(), // Доступные цвета
 });
 
 export const insertProductSchema = createInsertSchema(products).pick({
@@ -44,10 +75,14 @@ export const insertProductSchema = createInsertSchema(products).pick({
   sizes: true,
   description: true,
   brand: true,
+  style: true,
+  gender: true,
   isNew: true,
   discount: true,
   rating: true,
   inStock: true,
+  originalUrl: true,
+  colors: true,
 });
 
 // Cart Item Schema - could be used for storing cart items
@@ -232,3 +267,98 @@ export const insertUserVirtualWardrobeSchema = createInsertSchema(userVirtualWar
 
 export type InsertUserVirtualWardrobe = z.infer<typeof insertUserVirtualWardrobeSchema>;
 export type UserVirtualWardrobe = typeof userVirtualWardrobe.$inferSelect;
+
+// Избранные товары пользователя
+export const userFavorites = pgTable("user_favorites", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  productId: integer("product_id").notNull(),
+  dateAdded: text("date_added").notNull(),
+});
+
+export const insertUserFavoriteSchema = createInsertSchema(userFavorites).pick({
+  userId: true,
+  productId: true,
+  dateAdded: true,
+});
+
+export type InsertUserFavorite = z.infer<typeof insertUserFavoriteSchema>;
+export type UserFavorite = typeof userFavorites.$inferSelect;
+
+// Справочник стилей
+export const styles = pgTable("styles", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  description: text("description").notNull(),
+  imageUrl: text("image_url").notNull(),
+});
+
+export const insertStyleSchema = createInsertSchema(styles).pick({
+  name: true,
+  description: true,
+  imageUrl: true,
+});
+
+export type InsertStyle = z.infer<typeof insertStyleSchema>;
+export type Style = typeof styles.$inferSelect;
+
+// Справочник брендов
+export const brands = pgTable("brands", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  description: text("description"),
+  logoUrl: text("logo_url").notNull(),
+  websiteUrl: text("website_url"),
+});
+
+export const insertBrandSchema = createInsertSchema(brands).pick({
+  name: true,
+  description: true,
+  logoUrl: true,
+  websiteUrl: true,
+});
+
+export type InsertBrand = z.infer<typeof insertBrandSchema>;
+export type Brand = typeof brands.$inferSelect;
+
+// Реферальные коды пользователей
+export const referralCodes = pgTable("referral_codes", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().unique(),
+  code: text("code").notNull().unique(),
+  usageCount: integer("usage_count").default(0).notNull(),
+  createdAt: text("created_at").notNull(),
+  expiresAt: text("expires_at"),
+});
+
+export const insertReferralCodeSchema = createInsertSchema(referralCodes).pick({
+  userId: true,
+  code: true,
+  usageCount: true,
+  createdAt: true,
+  expiresAt: true,
+});
+
+export type InsertReferralCode = z.infer<typeof insertReferralCodeSchema>;
+export type ReferralCode = typeof referralCodes.$inferSelect;
+
+// История применения реферальных скидок
+export const referralUsage = pgTable("referral_usage", {
+  id: serial("id").primaryKey(),
+  referralCodeId: integer("referral_code_id").notNull(),
+  usedByUserId: integer("used_by_user_id").notNull(),
+  orderId: integer("order_id").notNull(),
+  discountAmount: integer("discount_amount").notNull(), // сумма скидки
+  usedAt: text("used_at").notNull(),
+});
+
+export const insertReferralUsageSchema = createInsertSchema(referralUsage).pick({
+  referralCodeId: true,
+  usedByUserId: true,
+  orderId: true,
+  discountAmount: true,
+  usedAt: true,
+});
+
+export type InsertReferralUsage = z.infer<typeof insertReferralUsageSchema>;
+export type ReferralUsage = typeof referralUsage.$inferSelect;
