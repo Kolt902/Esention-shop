@@ -206,11 +206,20 @@ export default function StorePage() {
   // Преобразование категорий и брендов для отображения
   const getCategoryDisplayName = (category: string): string => {
     const categoryMap: Record<string, string> = {
-      'lifestyle': 'Повседневная обувь',
+      'lifestyle': 'Повседневная',
       'running': 'Беговая обувь',
       'basketball': 'Баскетбольная обувь',
+      'tshirts': 'Футболки',
+      'hoodies': 'Кофты',
+      'pants': 'Штаны',
+      'jackets': 'Куртки',
+      'accessories': 'Аксессуары',
+      'sneakers': 'Кроссовки',
+      'shoes': 'Обувь',
+      'tops': 'Верхняя одежда',
+      'bottoms': 'Нижняя одежда'
     };
-    return categoryMap[category] || category;
+    return categoryMap[category] || category.charAt(0).toUpperCase() + category.slice(1);
   };
 
   // Checkout handler with Telegram integration
@@ -267,13 +276,88 @@ export default function StorePage() {
       <main className="flex-grow container mx-auto px-4 py-6 pb-20">
         {/* Добавлен нижний отступ pb-20 для области футера */}
         {/* Welcome Banner */}
-        <div className="welcome-banner p-6 mb-8">
+        <div className="welcome-banner p-6 mb-4">
           <h2 className="text-2xl font-bold text-center text-white drop-shadow-md">
             Добро пожаловать в магазин
           </h2>
           <p className="text-white text-center mt-2 font-medium drop-shadow-sm">
             Explore our latest collection
           </p>
+        </div>
+        
+        {/* Category Menu */}
+        <div className="overflow-x-auto mb-6 bg-white/80 backdrop-blur-sm rounded-lg shadow-sm p-4">
+          <h4 className="text-base font-semibold text-gray-800 mb-3 pl-2">Категории</h4>
+          <div className="flex space-x-3 py-1 px-1 min-w-full">
+            <button
+              onClick={() => setSelectedCategory(null)}
+              className={`whitespace-nowrap px-5 py-2 rounded-full font-medium text-sm transition-all flex items-center ${
+                selectedCategory === null 
+                  ? 'bg-blue-600 text-white shadow-md' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+              Все категории
+            </button>
+            
+            {filterData?.categories.map(category => {
+              // Выбираем подходящую иконку в зависимости от категории
+              let icon;
+              switch(category) {
+                case 'tshirts':
+                  icon = (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 2L2 8l2 2m0 0l4 12h12l4-12-4-4M4 10h16M2 8l6-6h8l6 6" />
+                    </svg>
+                  );
+                  break;
+                case 'hoodies':
+                  icon = (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7l-5-5H8L3 7z M8 2v5 M16 2v5" />
+                    </svg>
+                  );
+                  break;
+                case 'shoes':
+                case 'sneakers':
+                case 'running':
+                case 'basketball':
+                  icon = (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l-4-4m0 0l-8 8V4h8l4 4m-4-4v16" />
+                    </svg>
+                  );
+                  break;
+                default:
+                  icon = (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  );
+              }
+              
+              return (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`whitespace-nowrap px-5 py-2 rounded-full font-medium text-sm transition-all flex items-center ${
+                    selectedCategory === category 
+                      ? 'bg-blue-600 text-white shadow-md' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {icon}
+                  {getCategoryDisplayName(category)}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Products with filter controls */}
