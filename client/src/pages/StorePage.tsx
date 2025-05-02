@@ -702,6 +702,88 @@ export default function StorePage() {
             </div>
           </section>
           
+          {/* Brands Showcase - Before Styles Section */}
+          <section className="mb-8">
+            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide inline-flex items-center">
+              <span className="bg-black text-white px-4 py-1.5 rounded-full mr-2 text-sm">TOP</span>
+              <span>ПОПУЛЯРНЫЕ БРЕНДЫ</span>
+            </h2>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              <button 
+                onClick={() => handleBrandChange('Nike')}
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+              >
+                <div className="transform group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-2xl font-bold">NIKE</span>
+                </div>
+                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
+                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
+                </div>
+              </button>
+              
+              <button 
+                onClick={() => handleBrandChange('Adidas')}
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+              >
+                <div className="transform group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-2xl font-bold">ADIDAS</span>
+                </div>
+                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
+                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
+                </div>
+              </button>
+              
+              <button 
+                onClick={() => handleBrandChange('Jordan')}
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+              >
+                <div className="transform group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-2xl font-bold">JORDAN</span>
+                </div>
+                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
+                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
+                </div>
+              </button>
+              
+              <button 
+                onClick={() => handleBrandChange('Puma')}
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+              >
+                <div className="transform group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-2xl font-bold">PUMA</span>
+                </div>
+                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
+                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
+                </div>
+              </button>
+              
+              <button 
+                onClick={() => handleBrandChange('New Balance')}
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+              >
+                <div className="transform group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-2xl font-bold">NB</span>
+                </div>
+                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
+                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
+                </div>
+              </button>
+              
+              <button 
+                onClick={() => handleBrandChange('Balenciaga')}
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+              >
+                <div className="transform group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-xl font-bold">BALENCIAGA</span>
+                </div>
+                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
+                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
+                </div>
+              </button>
+            </div>
+          </section>
+          
           {/* Style Categories */}
           <section className="mb-8">
             <h2 className="text-xl font-normal text-black mb-6 uppercase flex items-center">
@@ -719,7 +801,7 @@ export default function StorePage() {
                 }}
               >
                 <img 
-                  src="https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                  src="/assets/luxury-brands.jpg" 
                   alt="Old Money Style" 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
@@ -738,7 +820,7 @@ export default function StorePage() {
                 }}
               >
                 <img 
-                  src="https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                  src="/assets/streetwear-brands.jpg" 
                   alt="Streetwear Style" 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
@@ -757,7 +839,7 @@ export default function StorePage() {
                 }}
               >
                 <img 
-                  src="https://images.unsplash.com/photo-1567013127542-490d757e51fc?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                  src="/assets/polo-bags.jpg" 
                   alt="Athleisure Style" 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
@@ -776,7 +858,7 @@ export default function StorePage() {
                 }}
               >
                 <img 
-                  src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                  src="/assets/adidas-tags.jpg" 
                   alt="Luxury Style" 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
