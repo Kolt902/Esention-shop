@@ -9,6 +9,7 @@ import { z } from "zod";
 import authRoutes from './routes/auth';
 import productRoutes from './routes/products';
 import userRoutes from './routes/user';
+import avatarRoutes from './routes/avatar';
 
 // Auth middleware to verify admin privileges
 const checkAdmin = async (req: Request, res: Response, next: NextFunction) => {

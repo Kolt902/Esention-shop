@@ -741,6 +741,122 @@ export class MemStorage implements IStorage {
     this.users.set(userId, updatedUser);
     return updatedUser;
   }
+  
+  // Avatar Operations
+  async getAvatarParams(userId: number): Promise<AvatarParams | undefined> {
+    // Find by userId, not by the avatarParam's id
+    for (const [id, params] of this.avatarParams.entries()) {
+      if (params.userId === userId) {
+        return params;
+      }
+    }
+    return undefined;
+  }
+  
+  async createAvatarParams(params: InsertAvatarParams): Promise<AvatarParams> {
+    const id = this.currentAvatarParamsId++;
+    const avatarParams: AvatarParams = {
+      id,
+      ...params
+    };
+    this.avatarParams.set(id, avatarParams);
+    return avatarParams;
+  }
+  
+  async updateAvatarParams(userId: number, params: Partial<InsertAvatarParams>): Promise<AvatarParams | undefined> {
+    // Find by userId
+    let foundParams: AvatarParams | undefined;
+    let foundId: number | undefined;
+    
+    for (const [id, existingParams] of this.avatarParams.entries()) {
+      if (existingParams.userId === userId) {
+        foundParams = existingParams;
+        foundId = id;
+        break;
+      }
+    }
+    
+    if (!foundParams || foundId === undefined) return undefined;
+    
+    const updatedParams: AvatarParams = {
+      ...foundParams,
+      ...params
+    };
+    
+    this.avatarParams.set(foundId, updatedParams);
+    return updatedParams;
+  }
+  
+  // Virtual Clothing Operations
+  async getVirtualClothingItems(filters?: { category?: string, type?: string }): Promise<VirtualClothingItem[]> {
+    const items: VirtualClothingItem[] = Array.from(this.virtualClothingItems.values());
+    
+    if (!filters) return items;
+    
+    return items.filter(item => {
+      if (filters.category && item.category !== filters.category) return false;
+      if (filters.type && item.type !== filters.type) return false;
+      return true;
+    });
+  }
+  
+  async getVirtualClothingItem(id: number): Promise<VirtualClothingItem | undefined> {
+    return this.virtualClothingItems.get(id);
+  }
+  
+  async createVirtualClothingItem(item: InsertVirtualClothingItem): Promise<VirtualClothingItem> {
+    const id = this.currentVirtualClothingId++;
+    const clothingItem: VirtualClothingItem = {
+      id,
+      ...item
+    };
+    this.virtualClothingItems.set(id, clothingItem);
+    return clothingItem;
+  }
+  
+  // User Virtual Wardrobe Operations
+  async getUserVirtualWardrobe(userId: number): Promise<UserVirtualWardrobe[]> {
+    const items: UserVirtualWardrobe[] = [];
+    
+    for (const item of this.userVirtualWardrobe.values()) {
+      if (item.userId === userId) {
+        items.push(item);
+      }
+    }
+    
+    return items;
+  }
+  
+  async getVirtualWardrobeItem(id: number): Promise<UserVirtualWardrobe | undefined> {
+    return this.userVirtualWardrobe.get(id);
+  }
+  
+  async addToVirtualWardrobe(item: InsertUserVirtualWardrobe): Promise<UserVirtualWardrobe> {
+    const id = this.currentWardrobeItemId++;
+    const wardrobeItem: UserVirtualWardrobe = {
+      id,
+      ...item
+    };
+    this.userVirtualWardrobe.set(id, wardrobeItem);
+    return wardrobeItem;
+  }
+  
+  async updateVirtualWardrobeItem(id: number, updates: Partial<InsertUserVirtualWardrobe>): Promise<UserVirtualWardrobe | undefined> {
+    const item = this.userVirtualWardrobe.get(id);
+    if (!item) return undefined;
+    
+    const updatedItem: UserVirtualWardrobe = {
+      ...item,
+      ...updates
+    };
+    
+    this.userVirtualWardrobe.set(id, updatedItem);
+    return updatedItem;
+  }
+  
+  async removeFromVirtualWardrobe(id: number): Promise<boolean> {
+    return this.userVirtualWardrobe.delete(id);
+  }
 }
 
 // Импортируем DatabaseStorage и создаем инстанс
