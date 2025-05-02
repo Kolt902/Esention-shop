@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Product } from "@shared/schema";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
-import { getReliableImage, DEFAULT_IMAGE } from '@/lib/embedded-images';
+import { getImageByCategory } from '@/lib/constant-images';
 
 // Функция для проверки валидности URL изображения
 const isValidImageUrl = (url?: string | null): boolean => {
@@ -35,40 +35,16 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
     ? product.additionalImages.filter(url => isValidImageUrl(url)) 
     : [];
   
-  // Выбираем подходящие изображения с проверкой на ошибки
-  let allImages: string[] = [];
+  // Используем надежное локальное SVG изображение, которое не зависит от внешних ресурсов
+  // Теперь мы не полагаемся на внешние URL, а используем встроенные SVG
+  const brandName = product.brand || "";
+  const defaultImage = getImageByCategory(product.category, brandName);
   
-  if (validMainImage || validAdditionalImages.length > 0) {
-    // Если есть валидные изображения, используем их
-    allImages = [
-      ...(validMainImage ? [validMainImage] : []),
-      ...validAdditionalImages
-    ];
-    
-    // Добавляем подстраховку - добавляем хотя бы одно надежное изображение для разнообразия
-    const productName = product.name || "";
-    const reliableImage = getReliableImage(productName, product.category, product.id);
-    allImages.push(reliableImage);
-  } else {
-    // Если валидных изображений нет, генерируем резервные изображения из нового, более надежного источника
-    
-    const productName = product.name || "";
-    
-    // Создаем несколько вариаций изображений для разнообразия с разными индексами
-    allImages = [
-      getReliableImage(productName, product.category, product.id),
-      getReliableImage(productName, product.category, product.id + 1),
-      getReliableImage(productName, product.category, product.id + 2)
-    ];
-  }
+  // Создаем только один элемент в массиве - это гарантированно работающее SVG-изображение
+  let allImages: string[] = [defaultImage];
   
-  // Убеждаемся, что у нас есть хотя бы одно изображение
-  if (allImages.length === 0) {
-    allImages = [DEFAULT_IMAGE];
-  }
-  
-  // Дефолтное изображение, если все варианты не сработают
-  const defaultImage = DEFAULT_IMAGE;
+  // В этой реализации мы полностью отказываемся от внешних URL изображений и используем
+  // только встроенные SVG, которые гарантированно будут отображаться
   
   console.log("Validated images array:", allImages);
   
