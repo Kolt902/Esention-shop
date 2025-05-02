@@ -1,18 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import ProductCard from './ProductCard';
-import { useQuery } from '@tanstack/react-query';
+import { productDatabase } from '../lib/productDatabase';
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  category: string;
-  brand: string;
-  description: string;
-  imageUrl: string;
-  gender?: string;
-}
+// Используем тип Product из productDatabase
+import type { Product } from '../lib/productDatabase';
 
 interface BrandCategoryListProps {
   onAddToCart: (product: Product, size?: string) => void;
@@ -23,19 +15,21 @@ const BrandCategoryList: React.FC<BrandCategoryListProps> = ({
   onAddToCart,
   onProductClick
 }) => {
-  // Получаем все категории, бренды и продукты
-  const { data: filterData, isLoading } = useQuery<{
-    categories: string[],
-    brands: string[],
-    products: Product[]
-  }>({
-    queryKey: ['/api/categories'],
-    staleTime: 0,
-    refetchOnMount: true,
+  // Состояние для хранения товаров
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  
+  // Состояние видимости разделов по брендам - по умолчанию Nike раскрыт
+  const [expandedBrands, setExpandedBrands] = useState<{ [key: string]: boolean }>({
+    'Nike': true
   });
 
-  // Состояние видимости разделов по брендам
-  const [expandedBrands, setExpandedBrands] = useState<{ [key: string]: boolean }>({});
+  // Загружаем товары при монтировании компонента
+  useEffect(() => {
+    // Устанавливаем данные из базы
+    setProducts(productDatabase);
+    setLoading(false);
+  }, []);
 
   // Функция для переключения видимости раздела бренда
   const toggleBrand = (brand: string) => {
@@ -46,12 +40,12 @@ const BrandCategoryList: React.FC<BrandCategoryListProps> = ({
   };
 
   // Если данные еще загружаются
-  if (isLoading) {
+  if (loading) {
     return <div className="py-10 text-center">Загрузка каталога...</div>;
   }
 
   // Если данных нет
-  if (!filterData?.products || filterData.products.length === 0) {
+  if (!products || products.length === 0) {
     return <div className="py-10 text-center">Товары не найдены</div>;
   }
 
@@ -63,7 +57,7 @@ const BrandCategoryList: React.FC<BrandCategoryListProps> = ({
   } = {};
 
   // Заполняем структуру данных
-  filterData.products.forEach(product => {
+  products.forEach(product => {
     if (!groupedProducts[product.brand]) {
       groupedProducts[product.brand] = {};
     }
@@ -98,11 +92,16 @@ const BrandCategoryList: React.FC<BrandCategoryListProps> = ({
     return categoryMap[category.toLowerCase()] || category;
   };
 
+  // Получаем список брендов в определенном порядке (сначала основные бренды)
+  const mainBrands = ['Nike', 'Adidas', 'Jordan', 'Stussy', 'Gucci', 'Balenciaga'];
+  const otherBrands = Object.keys(groupedProducts).filter(brand => !mainBrands.includes(brand));
+  const sortedBrands = [...mainBrands.filter(brand => groupedProducts[brand]), ...otherBrands];
+
   // Рендерим товары, сгруппированные по брендам и категориям
   return (
     <div className="space-y-10">
-      {Object.keys(groupedProducts).map(brand => (
-        <div key={brand} className="border border-gray-200 rounded-xl overflow-hidden">
+      {sortedBrands.map(brand => (
+        <div key={brand} className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
           {/* Заголовок бренда с возможностью сворачивания */}
           <div 
             className="bg-gray-50 px-6 py-4 flex justify-between items-center cursor-pointer"

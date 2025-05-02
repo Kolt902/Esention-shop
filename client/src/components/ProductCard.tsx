@@ -3,7 +3,7 @@ import { Heart, ShoppingCart, ChevronLeft, ChevronRight, ImageOff } from "lucide
 import { cn, formatPrice, showNotification, isValidImageUrl, getCategoryDefaultImage } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Product } from "@shared/schema";
+import type { Product } from "../lib/productDatabase";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
 import { getOfficialProductImages } from '@/lib/official-product-images';
 
@@ -15,7 +15,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, onAddToCart, onClick }: ProductCardProps) {
   const [selectedSize, setSelectedSize] = useState<string | undefined>(
-    product.sizes.length > 0 ? product.sizes[0] : undefined
+    product.sizes && product.sizes.length > 0 ? product.sizes[0] : undefined
   );
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
@@ -126,7 +126,7 @@ export default function ProductCard({ product, onAddToCart, onClick }: ProductCa
         </div>
       )}
       
-      {product.discount > 0 && (
+      {product.discount && product.discount > 0 && (
         <div className="absolute top-0 right-0 z-20 bg-red-600 text-white text-xs font-medium px-2.5 py-1 m-2 rounded">
           -{product.discount}%
         </div>
