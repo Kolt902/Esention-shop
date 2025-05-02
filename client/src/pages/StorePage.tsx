@@ -557,60 +557,60 @@ export default function StorePage() {
                   <div className="flex-1">
                     <h4 className="font-medium mb-2 text-gray-700">Стили</h4>
                     <div className="space-y-2">
-                      <button
-                        onClick={() => handleStyleChange(null)}
-                        className={`w-full text-left px-3 py-2 text-sm ${
+                      <a
+                        href="/"
+                        className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedStyle === null 
                             ? 'text-black font-medium underline' 
                             : 'text-gray-700 hover:text-black'
                         }`}
                       >
                         Все стили
-                      </button>
+                      </a>
                       
-                      <button
-                        onClick={() => handleStyleChange('oldmoney')}
-                        className={`w-full text-left px-3 py-2 text-sm ${
+                      <a
+                        href="/style/oldmoney"
+                        className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedStyle === 'oldmoney' 
                             ? 'text-black font-medium underline' 
                             : 'text-gray-700 hover:text-black'
                         }`}
                       >
                         Old Money
-                      </button>
+                      </a>
                       
-                      <button
-                        onClick={() => handleStyleChange('streetwear')}
-                        className={`w-full text-left px-3 py-2 text-sm ${
+                      <a
+                        href="/style/streetwear"
+                        className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedStyle === 'streetwear' 
                             ? 'text-black font-medium underline' 
                             : 'text-gray-700 hover:text-black'
                         }`}
                       >
                         Streetwear
-                      </button>
+                      </a>
                       
-                      <button
-                        onClick={() => handleStyleChange('luxury')}
-                        className={`w-full text-left px-3 py-2 text-sm ${
+                      <a
+                        href="/style/luxury"
+                        className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedStyle === 'luxury' 
                             ? 'text-black font-medium underline' 
                             : 'text-gray-700 hover:text-black'
                         }`}
                       >
                         Luxury
-                      </button>
+                      </a>
                       
-                      <button
-                        onClick={() => handleStyleChange('sport')}
-                        className={`w-full text-left px-3 py-2 text-sm ${
+                      <a
+                        href="/style/sport"
+                        className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedStyle === 'sport' 
                             ? 'text-black font-medium underline' 
                             : 'text-gray-700 hover:text-black'
                         }`}
                       >
                         Athleisure
-                      </button>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -620,24 +620,24 @@ export default function StorePage() {
                   {selectedCategory && (
                     <div className="bg-gray-100 py-1 px-3 rounded-full text-sm flex items-center">
                       <span>Категория: {selectedCategory}</span>
-                      <button 
-                        onClick={() => handleCategoryChange(null)}
+                      <a 
+                        href="/"
                         className="ml-2 text-black hover:text-gray-800"
                       >
                         <X className="h-3 w-3" />
-                      </button>
+                      </a>
                     </div>
                   )}
                   
                   {selectedBrand && (
                     <div className="bg-gray-100 py-1 px-3 rounded-full text-sm flex items-center">
                       <span>Бренд: {selectedBrand}</span>
-                      <button 
-                        onClick={() => handleBrandChange(null)}
+                      <a 
+                        href="/"
                         className="ml-2 text-black hover:text-gray-800"
                       >
                         <X className="h-3 w-3" />
-                      </button>
+                      </a>
                     </div>
                   )}
                   
@@ -646,26 +646,22 @@ export default function StorePage() {
                       <span>Стиль: {selectedStyle === 'oldmoney' ? 'Old Money' : 
                                     selectedStyle === 'streetwear' ? 'Streetwear' : 
                                     selectedStyle === 'luxury' ? 'Luxury' : 'Athleisure'}</span>
-                      <button 
-                        onClick={() => handleStyleChange(null)}
+                      <a 
+                        href="/"
                         className="ml-2 text-black hover:text-gray-800"
                       >
                         <X className="h-3 w-3" />
-                      </button>
+                      </a>
                     </div>
                   )}
                   
                   {(selectedCategory || selectedBrand || selectedStyle) && (
-                    <button 
-                      onClick={() => {
-                        setSelectedCategory(null);
-                        setSelectedBrand(null);
-                        setSelectedStyle(null);
-                      }}
+                    <a 
+                      href="/"
                       className="py-1 px-3 rounded-full text-sm text-black border border-gray-300 hover:bg-gray-50"
                     >
                       Сбросить все фильтры
-                    </button>
+                    </a>
                   )}
                 </div>
               </div>
@@ -692,16 +688,12 @@ export default function StorePage() {
                     <p className="text-gray-500 max-w-md mx-auto">
                       По выбранным фильтрам товаров не найдено. Попробуйте изменить параметры фильтрации.
                     </p>
-                    <button
-                      onClick={() => {
-                        handleCategoryChange(null);
-                        handleBrandChange(null);
-                        handleStyleChange(null);
-                      }}
-                      className="mt-6 bg-black text-white py-2 px-6 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
+                    <a
+                      href="/"
+                      className="mt-6 bg-black text-white py-2 px-6 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors inline-block"
                     >
                       Сбросить фильтры
-                    </button>
+                    </a>
                   </div>
                 )}
               </div>
