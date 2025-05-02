@@ -1,8 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { useFrame, useLoader, useThree } from '@react-three/fiber';
-import { useGLTF } from '@react-three/drei';
+import { useGLTF, Box } from '@react-three/drei';
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 interface AvatarProps {
   modelPath: string;
@@ -41,32 +40,22 @@ export function AvatarModel({
     accessory: false
   });
   
-  // Используем заглушку, пока настоящие модели не загружены
-  const { scene: defaultModel } = useGLTF('/models/default-avatar.glb');
-  
   // Масштабируем модель на основе роста
   const scale = userScale || (height / 170);
   
-  // Загрузка предметов одежды
-  const topModel = clothing?.top ? useLoader(GLTFLoader, clothing.top.modelPath) : null;
-  const bottomModel = clothing?.bottom ? useLoader(GLTFLoader, clothing.bottom.modelPath) : null;
-  const shoesModel = clothing?.shoes ? useLoader(GLTFLoader, clothing.shoes.modelPath) : null;
-  const accessoryModel = clothing?.accessory ? useLoader(GLTFLoader, clothing.accessory.modelPath) : null;
+  // Используем простые геометрические формы вместо загрузки моделей
+  const [hasLoadError, setHasLoadError] = useState(false);
   
+  // Устанавливаем все предметы одежды как загруженные, так как используем простую геометрию
   useEffect(() => {
-    if (topModel) {
-      setClothingLoaded(prev => ({ ...prev, top: true }));
-    }
-    if (bottomModel) {
-      setClothingLoaded(prev => ({ ...prev, bottom: true }));
-    }
-    if (shoesModel) {
-      setClothingLoaded(prev => ({ ...prev, shoes: true }));
-    }
-    if (accessoryModel) {
-      setClothingLoaded(prev => ({ ...prev, accessory: true }));
-    }
-  }, [topModel, bottomModel, shoesModel, accessoryModel]);
+    setClothingLoaded({
+      top: true,
+      bottom: true,
+      shoes: true,
+      accessory: true
+    });
+    setModelLoaded(true);
+  }, []);
   
   // Анимация вращения
   useFrame((_, delta) => {
@@ -147,63 +136,95 @@ export function AvatarModel({
     });
   };
   
+  // Определяем базовые цвета для разных частей аватара
+  const bodyColor = gender === 'male' ? '#C2A385' : '#D8B396';
+  const topColor = clothing?.top ? getColorFromName(clothing.top.color) : new THREE.Color('#3B82F6');
+  const bottomColor = clothing?.bottom ? getColorFromName(clothing.bottom.color) : new THREE.Color('#1E3A8A');
+  const shoesColor = clothing?.shoes ? getColorFromName(clothing.shoes.color) : new THREE.Color('#111827');
+  
+  // Вычисляем размеры частей тела на основе телосложения
+  let torsoWidth = 0.4;
+  let shoulderWidth = 0.5;
+  let legsWidth = 0.35;
+  
+  if (bodyType === 'athletic') {
+    torsoWidth = 0.45;
+    shoulderWidth = 0.55;
+    legsWidth = 0.4;
+  } else if (bodyType === 'slim') {
+    torsoWidth = 0.35;
+    shoulderWidth = 0.45;
+    legsWidth = 0.3;
+  }
+
   return (
     <group 
       ref={group} 
       position={position}
       rotation={[rotation[0], rotation[1], rotation[2]]}
     >
-      {/* Используем временную базовую модель, пока не будет настоящей */}
-      <primitive object={defaultModel.clone()} />
+      {/* Голова */}
+      <mesh position={[0, 1.6, 0]}>
+        <sphereGeometry args={[0.25, 32, 32]} />
+        <meshStandardMaterial color={bodyColor} />
+      </mesh>
       
-      {/* Отображаем загруженные модели одежды */}
-      {clothing?.top && clothingLoaded.top && (
-        <primitive 
-          object={topModel.scene.clone()} 
-          position={[0, 0, 0]}
-          onAfterRender={() => {
-            if (topModel && clothing.top) {
-              applyColorToModel(topModel.scene, clothing.top.color);
-            }
-          }}
-        />
-      )}
+      {/* Тело / рубашка */}
+      <mesh position={[0, 1.1, 0]}>
+        <boxGeometry args={[shoulderWidth, 0.6, torsoWidth]} />
+        <meshStandardMaterial color={topColor} />
+      </mesh>
       
-      {clothing?.bottom && clothingLoaded.bottom && (
-        <primitive 
-          object={bottomModel.scene.clone()} 
-          position={[0, 0, 0]}
-          onAfterRender={() => {
-            if (bottomModel && clothing.bottom) {
-              applyColorToModel(bottomModel.scene, clothing.bottom.color);
-            }
-          }}
-        />
-      )}
+      {/* Нижняя часть тела / брюки */}
+      <mesh position={[0, 0.5, 0]}>
+        <boxGeometry args={[legsWidth, 0.6, legsWidth]} />
+        <meshStandardMaterial color={bottomColor} />
+      </mesh>
       
-      {clothing?.shoes && clothingLoaded.shoes && (
-        <primitive 
-          object={shoesModel.scene.clone()} 
-          position={[0, 0, 0]}
-          onAfterRender={() => {
-            if (shoesModel && clothing.shoes) {
-              applyColorToModel(shoesModel.scene, clothing.shoes.color);
-            }
-          }}
-        />
-      )}
+      {/* Ноги */}
+      <group position={[0, 0, 0]}>
+        {/* Левая нога */}
+        <mesh position={[-0.15, 0, 0]}>
+          <boxGeometry args={[0.15, 0.9, 0.15]} />
+          <meshStandardMaterial color={bottomColor} />
+        </mesh>
+        
+        {/* Правая нога */}
+        <mesh position={[0.15, 0, 0]}>
+          <boxGeometry args={[0.15, 0.9, 0.15]} />
+          <meshStandardMaterial color={bottomColor} />
+        </mesh>
+      </group>
       
-      {clothing?.accessory && clothingLoaded.accessory && (
-        <primitive 
-          object={accessoryModel.scene.clone()} 
-          position={[0, 0, 0]}
-          onAfterRender={() => {
-            if (accessoryModel && clothing.accessory) {
-              applyColorToModel(accessoryModel.scene, clothing.accessory.color);
-            }
-          }}
-        />
-      )}
+      {/* Обувь */}
+      <group position={[0, -0.45, 0.05]}>
+        {/* Левый ботинок */}
+        <mesh position={[-0.15, 0, 0]}>
+          <boxGeometry args={[0.18, 0.1, 0.3]} />
+          <meshStandardMaterial color={shoesColor} />
+        </mesh>
+        
+        {/* Правый ботинок */}
+        <mesh position={[0.15, 0, 0]}>
+          <boxGeometry args={[0.18, 0.1, 0.3]} />
+          <meshStandardMaterial color={shoesColor} />
+        </mesh>
+      </group>
+      
+      {/* Руки */}
+      <group position={[0, 1.1, 0]}>
+        {/* Левая рука */}
+        <mesh position={[-0.35, 0, 0]}>
+          <boxGeometry args={[0.1, 0.5, 0.1]} />
+          <meshStandardMaterial color={topColor} />
+        </mesh>
+        
+        {/* Правая рука */}
+        <mesh position={[0.35, 0, 0]}>
+          <boxGeometry args={[0.1, 0.5, 0.1]} />
+          <meshStandardMaterial color={topColor} />
+        </mesh>
+      </group>
     </group>
   );
 }

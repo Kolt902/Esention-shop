@@ -10,23 +10,27 @@ const router = express.Router();
 const updateAvatarSchema = insertAvatarParamsSchema.omit({ userId: true });
 
 // Получить параметры аватара пользователя
-router.get('/params', ensureAuthenticated, async (req: Request, res: Response) => {
+router.get('/params', async (req: Request, res: Response) => {
   try {
-    const userId = (req.user as any).id;
-    const avatarParams = await storage.getAvatarParams(userId);
-    
-    if (!avatarParams) {
-      // Если параметры ещё не были заданы, возвращаем значения по умолчанию
-      return res.json({
-        height: 175,
-        weight: 70,
-        bodyType: 'regular',
-        gender: 'male',
-        measurements: {}
-      });
+    // Если пользователь авторизован, получаем его параметры
+    if (req.user) {
+      const userId = (req.user as any).id;
+      const avatarParams = await storage.getAvatarParams(userId);
+      
+      if (avatarParams) {
+        return res.json(avatarParams);
+      }
     }
     
-    return res.json(avatarParams);
+    // Для неавторизованных пользователей или если параметры не найдены,
+    // возвращаем значения по умолчанию
+    return res.json({
+      height: 175,
+      weight: 70,
+      bodyType: 'regular',
+      gender: 'male',
+      measurements: {}
+    });
   } catch (error) {
     console.error('Error fetching avatar params:', error);
     return res.status(500).json({ message: 'Failed to fetch avatar parameters' });
@@ -83,11 +87,17 @@ router.get('/clothing', async (req: Request, res: Response) => {
 });
 
 // Получить виртуальный гардероб пользователя
-router.get('/wardrobe', ensureAuthenticated, async (req: Request, res: Response) => {
+router.get('/wardrobe', async (req: Request, res: Response) => {
   try {
-    const userId = (req.user as any).id;
-    const wardrobe = await storage.getUserVirtualWardrobe(userId);
-    return res.json(wardrobe);
+    // Если пользователь авторизован, получаем его гардероб
+    if (req.user) {
+      const userId = (req.user as any).id;
+      const wardrobe = await storage.getUserVirtualWardrobe(userId);
+      return res.json(wardrobe);
+    }
+    
+    // Для неавторизованных пользователей возвращаем пустой массив
+    return res.json([]);
   } catch (error) {
     console.error('Error fetching user virtual wardrobe:', error);
     return res.status(500).json({ message: 'Failed to fetch virtual wardrobe' });
