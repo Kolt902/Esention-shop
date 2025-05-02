@@ -405,51 +405,51 @@ export default function StorePage() {
           <section className="mb-12">
             <h2 className="text-xl font-normal text-black mb-6 uppercase">Популярные бренды</h2>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
               {/* Nike */}
               <button 
                 onClick={() => handleBrandChange('Nike')}
-                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+                className="group relative h-24 md:h-28 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300 rounded-xl shadow-sm hover:shadow-md"
               >
                 <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" alt="Nike" className="h-5 md:h-6" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" alt="Nike" className="h-6 md:h-7" />
                 </div>
               </button>
               
               {/* Adidas */}
               <button 
                 onClick={() => handleBrandChange('Adidas')}
-                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+                className="group relative h-24 md:h-28 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300 rounded-xl shadow-sm hover:shadow-md"
               >
                 <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg" alt="Adidas" className="h-7 md:h-9" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg" alt="Adidas" className="h-8 md:h-10" />
                 </div>
               </button>
               
               {/* Jordan */}
               <button 
                 onClick={() => handleBrandChange('Jordan')}
-                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+                className="group relative h-24 md:h-28 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300 rounded-xl shadow-sm hover:shadow-md"
               >
                 <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
-                  <img src="https://upload.wikimedia.org/wikipedia/en/3/37/Jumpman_logo.svg" alt="Jordan" className="h-10 md:h-12" />
+                  <img src="https://upload.wikimedia.org/wikipedia/en/3/37/Jumpman_logo.svg" alt="Jordan" className="h-12 md:h-14" />
                 </div>
               </button>
               
               {/* Gucci */}
               <button 
                 onClick={() => handleBrandChange('Gucci')}
-                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+                className="group relative h-24 md:h-28 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300 rounded-xl shadow-sm hover:shadow-md"
               >
                 <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
-                  <span className="font-serif text-xl md:text-2xl font-bold tracking-wider">GUCCI</span>
+                  <span className="font-serif text-2xl md:text-3xl font-bold tracking-wider">GUCCI</span>
                 </div>
               </button>
               
               {/* Balenciaga */}
               <button 
                 onClick={() => handleBrandChange('Balenciaga')}
-                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+                className="group relative h-24 md:h-28 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300 rounded-xl shadow-sm hover:shadow-md"
               >
                 <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
                   <span className="font-sans text-sm md:text-base uppercase tracking-[0.3em] font-medium">BALENCIAGA</span>
@@ -459,35 +459,35 @@ export default function StorePage() {
               {/* Stussy */}
               <button 
                 onClick={() => handleBrandChange('Stussy')}
-                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+                className="group relative h-24 md:h-28 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300 rounded-xl shadow-sm hover:shadow-md"
               >
                 <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
-                  <span className="font-serif italic text-xl md:text-2xl font-bold">Stüssy</span>
+                  <span className="font-serif italic text-2xl md:text-3xl font-bold">Stüssy</span>
                 </div>
               </button>
               
               {/* Supreme */}
               <button 
                 onClick={() => handleBrandChange('Supreme')}
-                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white bg-red-600 transition-all duration-300"
+                className="group relative h-24 md:h-28 flex items-center justify-center border border-gray-200 hover:border-red-400 bg-red-600 transition-all duration-300 rounded-xl shadow-sm hover:shadow-md"
               >
                 <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
-                  <span className="font-['Futura'] text-lg md:text-xl font-bold text-white">SUPREME</span>
+                  <span className="font-['Futura'] text-xl md:text-2xl font-bold text-white">SUPREME</span>
                 </div>
               </button>
               
               {/* All brands */}
               <button 
                 onClick={() => handleBrandChange(null)}
-                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+                className="group relative h-24 md:h-28 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-gradient-to-br from-gray-50 to-gray-100 transition-all duration-300 rounded-xl shadow-sm hover:shadow-md"
               >
                 <div className="text-center">
                   <div className="opacity-75 group-hover:opacity-100 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
                     </svg>
                   </div>
-                  <span className="text-xs font-medium text-gray-600 group-hover:text-black">Все бренды</span>
+                  <span className="text-sm font-medium text-gray-600 group-hover:text-black">Все бренды</span>
                 </div>
               </button>
             </div>
@@ -503,7 +503,7 @@ export default function StorePage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {/* Old Money Style */}
               <div 
-                className="relative aspect-square overflow-hidden cursor-pointer group"
+                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
                 onClick={() => {
                   handleStyleChange('oldmoney');
                   handleBrandChange(null);
@@ -514,15 +514,15 @@ export default function StorePage() {
                   alt="Old Money Style" 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
-                  <h3 className="text-white text-lg font-light">Old Money</h3>
-                  <p className="text-white/80 text-xs mt-1">Элегантный и сдержанный стиль</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
+                  <h3 className="text-white text-xl font-light">Old Money</h3>
+                  <p className="text-white/80 text-sm mt-1">Элегантный и сдержанный стиль</p>
                 </div>
               </div>
               
               {/* Streetwear Style */}
               <div 
-                className="relative aspect-square overflow-hidden cursor-pointer group"
+                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
                 onClick={() => {
                   handleStyleChange('streetwear');
                   handleBrandChange(null);
@@ -533,15 +533,15 @@ export default function StorePage() {
                   alt="Streetwear Style" 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
-                  <h3 className="text-white text-lg font-light">Streetwear</h3>
-                  <p className="text-white/80 text-xs mt-1">Городской уличный стиль</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
+                  <h3 className="text-white text-xl font-light">Streetwear</h3>
+                  <p className="text-white/80 text-sm mt-1">Городской уличный стиль</p>
                 </div>
               </div>
               
               {/* Athleisure Style */}
               <div 
-                className="relative aspect-square overflow-hidden cursor-pointer group"
+                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
                 onClick={() => {
                   handleStyleChange('athleisure');
                   handleBrandChange(null);
@@ -552,15 +552,15 @@ export default function StorePage() {
                   alt="Athleisure Style" 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
-                  <h3 className="text-white text-lg font-light">Athleisure</h3>
-                  <p className="text-white/80 text-xs mt-1">Спортивная эстетика для повседневности</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
+                  <h3 className="text-white text-xl font-light">Athleisure</h3>
+                  <p className="text-white/80 text-sm mt-1">Спортивная эстетика для повседневности</p>
                 </div>
               </div>
               
               {/* Luxury Style */}
               <div 
-                className="relative aspect-square overflow-hidden cursor-pointer group"
+                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
                 onClick={() => {
                   handleStyleChange('luxury');
                   handleBrandChange(null);
@@ -571,9 +571,9 @@ export default function StorePage() {
                   alt="Luxury Style" 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
-                  <h3 className="text-white text-lg font-light">Luxury</h3>
-                  <p className="text-white/80 text-xs mt-1">Премиальные бренды и эксклюзивность</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
+                  <h3 className="text-white text-xl font-light">Luxury</h3>
+                  <p className="text-white/80 text-sm mt-1">Премиальные бренды и эксклюзивность</p>
                 </div>
               </div>
             </div>
@@ -601,10 +601,10 @@ export default function StorePage() {
               <div className="flex space-x-3 py-1 px-1 min-w-full overflow-x-auto">
                 <button
                   onClick={() => handleCategoryChange(null)}
-                  className={`whitespace-nowrap px-5 py-2 rounded-none font-medium text-sm transition-all flex items-center ${
+                  className={`whitespace-nowrap px-5 py-2 rounded-full font-medium text-sm transition-all flex items-center ${
                     selectedCategory === null 
-                      ? 'bg-black text-white' 
-                      : 'bg-transparent text-gray-700 hover:text-black hover:underline'
+                      ? 'bg-black text-white shadow-md' 
+                      : 'bg-white text-gray-700 hover:text-black hover:bg-gray-50 shadow-sm'
                   }`}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -663,10 +663,10 @@ export default function StorePage() {
                     <button
                       key={category}
                       onClick={() => handleCategoryChange(category)}
-                      className={`whitespace-nowrap px-5 py-2 rounded-none font-medium text-sm transition-all flex items-center ${
+                      className={`whitespace-nowrap px-5 py-2 rounded-full font-medium text-sm transition-all flex items-center ${
                         selectedCategory === category 
-                          ? 'bg-black text-white' 
-                          : 'bg-transparent text-gray-700 hover:text-black hover:underline'
+                          ? 'bg-black text-white shadow-md' 
+                          : 'bg-white text-gray-700 hover:text-black hover:bg-gray-50 shadow-sm'
                       }`}
                     >
                       {icon}

@@ -108,8 +108,8 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
   };
 
   return (
-    <Card className="product-card overflow-hidden mb-4 transition-transform duration-200 active:scale-[0.98]">
-      <div className="relative h-64 overflow-hidden">
+    <Card className="product-card overflow-hidden mb-4 transition-transform duration-200 active:scale-[0.98] shadow-md rounded-xl border-0">
+      <div className="relative h-64 overflow-hidden rounded-t-xl">
         {/* Отображаем текущее изображение с обработкой ошибок */}
         {imageError ? (
           <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100">
@@ -141,27 +141,27 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           <>
             <button 
               onClick={prevImage}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-1 hover:bg-opacity-90 transition-all"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-1.5 hover:bg-opacity-90 transition-all shadow-sm"
               aria-label="Предыдущее изображение"
             >
-              <ChevronLeft className="h-6 w-6 text-gray-800" />
+              <ChevronLeft className="h-5 w-5 text-gray-800" />
             </button>
             <button 
               onClick={nextImage}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-1 hover:bg-opacity-90 transition-all"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-1.5 hover:bg-opacity-90 transition-all shadow-sm"
               aria-label="Следующее изображение"
             >
-              <ChevronRight className="h-6 w-6 text-gray-800" />
+              <ChevronRight className="h-5 w-5 text-gray-800" />
             </button>
             
             {/* Индикатор текущего изображения */}
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1.5">
               {allImages.map((_, index) => (
                 <span 
                   key={index}
                   className={`block h-1.5 rounded-full transition-all ${
                     currentImageIndex === index 
-                      ? 'w-4 bg-white' 
+                      ? 'w-5 bg-white' 
                       : 'w-1.5 bg-white bg-opacity-60'
                   }`}
                 />
@@ -172,7 +172,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
         
         {/* Кнопка избранного */}
         <div 
-          className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm z-10"
+          className="absolute top-2 right-2 bg-white rounded-full p-1.5 shadow-md z-10"
           onClick={handleToggleFavorite}  
         >
           <Heart 
@@ -184,19 +184,19 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
         </div>
         
         {/* Category badge */}
-        <div className="absolute bottom-8 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded z-10">
+        <div className="absolute bottom-8 left-2 bg-black bg-opacity-70 text-white text-xs px-3 py-1 rounded-full z-10">
           {product.category}
         </div>
         
         {/* Brand badge если есть */}
         {product.brand && (
-          <div className="absolute bottom-2 right-2 bg-white bg-opacity-70 text-black text-xs px-2 py-1 rounded z-10 font-medium">
+          <div className="absolute bottom-2 right-2 bg-white bg-opacity-80 text-black text-xs px-3 py-1 rounded-full z-10 font-medium">
             {product.brand}
           </div>
         )}
       </div>
 
-      <CardContent className="p-4">
+      <CardContent className="p-5">
         <div className="flex justify-between items-start">
           <div>
             <h4 className="text-lg font-medium text-gray-800">{product.name}</h4>
@@ -208,7 +208,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
               </p>
             )}
           </div>
-          <div className="font-bold text-lg text-[#0088CC]">
+          <div className="font-bold text-lg text-black">
             {formatPrice(product.price)}
           </div>
         </div>
@@ -218,14 +218,14 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
             <div className="flex items-center text-sm text-gray-600 mb-2">
               <span>Размеры:</span>
             </div>
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-1.5">
               {product.sizes.map((size) => (
                 <span
                   key={size}
                   className={cn(
-                    "inline-block px-2 py-1 rounded border text-xs cursor-pointer transition-colors",
+                    "inline-block px-3 py-1.5 rounded-full border text-xs cursor-pointer transition-colors",
                     selectedSize === size
-                      ? "border-[#0088CC] bg-[#0088CC] text-white"
+                      ? "border-black bg-black text-white"
                       : "border-gray-300 text-gray-700 hover:border-gray-400"
                   )}
                   onClick={() => setSelectedSize(size)}
@@ -241,8 +241,8 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           onClick={handleBuy}
           disabled={isAdding}
           className={cn(
-            "mt-4 w-full telegram-button py-2 px-4 rounded-md font-medium transition-all duration-300",
-            isAdding ? "opacity-75" : "hover:brightness-95 active:scale-[0.98]"
+            "mt-4 w-full telegram-button py-3 px-4 rounded-full font-medium transition-all duration-300 bg-black hover:bg-gray-900 text-white",
+            isAdding ? "opacity-75" : "hover:shadow-md active:scale-[0.98]"
           )}
         >
           {isAdding ? (
