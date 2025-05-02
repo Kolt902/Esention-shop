@@ -23,6 +23,66 @@ export type Translation = {
     close: string;
     save: string;
     cancel: string;
+    delete: string;
+    deleting: string;
+    edit: string;
+    add: string;
+  };
+  
+  // Profile related translations
+  profile: {
+    title: string;
+    guest: string;
+    notConnected: string;
+    settings: string;
+    logout: string;
+    logoutSuccess: string;
+    logoutSuccessMessage: string;
+    logoutError: string;
+    logoutErrorMessage: string;
+    orders: string;
+    addresses: string;
+    favorites: string;
+    noOrders: string;
+    noOrdersDescription: string;
+    startShopping: string;
+    noAddresses: string;
+    noAddressesDescription: string;
+    addFirstAddress: string;
+    addNewAddress: string;
+    noFavorites: string;
+    noFavoritesDescription: string;
+    exploreCatalog: string;
+  };
+  
+  // Address related translations
+  addresses: {
+    default: string;
+    setDefault: string;
+    defaultSuccess: string;
+    defaultSuccessMessage: string;
+    defaultError: string;
+    defaultErrorMessage: string;
+    deleteConfirmTitle: string;
+    deleteConfirmDescription: string;
+    deleteSuccess: string;
+    deleteSuccessMessage: string;
+    deleteError: string;
+    deleteErrorMessage: string;
+  };
+  
+  // Order related translations
+  orders: {
+    orderNumber: string;
+    items: string;
+    orderItems: string;
+    showDetails: string;
+    hideDetails: string;
+    statusPending: string;
+    statusProcessing: string;
+    statusShipped: string;
+    statusDelivered: string;
+    statusCancelled: string;
   };
   
   // Product related translations
