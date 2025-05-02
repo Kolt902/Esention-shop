@@ -57,6 +57,25 @@ export const insertUserSchema = createInsertSchema(users).pick({
   createdAt: true,
 });
 
+// Category Schema
+export const categories = pgTable("categories", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  description: text("description"),
+  imageUrl: text("image_url").notNull(),
+  slug: text("slug").notNull().unique(),
+});
+
+export const insertCategorySchema = createInsertSchema(categories).pick({
+  name: true,
+  description: true,
+  imageUrl: true,
+  slug: true,
+});
+
+export type InsertCategory = z.infer<typeof insertCategorySchema>;
+export type Category = typeof categories.$inferSelect;
+
 // Product Schema
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
@@ -76,6 +95,9 @@ export const products = pgTable("products", {
   inStock: boolean("in_stock").default(true).notNull(),
   originalUrl: text("original_url"), // Ссылка на оригинал (для перехода к официальному сайту)
   colors: text("colors").array().default([]).notNull(), // Доступные цвета
+  categorySlug: text("category_slug"), // Для удобной фильтрации
+  brandSlug: text("brand_slug"), // Для удобной фильтрации 
+  styleSlug: text("style_slug"), // Для удобной фильтрации
 });
 
 export const insertProductSchema = createInsertSchema(products).pick({
@@ -95,6 +117,9 @@ export const insertProductSchema = createInsertSchema(products).pick({
   inStock: true,
   originalUrl: true,
   colors: true,
+  categorySlug: true,
+  brandSlug: true,
+  styleSlug: true,
 });
 
 // Cart Item Schema - could be used for storing cart items
