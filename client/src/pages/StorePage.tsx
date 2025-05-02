@@ -372,7 +372,10 @@ export default function StorePage() {
                   <h3 className="text-2xl font-bold text-white mb-2">MEN</h3>
                   <div className="flex flex-wrap gap-2 mt-2">
                     <button 
-                      onClick={() => setLocation("/category/mens")}
+                      onClick={() => {
+                        setLocation("/category/mens");
+                        handleCategoryChange('mens');
+                      }}
                       className="bg-white text-black text-sm font-medium px-3 py-1.5 rounded-full hover:bg-gray-200 transition inline-block"
                     >
                       Смотреть все
@@ -392,7 +395,10 @@ export default function StorePage() {
                   <h3 className="text-2xl font-bold text-white mb-2">WOMEN</h3>
                   <div className="flex flex-wrap gap-2 mt-2">
                     <button 
-                      onClick={() => setLocation("/category/womens")}
+                      onClick={() => {
+                        setLocation("/category/womens");
+                        handleCategoryChange('womens');
+                      }}
                       className="bg-white text-black text-sm font-medium px-3 py-1.5 rounded-full hover:bg-gray-200 transition inline-block"
                     >
                       Смотреть все
@@ -473,7 +479,7 @@ export default function StorePage() {
               
               {/* All Brands */}
               <button 
-                onClick={() => setLocation("/category/mens")}
+                onClick={() => setLocation(getResetPath())}
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === null 
                     ? 'border-black shadow-md bg-black text-white' 
@@ -529,7 +535,7 @@ export default function StorePage() {
                     <h4 className="font-medium mb-2 text-gray-700">Категории</h4>
                     <div className="space-y-2">
                       <button
-                        onClick={() => setLocation("/category/mens")}
+                        onClick={() => setLocation(getResetPath())}
                         className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedCategory === null 
                             ? 'text-black font-medium underline' 
@@ -560,7 +566,7 @@ export default function StorePage() {
                     <h4 className="font-medium mb-2 text-gray-700">Бренды</h4>
                     <div className="space-y-2">
                       <button
-                        onClick={() => setLocation("/category/mens")}
+                        onClick={() => setLocation(getResetPath())}
                         className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedBrand === null 
                             ? 'text-black font-medium underline' 
@@ -591,7 +597,7 @@ export default function StorePage() {
                     <h4 className="font-medium mb-2 text-gray-700">Стили</h4>
                     <div className="space-y-2">
                       <button
-                        onClick={() => setLocation("/category/mens")}
+                        onClick={() => setLocation(getResetPath())}
                         className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedStyle === null 
                             ? 'text-black font-medium underline' 
@@ -634,8 +640,8 @@ export default function StorePage() {
                         Luxury
                       </button>
                       
-                      <a
-                        href="/style/sport"
+                      <button
+                        onClick={() => setLocation("/style/sport")}
                         className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedStyle === 'sport' 
                             ? 'text-black font-medium underline' 
@@ -643,7 +649,7 @@ export default function StorePage() {
                         }`}
                       >
                         Athleisure
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </div>
