@@ -11,24 +11,24 @@ export default function CategoryCard({ name, icon, onClick, isNew = false }: Cat
   return (
     <button
       onClick={onClick}
-      className="category-card relative flex flex-col items-center justify-center bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1 w-full"
+      className="relative flex flex-col items-center justify-center bg-white border border-gray-200 transform transition-all duration-300 hover:border-black w-full aspect-[1/1]"
     >
       {/* Icon Container */}
-      <div className="category-icon-container flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+      <div className="flex items-center justify-center mb-4">
         {typeof icon === 'string' ? (
-          <div className="text-3xl">{icon}</div>
+          <div className="text-4xl">{icon}</div>
         ) : (
           icon
         )}
       </div>
       
       {/* Category Name */}
-      <h3 className="font-medium text-gray-800 text-center">{name}</h3>
+      <h3 className="font-normal text-sm text-black uppercase">{name}</h3>
       
       {/* New Badge */}
       {isNew && (
-        <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-          Новинки ✨
+        <div className="absolute top-0 left-0 bg-black text-white text-xs uppercase px-2 py-1">
+          New
         </div>
       )}
     </button>

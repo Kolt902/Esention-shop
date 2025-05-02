@@ -50,528 +50,488 @@ export default function StorePage() {
         // Поиск в sessionStorage как запасной вариант (обратная совместимость)
         const sessionCart = sessionStorage.getItem('cartItems');
         if (sessionCart) {
-          const parsedSessionCart = JSON.parse(sessionCart);
-          if (Array.isArray(parsedSessionCart) && parsedSessionCart.length > 0) {
-            setCartItems(parsedSessionCart);
-            // Перенос данных из sessionStorage в localStorage
-            localStorage.setItem('cartItems', sessionCart);
-            console.log("Корзина восстановлена из sessionStorage и перенесена в localStorage", parsedSessionCart);
+          const parsedCart = JSON.parse(sessionCart);
+          if (Array.isArray(parsedCart) && parsedCart.length > 0) {
+            setCartItems(parsedCart);
+            console.log("Корзина восстановлена из sessionStorage", parsedCart);
           }
         }
       }
     } catch (error) {
-      console.error("Ошибка при восстановлении корзины:", error);
+      console.error("Ошибка восстановления корзины:", error);
+    }
+    
+    // Извлекаем параметры из URL для установки фильтров
+    const params = new URLSearchParams(window.location.search);
+    const categoryParam = params.get('category');
+    if (categoryParam) {
+      setSelectedCategory(categoryParam);
+      console.log("Установлена категория из URL:", categoryParam);
+    }
+    
+    const brandParam = params.get('brand');
+    if (brandParam) {
+      setSelectedBrand(brandParam);
+    }
+    
+    // Проверка параметра cart=open для автоматического открытия корзины
+    const cartParam = params.get('cart');
+    if (cartParam === 'open') {
+      setIsCartOpen(true);
+      console.log("Автоматически открыта корзина из URL параметра");
+      
+      // Очистка URL от параметра cart для избежания повторных открытий
+      const url = new URL(window.location.href);
+      url.searchParams.delete('cart');
+      window.history.replaceState({}, '', url.toString());
     }
   }, []);
-  
-  // Сохранение корзины при ее изменении
+
+  // Сохранение корзины при каждом изменении
   useEffect(() => {
-    try {
-      // Сохранение в localStorage для постоянного хранения
-      if (cartItems.length > 0) {
+    if (cartItems.length > 0) {
+      try {
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
-      } else {
-        // Если корзина пуста, удаляем данные
-        localStorage.removeItem('cartItems');
+        console.log("Корзина сохранена в localStorage", cartItems);
+      } catch (error) {
+        console.error("Ошибка сохранения корзины:", error);
       }
-      
-      // Дублируем в sessionStorage для обратной совместимости
-      if (cartItems.length > 0) {
-        sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
-      } else {
-        sessionStorage.removeItem('cartItems');
-      }
-    } catch (error) {
-      console.error("Ошибка при сохранении корзины:", error);
+    } else {
+      localStorage.removeItem('cartItems');
+      console.log("Корзина очищена в localStorage");
     }
   }, [cartItems]);
 
-  // Построение URL с параметрами фильтров
-  const buildProductsUrl = () => {
-    const baseUrl = '/api/products';
-    const params = new URLSearchParams();
-    
-    if (selectedCategory) {
-      params.append('category', selectedCategory);
-    }
-    
-    if (selectedBrand) {
-      params.append('brand', selectedBrand);
-    }
-    
-    const queryString = params.toString();
-    return queryString ? `${baseUrl}?${queryString}` : baseUrl;
-  };
-  
-  // Fetch products with filters
+  // Запрос списка продуктов с применением фильтров
   const { data: products = [], isLoading, error, refetch } = useQuery<Product[]>({
-    queryKey: ['/api/products', selectedCategory, selectedBrand],
+    queryKey: ['/api/products', selectedCategory, selectedBrand], 
     queryFn: async () => {
-      const response = await fetch(buildProductsUrl());
+      const baseUrl = '/api/products';
+      
+      // Формируем параметры запроса в зависимости от выбранных фильтров
+      const params = new URLSearchParams();
+      if (selectedCategory) params.append('category', selectedCategory);
+      if (selectedBrand) params.append('brand', selectedBrand);
+      
+      const url = `${baseUrl}${params.toString() ? `?${params.toString()}` : ''}`;
+      const response = await fetch(url, { method: 'GET' });
+      
       if (!response.ok) {
         throw new Error('Failed to fetch products');
       }
+      
       return response.json();
     },
-    staleTime: 0, // Всегда считаем данные устаревшими
-    refetchOnMount: true, // Перезапрашиваем при монтировании
-    retry: 3, // Retry failed requests up to 3 times
-    retryDelay: 1000, // Wait 1 second between retries
   });
 
-  // Add to cart handler
-  const handleAddToCart = async (product: Product, size?: string) => {
-    try {
-      // Оптимистическое обновление UI
-      setCartItems((prevItems) => {
-        // Check if item already exists with same product and size
-        const existingItemIndex = prevItems.findIndex(
-          (item) => item.product.id === product.id && item.size === size
-        );
-
-        if (existingItemIndex >= 0) {
-          // Update quantity of existing item
-          const newItems = [...prevItems];
-          newItems[existingItemIndex] = {
-            ...newItems[existingItemIndex],
-            quantity: newItems[existingItemIndex].quantity + 1,
-          };
-          return newItems;
-        } else {
-          // Add new item
-          return [...prevItems, { product, quantity: 1, size }];
-        }
-      });
-
-      console.log("Добавляем товар в корзину:", product.id, size);
-      
-    } catch (error) {
-      console.error("Ошибка при добавлении товара в корзину:", error);
-      showNotification("Не удалось добавить товар в корзину. Попробуйте еще раз.");
-    }
-  };
-
-  // Remove from cart handler
-  const handleRemoveFromCart = (productId: number) => {
-    try {
-      // Оптимистическое обновление UI
-      setCartItems((prevItems) => 
-        prevItems.filter((item) => item.product.id !== productId)
-      );
-      
-      // Обработку хранилища автоматически выполняют эффекты
-      
-      console.log("Товар удален из корзины:", productId);
-    } catch (error) {
-      console.error("Ошибка при удалении товара из корзины:", error);
-      showNotification("Не удалось удалить товар из корзины");
-    }
-  };
-  
-  // Update quantity handler
-  const handleUpdateQuantity = (productId: number, newQuantity: number) => {
-    try {
-      // Оптимистическое обновление UI
-      setCartItems((prevItems) => 
-        prevItems.map((item) => 
-          item.product.id === productId
-            ? { ...item, quantity: newQuantity }
-            : item
-        )
-      );
-      
-      // Обработку хранилища автоматически выполняют эффекты
-      
-      console.log("Количество обновлено:", productId, newQuantity);
-    } catch (error) {
-      console.error("Ошибка при обновлении количества:", error);
-      showNotification("Не удалось обновить количество товара в корзине");
-    }
-  };
-  
-  // Обработчики для фильтрации
+  // Обработчики фильтрации
   const handleCategoryChange = (category: string | null) => {
+    if (category === selectedCategory) return; // Избегаем лишние рендеры
     setSelectedCategory(category);
-    // Если категория изменилась, включаем фильтр
-    setIsFilterOpen(true);
-    
-    // Прокручиваем к списку товаров с небольшой задержкой
-    setTimeout(() => {
-      const productsSection = document.getElementById('products-section');
-      if (productsSection) {
-        productsSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
   };
-  
+
   const handleBrandChange = (brand: string | null) => {
+    if (brand === selectedBrand) return;
     setSelectedBrand(brand);
-    // Если бренд изменился, включаем фильтр
-    setIsFilterOpen(true);
   };
-  
-  const handleResetFilters = () => {
-    setSelectedCategory(null);
-    setSelectedBrand(null);
-  };
-  
-  // Преобразование категорий и брендов для отображения
+
+  // Дополнительные функции для отображения
   const getCategoryDisplayName = (category: string): string => {
-    const categoryMap: Record<string, string> = {
-      'lifestyle': 'Повседневная',
-      'running': 'Беговая обувь',
-      'basketball': 'Баскетбольная обувь',
+    // Перевод технических названий категорий в понятные для пользователя
+    const categoryNames: Record<string, string> = {
       'tshirts': 'Футболки',
       'hoodies': 'Кофты',
-      'pants': 'Штаны',
-      'jackets': 'Куртки',
-      'accessories': 'Аксессуары',
       'sneakers': 'Кроссовки',
-      'shoes': 'Обувь',
-      'tops': 'Верхняя одежда',
-      'bottoms': 'Нижняя одежда'
+      'pants': 'Штаны',
+      'accessories': 'Аксессуары',
+      'basketball': 'Баскетбол',
+      'running': 'Бег',
+      'lifestyle': 'Лайфстайл',
+      'training': 'Тренировки',
     };
-    return categoryMap[category] || category.charAt(0).toUpperCase() + category.slice(1);
+    
+    return categoryNames[category] || category;
   };
 
-  // Checkout handler with Telegram integration
-  const handleCheckout = () => {
-    // In a real application, we would send the order to the backend
-    // For now, we'll just show a notification
+  const getPriceBracket = (price: number): string => {
+    if (price < 5000) return "До 5000₽";
+    if (price < 10000) return "5000₽ - 10000₽";
+    if (price < 15000) return "10000₽ - 15000₽";
+    return "От 15000₽";
+  };
+
+  // Обработчики корзины
+  const handleAddToCart = async (product: Product, size?: string) => {
+    console.log(`Добавление в корзину: ${product.name} (размер: ${size || 'не указан'})`);
     
+    // Проверка, есть ли уже такой товар в корзине с таким же размером
+    const existingItemIndex = cartItems.findIndex(
+      item => item.product.id === product.id && item.size === size
+    );
+    
+    if (existingItemIndex > -1) {
+      // Если товар уже есть, увеличиваем количество
+      const updatedItems = [...cartItems];
+      updatedItems[existingItemIndex].quantity += 1;
+      setCartItems(updatedItems);
+      showNotification(`Количество товара ${product.name} увеличено`);
+    } else {
+      // Если товара нет, добавляем новый
+      setCartItems([...cartItems, { product, quantity: 1, size }]);
+      showNotification(`Товар ${product.name} добавлен в корзину`);
+    }
+  };
+
+  const handleRemoveFromCart = (index: number) => {
+    const newItems = [...cartItems];
+    newItems.splice(index, 1);
+    setCartItems(newItems);
+    showNotification("Товар удален из корзины");
+  };
+
+  const handleUpdateQuantity = (index: number, newQuantity: number) => {
+    if (newQuantity < 1) return;
+    
+    const newItems = [...cartItems];
+    newItems[index].quantity = newQuantity;
+    setCartItems(newItems);
+  };
+
+  const handleCheckout = async () => {
     try {
-      const telegramApp = getTelegramWebApp();
+      // Подготовка данных заказа
+      const orderData = {
+        items: cartItems.map(item => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+          size: item.size
+        })),
+        total: cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)
+      };
       
-      // Use Telegram MainButton if available
-      if (telegramApp && telegramApp.MainButton) {
-        // Show processing UI in Telegram
-        telegramApp.MainButton.text = "Оформление заказа...";
-        telegramApp.MainButton.show();
-        telegramApp.MainButton.showProgress(true);
-        
-        // Simulate processing
-        setTimeout(() => {
-          telegramApp.MainButton.hideProgress();
-          telegramApp.MainButton.hide();
-          
-          // Show success notification
-          showNotification("Заказ успешно оформлен! Спасибо за покупку!");
-          
-          // Clear cart
-          setCartItems([]);
-          setIsCartOpen(false);
-          
-          // Clear all storage
-          localStorage.removeItem('cartItems');
-          sessionStorage.removeItem('cartItems');
-        }, 1500);
-      } else {
-        // Fallback for non-Telegram environment
-        showNotification("Заказ оформлен! Это демо-версия.");
+      // Отправка заказа на сервер
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      });
+      
+      if (response.ok) {
+        // Если успешно, очищаем корзину
         setCartItems([]);
         setIsCartOpen(false);
+        showNotification("Заказ успешно оформлен!");
         
-        // Clear all storage
+        // Сохраняем пустую корзину
         localStorage.removeItem('cartItems');
         sessionStorage.removeItem('cartItems');
+      } else {
+        throw new Error("Failed to place order");
       }
     } catch (error) {
-      console.error("Error during checkout:", error);
+      console.error("Ошибка оформления заказа:", error);
       showNotification("Произошла ошибка при оформлении заказа. Пожалуйста, попробуйте еще раз.");
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col store-background">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       
-      <main className="flex-grow container mx-auto px-4 py-6 pb-20">
-        {/* Добавлен нижний отступ pb-20 для области футера */}
-        {/* Welcome Banner */}
-        <div className="welcome-banner p-6 mb-6 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg">
-          <h2 className="text-3xl font-bold text-center text-white drop-shadow-md">
-            Добро пожаловать в магазин
-          </h2>
-          <p className="text-white text-center mt-2 font-medium drop-shadow-sm">
-            Выберите категорию или смотрите все товары
-          </p>
-        </div>
-        
-        {/* Featured Categories Grid */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 pl-2">Выберите категорию</h2>
-          
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {/* Карточка категории: Кофты */}
-            <CategoryCard
-              name="Кофты"
-              icon="🧥"
-              onClick={() => handleCategoryChange('hoodies')}
-            />
-            
-            {/* Карточка категории: Кроссовки */}
-            <CategoryCard
-              name="Кроссовки"
-              icon="👟"
-              onClick={() => handleCategoryChange('sneakers')}
-            />
-            
-            {/* Карточка категории: Футболки */}
-            <CategoryCard
-              name="Футболки"
-              icon="👕"
-              onClick={() => handleCategoryChange('tshirts')}
-            />
-            
-            {/* Карточка категории: Штаны */}
-            <CategoryCard
-              name="Штаны"
-              icon="👖"
-              onClick={() => handleCategoryChange('pants')}
-            />
-            
-            {/* Карточка категории: Аксессуары */}
-            <CategoryCard
-              name="Аксессуары"
-              icon="🎒"
-              onClick={() => handleCategoryChange('accessories')}
-            />
-            
-            {/* Карточка категории: Новинки */}
-            <CategoryCard
-              name="Новинки"
-              icon="✨"
-              onClick={() => handleCategoryChange(null)}
-              isNew={true}
-            />
+      <main className="flex-grow pb-20">
+        {/* Hero Banner - Farfetch Style */}
+        <section className="relative mb-8">
+          <div className="bg-gray-50 py-12 md:py-20">
+            <div className="container mx-auto px-4">
+              <div className="max-w-3xl">
+                <h1 className="text-4xl md:text-5xl font-light text-black mb-6 uppercase">
+                  Новая коллекция дизайнерской одежды
+                </h1>
+                <p className="text-lg md:text-xl text-gray-700 mb-8 font-light">
+                  Эксклюзивные модели от ведущих мировых брендов специально для вас
+                </p>
+                <button 
+                  onClick={() => handleCategoryChange('sneakers')}
+                  className="bg-black text-white px-6 py-3 font-medium hover:bg-gray-900 transition-colors"
+                >
+                  СМОТРЕТЬ КОЛЛЕКЦИЮ
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
         
-        {/* Category Menu - Horizontal Scrolling */}
-        <div className="overflow-x-auto mb-6 bg-white/80 backdrop-blur-sm rounded-lg shadow-sm p-4">
-          <div className="flex justify-between items-center mb-3">
-            <h4 className="text-base font-semibold text-gray-800 pl-2">Все категории</h4>
-            <button 
-              onClick={() => {
-                refetch();
-                queryClient.invalidateQueries({queryKey: ['/api/products']});
-                showNotification('Данные обновлены');
-              }}
-              className="text-blue-600 flex items-center text-sm font-medium hover:text-blue-800 transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Обновить
-            </button>
-          </div>
-          <div className="flex space-x-3 py-1 px-1 min-w-full">
-            <button
-              onClick={() => handleCategoryChange(null)}
-              className={`whitespace-nowrap px-5 py-2 rounded-full font-medium text-sm transition-all flex items-center ${
-                selectedCategory === null 
-                  ? 'bg-blue-600 text-white shadow-md' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-              </svg>
-              Все категории
-            </button>
+        {/* Container for the rest of content */}
+        <div className="container mx-auto px-4">
+          {/* Designer Brands */}
+          <section className="mb-12">
+            <h2 className="text-xl font-normal text-black mb-6 uppercase">Популярные бренды</h2>
             
-            {filterData?.categories.map(category => {
-              // Выбираем подходящую иконку в зависимости от категории
-              let icon;
-              switch(category) {
-                case 'tshirts':
-                  icon = (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 2L2 8l2 2m0 0l4 12h12l4-12-4-4M4 10h16M2 8l6-6h8l6 6" />
-                    </svg>
-                  );
-                  break;
-                case 'hoodies':
-                  icon = (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7l-5-5H8L3 7z M8 2v5 M16 2v5" />
-                    </svg>
-                  );
-                  break;
-                case 'shoes':
-                case 'sneakers':
-                case 'running':
-                case 'basketball':
-                  icon = (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l-4-4m0 0l-8 8V4h8l4 4m-4-4v16" />
-                    </svg>
-                  );
-                  break;
-                default:
-                  icon = (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  );
-              }
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {/* Карточка категории: Кофты */}
+              <CategoryCard
+                name="Кофты"
+                icon="🧥"
+                onClick={() => handleCategoryChange('hoodies')}
+              />
               
-              return (
+              {/* Карточка категории: Кроссовки */}
+              <CategoryCard
+                name="Кроссовки"
+                icon="👟"
+                onClick={() => handleCategoryChange('sneakers')}
+              />
+              
+              {/* Карточка категории: Футболки */}
+              <CategoryCard
+                name="Футболки"
+                icon="👕"
+                onClick={() => handleCategoryChange('tshirts')}
+              />
+              
+              {/* Карточка категории: Штаны */}
+              <CategoryCard
+                name="Штаны"
+                icon="👖"
+                onClick={() => handleCategoryChange('pants')}
+              />
+              
+              {/* Карточка категории: Аксессуары */}
+              <CategoryCard
+                name="Аксессуары"
+                icon="🎒"
+                onClick={() => handleCategoryChange('accessories')}
+              />
+              
+              {/* Карточка категории: Новинки */}
+              <CategoryCard
+                name="Новинки"
+                icon="✨"
+                onClick={() => handleCategoryChange(null)}
+                isNew={true}
+              />
+            </div>
+          </section>
+          
+          {/* Category Menu - Horizontal Scrolling */}
+          <section className="mb-8 bg-gray-100 rounded-md overflow-hidden">
+            <div className="py-4 px-4">
+              <div className="flex justify-between items-center mb-3">
+                <h4 className="text-base font-semibold text-black uppercase">Все категории</h4>
+                <button 
+                  onClick={() => {
+                    refetch();
+                    queryClient.invalidateQueries({queryKey: ['/api/products']});
+                    showNotification('Данные обновлены');
+                  }}
+                  className="text-black flex items-center text-sm font-medium hover:text-gray-700 transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Обновить
+                </button>
+              </div>
+              <div className="flex space-x-3 py-1 px-1 min-w-full overflow-x-auto">
                 <button
-                  key={category}
-                  onClick={() => handleCategoryChange(category)}
-                  className={`whitespace-nowrap px-5 py-2 rounded-full font-medium text-sm transition-all flex items-center ${
-                    selectedCategory === category 
-                      ? 'bg-blue-600 text-white shadow-md' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  onClick={() => handleCategoryChange(null)}
+                  className={`whitespace-nowrap px-5 py-2 rounded-none font-medium text-sm transition-all flex items-center ${
+                    selectedCategory === null 
+                      ? 'bg-black text-white' 
+                      : 'bg-transparent text-gray-700 hover:text-black hover:underline'
                   }`}
                 >
-                  {icon}
-                  {getCategoryDisplayName(category)}
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  </svg>
+                  Все категории
                 </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Products with filter controls */}
-        <div id="products-section" className="mt-8">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-800 bg-white px-4 py-2 rounded-lg shadow-sm">
-              Каталог товаров
-            </h3>
-            
-            <button 
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="flex items-center gap-2 text-sm font-medium text-gray-600 bg-white px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
-            >
-              <Filter className="h-4 w-4" />
-              Фильтры {isFilterOpen ? <ChevronDown className="h-4 w-4 transform rotate-180" /> : <ChevronDown className="h-4 w-4" />}
-            </button>
-          </div>
-          
-          {/* Filter panels */}
-          {isFilterOpen && (
-            <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
-              <div className="flex flex-col sm:flex-row gap-4">
-                {/* Categories filter */}
-                <div className="flex-1">
-                  <h4 className="font-medium mb-2 text-gray-700">Категории</h4>
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => handleCategoryChange(null)}
-                      className={`w-full text-left px-3 py-2 rounded-md text-sm ${
-                        selectedCategory === null 
-                          ? 'bg-[#0088CC] text-white font-medium' 
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      Все категории
-                    </button>
-                    
-                    {filterData?.categories?.map((category) => (
-                      <button
-                        key={category}
-                        onClick={() => handleCategoryChange(category)}
-                        className={`w-full text-left px-3 py-2 rounded-md text-sm ${
-                          selectedCategory === category 
-                            ? 'bg-[#0088CC] text-white font-medium' 
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        {getCategoryDisplayName(category)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
                 
-                {/* Brands filter */}
-                <div className="flex-1">
-                  <h4 className="font-medium mb-2 text-gray-700">Бренды</h4>
-                  <div className="space-y-2">
+                {filterData?.categories.map(category => {
+                  // Выбираем подходящую иконку в зависимости от категории
+                  let icon;
+                  switch(category) {
+                    case 'tshirts':
+                      icon = (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 2L2 8l2 2m0 0l4 12h12l4-12-4-4M4 10h16M2 8l6-6h8l6 6" />
+                        </svg>
+                      );
+                      break;
+                    case 'hoodies':
+                      icon = (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7l-5-5H8L3 7z M8 2v5 M16 2v5" />
+                        </svg>
+                      );
+                      break;
+                    case 'shoes':
+                    case 'sneakers':
+                    case 'running':
+                    case 'basketball':
+                      icon = (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l-4-4m0 0l-8 8V4h8l4 4m-4-4v16" />
+                        </svg>
+                      );
+                      break;
+                    default:
+                      icon = (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      );
+                  }
+                  
+                  return (
                     <button
-                      onClick={() => handleBrandChange(null)}
-                      className={`w-full text-left px-3 py-2 rounded-md text-sm ${
-                        selectedBrand === null 
-                          ? 'bg-[#0088CC] text-white font-medium' 
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      key={category}
+                      onClick={() => handleCategoryChange(category)}
+                      className={`whitespace-nowrap px-5 py-2 rounded-none font-medium text-sm transition-all flex items-center ${
+                        selectedCategory === category 
+                          ? 'bg-black text-white' 
+                          : 'bg-transparent text-gray-700 hover:text-black hover:underline'
                       }`}
                     >
-                      Все бренды
+                      {icon}
+                      {getCategoryDisplayName(category)}
                     </button>
-                    
-                    {filterData?.brands?.map((brand) => (
-                      <button
-                        key={brand}
-                        onClick={() => handleBrandChange(brand)}
-                        className={`w-full text-left px-3 py-2 rounded-md text-sm ${
-                          selectedBrand === brand 
-                            ? 'bg-[#0088CC] text-white font-medium' 
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        }`}
-                      >
-                        {brand}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                  );
+                })}
               </div>
+            </div>
+          </section>
+
+          {/* Products with filter controls */}
+          <section className="mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl uppercase text-black">
+                Каталог товаров
+              </h3>
               
-              {/* Filter controls */}
-              <div className="mt-4 flex justify-between">
-                <div className="text-sm font-medium text-gray-600">
-                  {products?.length || 0} товаров
-                </div>
-                
-                {(selectedCategory || selectedBrand) && (
-                  <button 
-                    onClick={handleResetFilters}
-                    className="flex items-center gap-1 text-sm font-medium text-[#0088CC] hover:text-[#006699] transition-colors"
-                  >
-                    <X className="h-4 w-4" />
-                    Сбросить фильтры
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-
-          {isLoading ? (
-            <div className="text-center py-12 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm">
-              <div className="inline-block h-10 w-10 animate-spin rounded-full border-4 border-solid border-[#0088CC] border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
-                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Загрузка...</span>
-              </div>
-              <p className="mt-4 font-medium text-gray-700">Загрузка продуктов...</p>
-            </div>
-          ) : error ? (
-            <div className="text-center py-10 bg-white/90 backdrop-blur-sm rounded-xl shadow-sm">
-              <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg mb-4 max-w-md mx-auto">
-                <p className="font-medium">Ошибка загрузки продуктов. Пожалуйста, попробуйте снова.</p>
-              </div>
               <button 
-                onClick={() => window.location.reload()} 
-                className="telegram-button py-2 px-6 rounded-md font-medium">
-                Обновить страницу
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className="flex items-center gap-2 text-sm font-medium text-black hover:underline"
+              >
+                <Filter className="h-4 w-4" />
+                Фильтры {isFilterOpen ? <ChevronDown className="h-4 w-4 transform rotate-180" /> : <ChevronDown className="h-4 w-4" />}
               </button>
             </div>
-          ) : products && products.length > 0 ? (
-            <div className="space-y-5">
-              {products.map((product: Product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  onAddToCart={handleAddToCart}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-10 bg-white/90 backdrop-blur-sm rounded-xl shadow-sm">
-              <p className="text-gray-700 font-medium">Нет доступных продуктов</p>
-            </div>
-          )}
+            
+            {/* Filter panels */}
+            {isFilterOpen && (
+              <div className="mb-6 bg-white p-4 border border-gray-200">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  {/* Categories filter */}
+                  <div className="flex-1">
+                    <h4 className="font-medium mb-2 text-gray-700">Категории</h4>
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => handleCategoryChange(null)}
+                        className={`w-full text-left px-3 py-2 text-sm ${
+                          selectedCategory === null 
+                            ? 'text-black font-medium underline' 
+                            : 'text-gray-700 hover:text-black'
+                        }`}
+                      >
+                        Все категории
+                      </button>
+                      
+                      {filterData?.categories?.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => handleCategoryChange(category)}
+                          className={`w-full text-left px-3 py-2 text-sm ${
+                            selectedCategory === category 
+                              ? 'text-black font-medium underline' 
+                              : 'text-gray-700 hover:text-black'
+                          }`}
+                        >
+                          {getCategoryDisplayName(category)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Brands filter */}
+                  <div className="flex-1">
+                    <h4 className="font-medium mb-2 text-gray-700">Бренды</h4>
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => handleBrandChange(null)}
+                        className={`w-full text-left px-3 py-2 text-sm ${
+                          selectedBrand === null 
+                            ? 'text-black font-medium underline' 
+                            : 'text-gray-700 hover:text-black'
+                        }`}
+                      >
+                        Все бренды
+                      </button>
+                      
+                      {filterData?.brands?.map((brand) => (
+                        <button
+                          key={brand}
+                          onClick={() => handleBrandChange(brand)}
+                          className={`w-full text-left px-3 py-2 text-sm ${
+                            selectedBrand === brand 
+                              ? 'text-black font-medium underline' 
+                              : 'text-gray-700 hover:text-black'
+                          }`}
+                        >
+                          {brand}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Filter controls */}
+                <div className="mt-4 flex justify-between">
+                  <div className="text-sm font-medium text-gray-600">
+                    Отображено: {products.length} товаров
+                  </div>
+                  
+                  <button
+                    onClick={() => {
+                      setSelectedCategory(null);
+                      setSelectedBrand(null);
+                    }}
+                    className="text-sm text-gray-600 hover:text-black hover:underline"
+                  >
+                    Сбросить фильтры
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {/* Product grid */}
+            {isLoading ? (
+              <div className="flex justify-center py-12">
+                <div className="inline-block h-10 w-10 animate-spin rounded-full border-4 border-solid border-black border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              </div>
+            ) : products.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                {products.map((product) => (
+                  <ProductCard 
+                    key={product.id} 
+                    product={product} 
+                    onAddToCart={handleAddToCart}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-10 bg-white border border-gray-200">
+                <p className="text-gray-700 font-medium">Нет доступных продуктов</p>
+              </div>
+            )}
+          </section>
         </div>
       </main>
 

@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Nike-inspired theme colors */
+:root {
+  --brand-black: #111111;
+  --brand-red: #ff1a1a;
+  --brand-white: #ffffff;
+  --brand-gray: #f5f5f5;
+  --brand-gray-dark: #757575;
+  --brand-light-gray: #e5e5e5;
+}
+
+/* Global typography adjustments */
+body {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -0.015em;
+}
+
 /* Telegram WebApp specific styles */
 .telegram-webapp {
   background-color: var(--tg-theme-bg-color, #ffffff);
@@ -9,12 +25,12 @@
 }
 
 .telegram-webapp button {
-  background-color: var(--tg-theme-button-color, #0088CC);
+  background-color: var(--tg-theme-button-color, #111111);
   color: var(--tg-theme-button-text-color, #ffffff);
 }
 
 .telegram-webapp a {
-  color: var(--tg-theme-link-color, #0088CC);
+  color: var(--tg-theme-link-color, #111111);
 }
 
 /* Make sure content is visible in Telegram Mini App */
