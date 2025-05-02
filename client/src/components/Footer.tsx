@@ -40,9 +40,11 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
       setActiveTab("favorites");
     } else if (location === "/admin") {
       setActiveTab("admin");
-    } else if (location === "/virtual-fitting") {
-      setActiveTab("virtual-fitting");
     }
+    // Временно отключена виртуальная примерка
+    /* else if (location === "/virtual-fitting") {
+      setActiveTab("virtual-fitting");
+    } */
     
     // Проверка прав администратора
     const checkAdminStatus = async () => {
@@ -98,10 +100,13 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
       case "admin":
         handleAdminClick();
         break;
+      // Временно отключено
+      /*
       case "virtual-fitting":
         // Переход на страницу виртуальной примерочной
         setLocation("/virtual-fitting");
         break;
+      */
     }
   };
   
@@ -180,7 +185,8 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
             <span className="text-xs font-medium mt-1">{t.profile.title}</span>
           </button>
           
-          {/* Кнопка виртуальной примерочной */}
+          {/* Кнопка виртуальной примерочной - временно скрыта */}
+          {/* 
           <button 
             onClick={() => handleTabClick("virtual-fitting")}
             className={`flex flex-col items-center justify-center transition-all duration-200 relative ${
@@ -192,6 +198,7 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
             <Shirt className="h-6 w-6" />
             <span className="text-xs font-medium mt-1">Примерка</span>
           </button>
+          */}
           
           {/* Show admin button if user is admin */}
           {isAdmin && (
