@@ -580,17 +580,17 @@ export default function StorePage() {
           </section>
           
           {/* Category Menu - Horizontal Scrolling */}
-          <section className="mb-8 bg-gray-100 rounded-none overflow-hidden">
-            <div className="py-4 px-4">
-              <div className="flex justify-between items-center mb-3">
-                <h4 className="text-base font-semibold text-black uppercase">Все категории</h4>
+          <section className="mb-8 bg-gray-100 rounded-xl overflow-hidden shadow-sm">
+            <div className="py-5 px-5">
+              <div className="flex justify-between items-center mb-4">
+                <h4 className="text-base font-semibold text-black uppercase bg-white py-1.5 px-4 rounded-full shadow-sm">Все категории</h4>
                 <button 
                   onClick={() => {
                     refetch();
                     queryClient.invalidateQueries({queryKey: ['/api/products']});
                     showNotification('Данные обновлены');
                   }}
-                  className="text-black flex items-center text-sm font-medium hover:text-gray-700 transition-colors"
+                  className="text-black flex items-center text-sm font-medium hover:bg-white px-3 py-1.5 rounded-full transition-all hover:shadow-sm"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -681,13 +681,13 @@ export default function StorePage() {
           {/* Products with filter controls */}
           <section className="mb-8">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl uppercase text-black">
+              <h3 className="text-xl uppercase text-black bg-gray-100 px-6 py-2 rounded-full shadow-sm">
                 Каталог товаров
               </h3>
               
               <button 
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="flex items-center gap-2 text-sm font-medium text-black hover:underline"
+                className="flex items-center gap-2 text-sm font-medium bg-black text-white py-2 px-4 rounded-full hover:bg-gray-800 transition-all shadow-sm"
               >
                 <Filter className="h-4 w-4" />
                 Фильтры {isFilterOpen ? <ChevronDown className="h-4 w-4 transform rotate-180" /> : <ChevronDown className="h-4 w-4" />}
@@ -696,8 +696,8 @@ export default function StorePage() {
             
             {/* Filter panels */}
             {isFilterOpen && (
-              <div className="mb-6 bg-white p-4 border border-gray-200">
-                <div className="flex flex-col sm:flex-row gap-4">
+              <div className="mb-6 bg-white p-6 border border-gray-200 rounded-xl shadow-sm">
+                <div className="flex flex-col sm:flex-row gap-6">
                   {/* Categories filter */}
                   <div className="flex-1">
                     <h4 className="font-medium mb-2 text-gray-700">Категории</h4>
@@ -876,8 +876,8 @@ export default function StorePage() {
                 </div>
                 
                 {/* Filter controls */}
-                <div className="mt-4 flex justify-between">
-                  <div className="text-sm font-medium text-gray-600">
+                <div className="mt-6 flex justify-between items-center">
+                  <div className="text-sm font-medium text-gray-600 bg-gray-100 px-4 py-2 rounded-full">
                     Отображено: {products.length} товаров
                   </div>
                   
@@ -885,9 +885,13 @@ export default function StorePage() {
                     onClick={() => {
                       setSelectedCategory(null);
                       setSelectedBrand(null);
+                      setSelectedStyle(null);
                     }}
-                    className="text-sm text-gray-600 hover:text-black hover:underline"
+                    className="text-sm bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all flex items-center gap-1"
                   >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                     Сбросить фильтры
                   </button>
                 </div>
@@ -912,8 +916,12 @@ export default function StorePage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-10 bg-white border border-gray-200">
-                <p className="text-gray-700 font-medium">Нет доступных продуктов</p>
+              <div className="text-center py-10 bg-white border border-gray-200 rounded-xl shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <p className="text-gray-700 font-medium text-lg">Нет доступных продуктов</p>
+                <p className="text-gray-500 mt-2">Попробуйте изменить параметры фильтрации</p>
               </div>
             )}
           </section>
