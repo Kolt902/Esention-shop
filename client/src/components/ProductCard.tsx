@@ -20,10 +20,14 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   // Создаем массив всех изображений продукта
+  console.log("Product data:", JSON.stringify(product, null, 2));
+  
   const allImages = [
     product.imageUrl,
-    ...(product.additionalImages || [])
+    ...(Array.isArray(product.additionalImages) ? product.additionalImages : [])
   ].filter(Boolean); // Удаляем пустые значения из массива
+  
+  console.log("All images array:", allImages);
   
   // Функции для переключения изображений
   const nextImage = (e: React.MouseEvent) => {

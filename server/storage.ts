@@ -450,7 +450,14 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
+    // Обрабатываем обязательные поля и устанавливаем значения по умолчанию
+    const user: User = { 
+      id,
+      username: insertUser.username,
+      password: insertUser.password,
+      telegramId: insertUser.telegramId || null,
+      isAdmin: insertUser.isAdmin !== undefined ? insertUser.isAdmin : false
+    };
     this.users.set(id, user);
     return user;
   }
@@ -466,7 +473,19 @@ export class MemStorage implements IStorage {
 
   async createProduct(insertProduct: InsertProduct): Promise<Product> {
     const id = this.currentProductId++;
-    const product: Product = { ...insertProduct, id };
+    // Явно обрабатываем обязательные поля согласно схеме в shared/schema.ts
+    const product: Product = { 
+      id,
+      name: insertProduct.name,
+      price: insertProduct.price,
+      category: insertProduct.category,
+      imageUrl: insertProduct.imageUrl,
+      // Обязательно устанавливаем значения по умолчанию для полей с дефолтными значениями
+      brand: insertProduct.brand || "",
+      additionalImages: Array.isArray(insertProduct.additionalImages) ? insertProduct.additionalImages : [],
+      sizes: insertProduct.sizes,
+      description: insertProduct.description || ""
+    };
     this.products.set(id, product);
     return product;
   }
@@ -480,7 +499,14 @@ export class MemStorage implements IStorage {
 
   async addCartItem(insertCartItem: InsertCartItem): Promise<CartItem> {
     const id = this.currentCartItemId++;
-    const cartItem: CartItem = { ...insertCartItem, id };
+    // Обрабатываем обязательные поля и устанавливаем значения по умолчанию
+    const cartItem: CartItem = { 
+      id,
+      userId: insertCartItem.userId,
+      productId: insertCartItem.productId,
+      size: insertCartItem.size || null,
+      quantity: insertCartItem.quantity || 1
+    };
     this.cartItems.set(id, cartItem);
     return cartItem;
   }
@@ -526,7 +552,19 @@ export class MemStorage implements IStorage {
   
   async createDeliveryAddress(insertAddress: InsertDeliveryAddress): Promise<DeliveryAddress> {
     const id = this.currentDeliveryAddressId++;
-    const address: DeliveryAddress = { ...insertAddress, id };
+    
+    // Обрабатываем обязательные поля и устанавливаем значения по умолчанию
+    const address: DeliveryAddress = { 
+      id,
+      userId: insertAddress.userId,
+      fullName: insertAddress.fullName,
+      phoneNumber: insertAddress.phoneNumber,
+      country: insertAddress.country,
+      city: insertAddress.city,
+      address: insertAddress.address,
+      postalCode: insertAddress.postalCode,
+      isDefault: insertAddress.isDefault !== undefined ? insertAddress.isDefault : null
+    };
     
     // If this address is marked as default, remove default flag from other addresses
     if (address.isDefault) {
