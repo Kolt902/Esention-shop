@@ -328,9 +328,202 @@ export default function StorePage() {
         
         {/* Container for the rest of content */}
         <div className="container mx-auto px-4">
+          {/* Luxury Brands Showcase - Modern Visual Style */}
+          <section className="mb-12 mt-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-black uppercase tracking-wide inline-flex items-center">
+                <span className="bg-black text-white px-4 py-1.5 rounded-full mr-2 text-sm">PREMIUM</span>
+                <span>ЛЮКСОВЫЕ БРЕНДЫ</span>
+              </h2>
+              <div className="hidden md:block">
+                <button className="text-sm font-medium text-black hover:underline">Показать все</button>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Left side - Luxury shopping bags */}
+              <div className="relative overflow-hidden rounded-2xl shadow-lg group">
+                <img 
+                  src="/assets/luxury-brands.jpg" 
+                  alt="Luxury Brands" 
+                  className="w-full h-[300px] object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-6">
+                  <div className="overflow-hidden">
+                    <h3 className="text-white text-2xl font-bold mb-2 transform translate-y-0 transition-transform duration-300 group-hover:translate-y-[-5px]">Премиум коллекция</h3>
+                  </div>
+                  <div className="overflow-hidden">
+                    <p className="text-white/80 mb-4 transform translate-y-0 transition-transform duration-300 group-hover:translate-y-[-5px] delay-75">
+                      CHANEL • CELINE • CARTIER • HERMES
+                    </p>
+                  </div>
+                  <div className="overflow-hidden">
+                    <button 
+                      onClick={() => handleBrandChange('Gucci')}
+                      className="bg-white text-black px-6 py-3 rounded-full text-sm font-bold transform translate-y-0 transition-all duration-300 group-hover:translate-y-[-5px] delay-100 hover:bg-black hover:text-white"
+                    >
+                      СМОТРЕТЬ КОЛЛЕКЦИЮ
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Right side - 2 smaller blocks */}
+              <div className="grid grid-rows-2 gap-6">
+                {/* Polo brand */}
+                <div className="relative overflow-hidden rounded-2xl shadow-lg group">
+                  <img 
+                    src="/assets/polo-bags.jpg" 
+                    alt="Polo Ralph Lauren" 
+                    className="w-full h-[140px] object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-4">
+                    <div className="overflow-hidden">
+                      <h3 className="text-white text-xl font-bold transform translate-y-0 transition-transform duration-300 group-hover:translate-y-[-5px]">
+                        Polo Ralph Lauren
+                      </h3>
+                    </div>
+                    <div className="overflow-hidden">
+                      <button 
+                        onClick={() => handleBrandChange('Polo')}
+                        className="mt-2 bg-transparent border border-white text-white px-4 py-1.5 rounded-full text-xs font-medium transform translate-y-0 transition-all duration-300 group-hover:translate-y-[-5px] hover:bg-white hover:text-black"
+                      >
+                        ПОДРОБНЕЕ
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Streetwear brands */}
+                <div className="relative overflow-hidden rounded-2xl shadow-lg group">
+                  <img 
+                    src="/assets/streetwear-brands.jpg" 
+                    alt="Streetwear Brands" 
+                    className="w-full h-[140px] object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-4">
+                    <div className="overflow-hidden">
+                      <h3 className="text-white text-xl font-bold transform translate-y-0 transition-transform duration-300 group-hover:translate-y-[-5px]">
+                        Уличная мода
+                      </h3>
+                    </div>
+                    <div className="overflow-hidden">
+                      <button 
+                        onClick={() => handleStyleChange('streetwear')}
+                        className="mt-2 bg-transparent border border-white text-white px-4 py-1.5 rounded-full text-xs font-medium transform translate-y-0 transition-all duration-300 group-hover:translate-y-[-5px] hover:bg-white hover:text-black"
+                      >
+                        КОЛЛЕКЦИЯ
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          
+          {/* Sportswear Brands Showcase */}
+          <section className="mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-black uppercase tracking-wide inline-flex items-center">
+                <span className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-1.5 rounded-full mr-2 text-sm">HOT</span>
+                <span>СПОРТИВНЫЕ БРЕНДЫ</span>
+              </h2>
+              <div className="hidden md:block">
+                <button className="text-sm font-medium text-black hover:underline">Показать все</button>
+              </div>
+            </div>
+            
+            <div className="relative overflow-hidden rounded-2xl shadow-lg group mb-8">
+              <img 
+                src="/assets/adidas-tags.jpg" 
+                alt="Adidas Collection" 
+                className="w-full h-[250px] object-cover object-center transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent flex flex-col justify-center p-8">
+                <div className="max-w-lg">
+                  <div className="overflow-hidden">
+                    <h3 className="text-white text-3xl font-extrabold mb-3 transform translate-y-0 transition-transform duration-300 group-hover:translate-y-[-5px]">ADIDAS ORIGINALS</h3>
+                  </div>
+                  <div className="overflow-hidden">
+                    <p className="text-white/90 mb-6 transform translate-y-0 transition-transform duration-300 group-hover:translate-y-[-5px] delay-75">
+                      Культовая коллекция Originals сочетает спортивное наследие и современную моду. Эксклюзивно в нашем магазине.
+                    </p>
+                  </div>
+                  <div className="overflow-hidden">
+                    <div className="flex flex-wrap gap-3">
+                      <button 
+                        onClick={() => handleBrandChange('Adidas')}
+                        className="bg-white text-black px-6 py-3 rounded-full text-sm font-bold transform translate-y-0 transition-all duration-300 group-hover:translate-y-[-5px] delay-100 hover:bg-black hover:text-white"
+                      >
+                        МУЖСКАЯ КОЛЛЕКЦИЯ
+                      </button>
+                      <button 
+                        onClick={() => handleCategoryChange('tshirts')}
+                        className="bg-transparent border border-white text-white px-6 py-3 rounded-full text-sm font-bold transform translate-y-0 transition-all duration-300 group-hover:translate-y-[-5px] delay-150 hover:bg-white hover:text-black"
+                      >
+                        ЖЕНСКАЯ КОЛЛЕКЦИЯ
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Brand grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <button 
+                onClick={() => handleBrandChange('Nike')}
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+              >
+                <div className="transform group-hover:scale-110 transition-transform duration-300">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" alt="Nike" className="h-10 mx-auto" />
+                </div>
+                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
+                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
+                </div>
+              </button>
+              
+              <button 
+                onClick={() => handleBrandChange('Adidas')}
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+              >
+                <div className="transform group-hover:scale-110 transition-transform duration-300">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg" alt="Adidas" className="h-10 mx-auto" />
+                </div>
+                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
+                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
+                </div>
+              </button>
+              
+              <button 
+                onClick={() => handleBrandChange('Jordan')}
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+              >
+                <div className="transform group-hover:scale-110 transition-transform duration-300">
+                  <img src="https://upload.wikimedia.org/wikipedia/en/3/37/Jumpman_logo.svg" alt="Jordan" className="h-12 mx-auto" />
+                </div>
+                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
+                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
+                </div>
+              </button>
+              
+              <button 
+                onClick={() => handleBrandChange('Puma')}
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+              >
+                <div className="transform group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-2xl font-bold">PUMA</span>
+                </div>
+                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
+                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
+                </div>
+              </button>
+            </div>
+          </section>
+          
           {/* Featured Categories - Modern Grid */}
           <section className="mb-12">
-            <h2 className="text-xl font-normal text-black mb-6 uppercase">Популярные категории</h2>
+            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Популярные категории</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Women's Category - Large */}
