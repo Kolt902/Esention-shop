@@ -389,6 +389,11 @@ export class MemStorage implements IStorage {
       price: 2000,
       category: "accessories",
       imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/80a3db1f-7e3f-4915-94ba-d7c9cc8fd0a0/heritage-crossbody-bag-xKv3Gk.png",
+      additionalImages: [
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/c76e2119-acb7-4944-9085-d4f5ae2bda76/heritage-crossbody-bag-xKv3Gk.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/32b68861-15b6-48a4-a5f6-55a5e36b3a1c/heritage-crossbody-bag-xKv3Gk.png",
+        "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/ef768c0d-e9e4-4430-bc96-78ee714b767e/heritage-crossbody-bag-xKv3Gk.png"
+      ],
       sizes: ["One Size"],
       description: "The Nike Heritage Crossbody Bag has a main compartment with a small zippered pocket. The shoulder strap is removable and adjustable so you can carry it close to your body or in your hand.",
       brand: "Nike"
