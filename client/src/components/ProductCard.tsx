@@ -35,8 +35,8 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
     ? product.additionalImages.filter(url => isValidImageUrl(url)) 
     : [];
   
-  // Получаем официальные изображения с сайтов Nike и Adidas по имени продукта
-  const officialImages = getOfficialProductImages(product.name);
+  // Получаем официальные изображения с сайтов Nike и Adidas по имени продукта и категории
+  const officialImages = getOfficialProductImages(product.name, product.category);
   
   // Создаем массив изображений, сначала добавляя официальные, затем добавляя валидные если они есть
   let allImages: string[] = [...officialImages];

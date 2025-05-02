@@ -88,7 +88,7 @@ export class MemStorage implements IStorage {
   private currentOrderId: number;
   
   // Add admin user for @illia2323
-  private adminUsername = "illia2323";
+  private adminUsernames = ["illia2323", "zakharr99"];
 
   constructor() {
     this.users = new Map();
@@ -106,7 +106,7 @@ export class MemStorage implements IStorage {
     // Create main admin user (illia2323)
     this.users.set(this.currentUserId++, {
       id: 1,
-      username: this.adminUsername,
+      username: this.adminUsernames[0],
       password: "admin123", // This is just a placeholder, in a real app use secure passwords
       telegramId: "818421912",
       isAdmin: true
@@ -115,7 +115,7 @@ export class MemStorage implements IStorage {
     // Create second admin user (zakharr99)
     this.users.set(this.currentUserId++, {
       id: 2, 
-      username: "zakharr99",
+      username: this.adminUsernames[1],
       password: "admin123", // This is just a placeholder, in a real app use secure passwords
       telegramId: "1056271534",
       isAdmin: true
@@ -681,7 +681,7 @@ export class MemStorage implements IStorage {
     if (!user) return false;
     
     // Check if user is admin or has specific username
-    return user.isAdmin || user.username === this.adminUsername;
+    return user.isAdmin || this.adminUsernames.includes(user.username);
   }
   
   async getAllUsers(): Promise<User[]> {
@@ -692,9 +692,9 @@ export class MemStorage implements IStorage {
     const user = await this.getUser(userId);
     if (!user) return undefined;
     
-    // Prevent removing admin status from user @illia2323
-    if (user.username === this.adminUsername && !isAdmin) {
-      return user; // Don't change admin status for main admin
+    // Prevent removing admin status from default admin users
+    if (this.adminUsernames.includes(user.username) && !isAdmin) {
+      return user; // Don't change admin status for main admins
     }
     
     const updatedUser = { ...user, isAdmin };
