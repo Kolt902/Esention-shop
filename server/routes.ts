@@ -1,10 +1,37 @@
-import express, { type Express, Request, Response } from "express";
+import express, { type Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer } from "ws";
 import { storage } from "./storage";
 import { telegramBot } from "./telegram";
 import { validateTelegramWebApp, ensureAuthenticated } from "./middleware";
-import { insertCartItemSchema, insertProductSchema } from "@shared/schema";
+import { insertCartItemSchema, insertProductSchema, insertDeliveryAddressSchema, insertOrderSchema } from "@shared/schema";
 import { z } from "zod";
+
+// Auth middleware to verify admin privileges
+const checkAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const telegramUser = (req as any).telegramUser;
+    if (!telegramUser) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    const user = await telegramBot.getUserFromTelegramData(telegramUser);
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+    
+    // Check if user is admin or specifically @illia2323
+    const isAdmin = await storage.isAdmin(user.id);
+    if (!isAdmin) {
+      return res.status(403).json({ message: "Admin privileges required" });
+    }
+    
+    next();
+  } catch (error) {
+    console.error("Error checking admin privileges:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const apiRouter = express.Router();

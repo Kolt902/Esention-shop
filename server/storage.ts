@@ -8,7 +8,25 @@ import {
   cartItems,
   type CartItem,
   type InsertCartItem,
+  deliveryAddresses,
+  orders,
+  type Order,
+  type InsertOrder,
+  insertDeliveryAddressSchema
 } from "@shared/schema";
+import { z } from "zod";
+
+// Type for delivery address
+export type DeliveryAddress = typeof deliveryAddresses.$inferSelect;
+export type InsertDeliveryAddress = z.infer<typeof insertDeliveryAddressSchema>;
+
+// Type for online users
+export type OnlineUser = {
+  userId: number;
+  telegramId: string;
+  username: string;
+  lastActive: Date;
+};
 
 export interface IStorage {
   // User Operations
@@ -28,23 +46,57 @@ export interface IStorage {
   updateCartItemQuantity(id: number, quantity: number): Promise<CartItem | undefined>;
   removeCartItem(id: number): Promise<boolean>;
   clearCart(userId: number): Promise<boolean>;
+  
+  // Delivery Address Operations
+  getDeliveryAddresses(userId: number): Promise<DeliveryAddress[]>;
+  getDeliveryAddress(id: number): Promise<DeliveryAddress | undefined>;
+  getDefaultDeliveryAddress(userId: number): Promise<DeliveryAddress | undefined>;
+  createDeliveryAddress(address: InsertDeliveryAddress): Promise<DeliveryAddress>;
+  updateDeliveryAddress(id: number, address: Partial<InsertDeliveryAddress>): Promise<DeliveryAddress | undefined>;
+  deleteDeliveryAddress(id: number): Promise<boolean>;
+  
+  // Order Operations
+  getOrders(): Promise<Order[]>; // For admin
+  getUserOrders(userId: number): Promise<Order[]>; // For individual user
+  getOrder(id: number): Promise<Order | undefined>;
+  createOrder(order: InsertOrder): Promise<Order>;
+  updateOrderStatus(id: number, status: string): Promise<Order | undefined>;
+  
+  // Online Users Operations
+  getOnlineUsers(): Promise<OnlineUser[]>;
+  addOnlineUser(user: OnlineUser): Promise<void>;
+  removeOnlineUser(userId: number): Promise<void>;
+  updateUserActivity(userId: number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private products: Map<number, Product>;
   private cartItems: Map<number, CartItem>;
+  private deliveryAddresses: Map<number, DeliveryAddress>;
+  private orders: Map<number, Order>;
+  private onlineUsers: Map<number, OnlineUser>;
   private currentUserId: number;
   private currentProductId: number;
   private currentCartItemId: number;
+  private currentDeliveryAddressId: number;
+  private currentOrderId: number;
+  
+  // Add admin user for @illia2323
+  private adminUsername = "illia2323";
 
   constructor() {
     this.users = new Map();
     this.products = new Map();
     this.cartItems = new Map();
+    this.deliveryAddresses = new Map();
+    this.orders = new Map();
+    this.onlineUsers = new Map();
     this.currentUserId = 1;
     this.currentProductId = 1;
     this.currentCartItemId = 1;
+    this.currentDeliveryAddressId = 1;
+    this.currentOrderId = 1;
     
     // Initialize with Nike shoe products - all €80
     const price = 8000; // 80 euros in cents
@@ -214,6 +266,128 @@ export class MemStorage implements IStorage {
     
     cartItemsToRemove.forEach(id => this.cartItems.delete(id));
     return true;
+  }
+  
+  // Delivery Address Methods
+  async getDeliveryAddresses(userId: number): Promise<DeliveryAddress[]> {
+    return Array.from(this.deliveryAddresses.values()).filter(
+      (address) => address.userId === userId
+    );
+  }
+  
+  async getDeliveryAddress(id: number): Promise<DeliveryAddress | undefined> {
+    return this.deliveryAddresses.get(id);
+  }
+  
+  async getDefaultDeliveryAddress(userId: number): Promise<DeliveryAddress | undefined> {
+    return Array.from(this.deliveryAddresses.values()).find(
+      (address) => address.userId === userId && address.isDefault === true
+    );
+  }
+  
+  async createDeliveryAddress(insertAddress: InsertDeliveryAddress): Promise<DeliveryAddress> {
+    const id = this.currentDeliveryAddressId++;
+    const address: DeliveryAddress = { ...insertAddress, id };
+    
+    // If this address is marked as default, remove default flag from other addresses
+    if (address.isDefault) {
+      const userAddresses = await this.getDeliveryAddresses(address.userId);
+      userAddresses.forEach((addr) => {
+        if (addr.id !== id && addr.isDefault) {
+          const updated = { ...addr, isDefault: false };
+          this.deliveryAddresses.set(addr.id, updated);
+        }
+      });
+    }
+    
+    this.deliveryAddresses.set(id, address);
+    return address;
+  }
+  
+  async updateDeliveryAddress(id: number, addressUpdate: Partial<InsertDeliveryAddress>): Promise<DeliveryAddress | undefined> {
+    const address = this.deliveryAddresses.get(id);
+    if (!address) return undefined;
+    
+    const updatedAddress = { ...address, ...addressUpdate };
+    
+    // If this address is being marked as default, remove default flag from other addresses
+    if (addressUpdate.isDefault && address.isDefault !== addressUpdate.isDefault) {
+      const userAddresses = await this.getDeliveryAddresses(address.userId);
+      userAddresses.forEach((addr) => {
+        if (addr.id !== id && addr.isDefault) {
+          const updated = { ...addr, isDefault: false };
+          this.deliveryAddresses.set(addr.id, updated);
+        }
+      });
+    }
+    
+    this.deliveryAddresses.set(id, updatedAddress);
+    return updatedAddress;
+  }
+  
+  async deleteDeliveryAddress(id: number): Promise<boolean> {
+    return this.deliveryAddresses.delete(id);
+  }
+  
+  // Order Methods
+  async getOrders(): Promise<Order[]> {
+    return Array.from(this.orders.values());
+  }
+  
+  async getUserOrders(userId: number): Promise<Order[]> {
+    return Array.from(this.orders.values()).filter(
+      (order) => order.userId === userId
+    );
+  }
+  
+  async getOrder(id: number): Promise<Order | undefined> {
+    return this.orders.get(id);
+  }
+  
+  async createOrder(insertOrder: InsertOrder): Promise<Order> {
+    const id = this.currentOrderId++;
+    const order: Order = { ...insertOrder, id };
+    this.orders.set(id, order);
+    return order;
+  }
+  
+  async updateOrderStatus(id: number, status: string): Promise<Order | undefined> {
+    const order = this.orders.get(id);
+    if (!order) return undefined;
+    
+    const updatedOrder = { ...order, status };
+    this.orders.set(id, updatedOrder);
+    return updatedOrder;
+  }
+  
+  // Online Users Methods
+  async getOnlineUsers(): Promise<OnlineUser[]> {
+    return Array.from(this.onlineUsers.values());
+  }
+  
+  async addOnlineUser(user: OnlineUser): Promise<void> {
+    this.onlineUsers.set(user.userId, user);
+  }
+  
+  async removeOnlineUser(userId: number): Promise<void> {
+    this.onlineUsers.delete(userId);
+  }
+  
+  async updateUserActivity(userId: number): Promise<void> {
+    const user = this.onlineUsers.get(userId);
+    if (user) {
+      user.lastActive = new Date();
+      this.onlineUsers.set(userId, user);
+    }
+  }
+  
+  // Helper method to check if a user is admin
+  async isAdmin(userId: number): Promise<boolean> {
+    const user = await this.getUser(userId);
+    if (!user) return false;
+    
+    // Check if user is admin or has specific username
+    return user.isAdmin || user.username === this.adminUsername;
   }
 }
 
