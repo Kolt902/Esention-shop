@@ -172,6 +172,10 @@ export const ru: Translation = {
     close: 'Закрыть',
     save: 'Сохранить',
     cancel: 'Отмена',
+    delete: 'Удалить',
+    deleting: 'Удаление...',
+    edit: 'Изменить',
+    add: 'Добавить',
   },
   product: {
     addToCart: 'В корзину',
@@ -187,6 +191,7 @@ export const ru: Translation = {
     removedFromCart: 'удален из корзины',
     addedToFavorites: 'добавлен в избранное',
     removedFromFavorites: 'удален из избранного',
+    selectSize: 'Выберите размер',
   },
   cart: {
     title: 'Ваша корзина',
@@ -250,6 +255,10 @@ export const en: Translation = {
     close: 'Close',
     save: 'Save',
     cancel: 'Cancel',
+    delete: 'Delete',
+    deleting: 'Deleting...',
+    edit: 'Edit',
+    add: 'Add',
   },
   product: {
     addToCart: 'Add to Cart',
@@ -328,6 +337,10 @@ export const pl: Translation = {
     close: 'Zamknij',
     save: 'Zapisz',
     cancel: 'Anuluj',
+    delete: 'Usuń',
+    deleting: 'Usuwanie...',
+    edit: 'Edytuj',
+    add: 'Dodaj',
   },
   product: {
     addToCart: 'Dodaj do koszyka',
@@ -406,6 +419,10 @@ export const cs: Translation = {
     close: 'Zavřít',
     save: 'Uložit',
     cancel: 'Zrušit',
+    delete: 'Smazat',
+    deleting: 'Mazání...',
+    edit: 'Upravit',
+    add: 'Přidat',
   },
   product: {
     addToCart: 'Přidat do košíku',
@@ -484,6 +501,10 @@ export const de: Translation = {
     close: 'Schließen',
     save: 'Speichern',
     cancel: 'Abbrechen',
+    delete: 'Löschen',
+    deleting: 'Löschen...',
+    edit: 'Bearbeiten',
+    add: 'Hinzufügen',
   },
   product: {
     addToCart: 'In den Warenkorb',

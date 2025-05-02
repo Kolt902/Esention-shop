@@ -12,7 +12,7 @@ import {
   ShoppingCart
 } from "lucide-react";
 import { useStore } from '@/lib/StoreContext';
-import { useNavigate } from 'wouter';
+import { useLocation } from 'wouter';
 import { useCartStore } from '@/lib/CartStore';
 import { Product } from '@/types';
 import { SelectSizeDialog } from './SelectSizeDialog';
@@ -25,7 +25,7 @@ interface FavoritesListProps {
 
 export function FavoritesList({ products, isLoading }: FavoritesListProps) {
   const { t, removeFromFavorites } = useStore();
-  const [, navigate] = useNavigate();
+  const [, navigate] = useLocation();
   const { addToCart } = useCartStore();
   
   // Состояние для диалога выбора размера

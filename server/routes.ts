@@ -6,6 +6,9 @@ import { telegramBot } from "./telegram";
 import { validateTelegramWebApp, ensureAuthenticated } from "./middleware";
 import { insertCartItemSchema, insertProductSchema, insertDeliveryAddressSchema, insertOrderSchema } from "@shared/schema";
 import { z } from "zod";
+import authRoutes from './routes/auth';
+import productRoutes from './routes/products';
+import userRoutes from './routes/user';
 
 // Auth middleware to verify admin privileges
 const checkAdmin = async (req: Request, res: Response, next: NextFunction) => {
@@ -682,6 +685,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: 'Failed to remove admin' });
     }
   });
+  
+  // Set up routes
+  apiRouter.use('/auth', authRoutes);
+  apiRouter.use('/products', productRoutes);
+  apiRouter.use('/user', userRoutes);
   
   // Mount API router
   app.use('/api', apiRouter);

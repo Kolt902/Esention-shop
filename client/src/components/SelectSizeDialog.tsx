@@ -1,16 +1,22 @@
-import { useState } from 'react';
-import { 
+import { Button } from "@/components/ui/button";
+import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { useStore } from '@/lib/StoreContext';
-import { Product } from '@/types';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useState } from "react";
+import { Product } from "@/types";
+import { useStore } from "@/lib/StoreContext";
 
 interface SelectSizeDialogProps {
   open: boolean;
@@ -19,99 +25,64 @@ interface SelectSizeDialogProps {
   onSizeSelected: (size: string) => void;
 }
 
-export function SelectSizeDialog({ 
-  open, 
-  onOpenChange, 
-  product, 
-  onSizeSelected 
+export function SelectSizeDialog({
+  open,
+  onOpenChange,
+  product,
+  onSizeSelected,
 }: SelectSizeDialogProps) {
   const { t } = useStore();
-  
-  // Состояние для выбранного размера
-  const [selectedSize, setSelectedSize] = useState<string>("");
-  
-  // Обработчик подтверждения выбора
-  const handleConfirm = () => {
-    if (selectedSize) {
-      onSizeSelected(selectedSize);
+  const [size, setSize] = useState<string>("");
+
+  const handleSubmit = () => {
+    if (size) {
+      onSizeSelected(size);
     }
   };
-  
-  // Сброс выбранного размера при открытии/закрытии диалога
+
+  // Reset size when dialog opens
   const handleOpenChange = (open: boolean) => {
     if (!open) {
-      setSelectedSize("");
+      setSize("");
     }
     onOpenChange(open);
   };
-  
-  // Группируем размеры для более удобного отображения
-  const getSizeGroups = () => {
-    if (!product.sizes || product.sizes.length === 0) {
-      return [];
-    }
-    
-    // Для размеров обуви (числовые размеры)
-    if (product.sizes.some(size => !isNaN(Number(size)))) {
-      return [product.sizes.sort((a, b) => Number(a) - Number(b))];
-    }
-    
-    // Для размеров одежды (S, M, L, XL и т.д.)
-    const standardSizeOrder = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
-    if (product.sizes.some(size => standardSizeOrder.includes(size))) {
-      return [product.sizes.sort(
-        (a, b) => standardSizeOrder.indexOf(a) - standardSizeOrder.indexOf(b)
-      )];
-    }
-    
-    // Для всех остальных случаев просто возвращаем как есть
-    return [product.sizes];
-  };
-
-  const sizeGroups = getSizeGroups();
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t.product.selectSize}</DialogTitle>
+          <DialogTitle>{product.name}</DialogTitle>
+          <DialogDescription>
+            {t.product.selectSize}
+          </DialogDescription>
         </DialogHeader>
-        
-        {sizeGroups.length > 0 && (
-          <RadioGroup value={selectedSize} onValueChange={setSelectedSize}>
-            <div className="grid grid-cols-3 gap-2">
-              {sizeGroups[0].map((size) => (
-                <div key={size} className="relative">
-                  <RadioGroupItem
-                    value={size}
-                    id={`size-${size}`}
-                    className="peer sr-only"
-                  />
-                  <Label
-                    htmlFor={`size-${size}`}
-                    className="flex h-10 w-full cursor-pointer items-center justify-center rounded-md border border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 peer-data-[state=checked]:text-primary"
-                  >
-                    {size}
-                  </Label>
-                </div>
+        <div className="py-4">
+          <Select value={size} onValueChange={setSize}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={t.product.selectSize} />
+            </SelectTrigger>
+            <SelectContent>
+              {product.sizes?.map((sizeOption) => (
+                <SelectItem key={sizeOption} value={sizeOption}>
+                  {sizeOption}
+                </SelectItem>
               ))}
-            </div>
-          </RadioGroup>
-        )}
-        
-        <DialogFooter className="mt-4">
+            </SelectContent>
+          </Select>
+        </div>
+        <DialogFooter>
           <Button 
             variant="outline" 
-            onClick={() => onOpenChange(false)}
+            onClick={() => handleOpenChange(false)}
           >
             {t.common.cancel}
           </Button>
-          <Button
-            type="submit"
-            disabled={!selectedSize}
-            onClick={handleConfirm}
+          <Button 
+            onClick={handleSubmit} 
+            disabled={!size}
           >
-            {t.common.add}
+            {t.product.addToCart}
           </Button>
         </DialogFooter>
       </DialogContent>

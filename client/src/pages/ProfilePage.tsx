@@ -28,13 +28,13 @@ import { useStore } from '@/lib/StoreContext';
 import OrderHistoryList from '@/components/OrderHistoryList';
 import AddressCard from '@/components/AddressCard';
 import { FavoritesList } from '@/components/FavoritesList';
-import { useNavigate } from 'wouter';
+import { useLocation } from 'wouter';
 import { apiRequest } from '@/lib/queryClient';
 
 export default function ProfilePage() {
   const { t, favorites } = useStore();
   const { toast } = useToast();
-  const [, navigate] = useNavigate();
+  const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("orders");
 
   // Получаем информацию о пользователе

@@ -21,7 +21,7 @@ import {
   DialogHeader,
   DialogTitle
 } from "@/components/ui/dialog";
-import { useNavigate } from 'wouter';
+import { useLocation } from 'wouter';
 import { useStore } from '@/lib/StoreContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
@@ -46,7 +46,7 @@ interface AddressCardProps {
 export default function AddressCard({ address }: AddressCardProps) {
   const { t } = useStore();
   const { toast } = useToast();
-  const [, navigate] = useNavigate();
+  const [, navigate] = useLocation();
   const queryClient = useQueryClient();
   
   // Состояние для диалога удаления
