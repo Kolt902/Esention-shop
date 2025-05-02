@@ -100,7 +100,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Products API
   apiRouter.get('/products', async (req, res) => {
     try {
-      const { category, brand } = req.query;
+      const { category, brand, style, gender, minPrice, maxPrice } = req.query;
       let products = await storage.getProducts();
       
       // Apply category filter if specified
@@ -109,9 +109,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Apply brand filter if specified
-      // Extract brand from product name, assuming format like "Nike Air Force 1"
       if (brand && typeof brand === 'string') {
-        products = products.filter(p => p.name.toLowerCase().includes(brand.toLowerCase()));
+        products = products.filter(p => p.brand.toLowerCase() === brand.toLowerCase());
+      }
+      
+      // Apply style filter if specified
+      if (style && typeof style === 'string') {
+        products = products.filter(p => p.style?.toLowerCase() === style.toLowerCase());
+      }
+      
+      // Apply gender filter if specified
+      if (gender && typeof gender === 'string') {
+        products = products.filter(p => p.gender === gender);
+      }
+      
+      // Apply price range filter if specified
+      if (minPrice && typeof minPrice === 'string') {
+        const minPriceValue = parseInt(minPrice);
+        if (!isNaN(minPriceValue)) {
+          products = products.filter(p => p.price >= minPriceValue);
+        }
+      }
+      
+      if (maxPrice && typeof maxPrice === 'string') {
+        const maxPriceValue = parseInt(maxPrice);
+        if (!isNaN(maxPriceValue)) {
+          products = products.filter(p => p.price <= maxPriceValue);
+        }
       }
       
       res.json(products);

@@ -13,6 +13,10 @@ import { Filter, ChevronDown, X } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { useLocation, useRoute } from "wouter";
 
+// Импорт компонентов фильтрации и карточек стилей
+import FilterPanel from "@/components/FilterPanel";
+import StyleCard from "@/components/StyleCard";
+
 // Импорт изображений
 import oldMoneyImg from "@assets/5235752188695933225.jpg";
 import streetwearImg from "@assets/5235826719263420314.jpg"; 
