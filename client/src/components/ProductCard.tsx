@@ -304,16 +304,6 @@ export default function ProductCard({ product, onAddToCart, onClick, asLink = tr
                 <span className="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2 py-1 rounded">
                   {product.category}
                 </span>
-                
-                {product.inStock ? (
-                  <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">
-                    В наличии
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded">
-                    Нет в наличии
-                  </span>
-                )}
               </div>
             </div>
     
@@ -494,16 +484,6 @@ export default function ProductCard({ product, onAddToCart, onClick, asLink = tr
             <span className="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2 py-1 rounded">
               {product.category}
             </span>
-            
-            {product.inStock ? (
-              <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">
-                В наличии
-              </span>
-            ) : (
-              <span className="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded">
-                Нет в наличии
-              </span>
-            )}
           </div>
         </div>
 
