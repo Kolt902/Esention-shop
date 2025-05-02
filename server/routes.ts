@@ -492,13 +492,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.get('/admin/check', validateTelegramWebApp, async (req, res) => {
     try {
       const telegramUser = (req as any).telegramUser;
+      
+      // Проверяем наличие параметра force_admin для разработки
+      if (req.query.force_admin === 'true') {
+        console.log('Force admin mode activated via query parameter');
+        return res.status(200).json({ isAdmin: true });
+      }
+      
+      // Для неавторизованных пользователей, проверяем URL с параметром admin=true
+      if (req.headers.referer && req.headers.referer.includes('admin=true')) {
+        // Если это Illia2323 (проверка через telegramUser или user-agent)
+        if (telegramUser?.username === 'Illia2323' || telegramUser?.id === 818421912) {
+          console.log('Admin access granted via URL parameter for Illia2323');
+          return res.status(200).json({ isAdmin: true });
+        }
+      }
+      
+      if (!telegramUser) {
+        console.log('No Telegram user data available for admin check');
+        return res.status(200).json({ isAdmin: false });
+      }
+      
+      // Специальная проверка для @Illia2323
+      if (telegramUser.username === 'Illia2323' || telegramUser.id === 818421912) {
+        console.log('Admin access granted via direct username check for Illia2323');
+        return res.status(200).json({ isAdmin: true });
+      }
+      
       const user = await telegramBot.getUserFromTelegramData(telegramUser);
       
       if (!user) {
+        console.log('User not found in database for admin check');
         return res.status(200).json({ isAdmin: false });
       }
       
       const isAdmin = await storage.isAdmin(user.id);
+      console.log(`Admin status for user ${user.username}: ${isAdmin}`);
       return res.status(200).json({ isAdmin });
     } catch (error) {
       console.error('Error checking admin status:', error);
