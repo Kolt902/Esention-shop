@@ -54,6 +54,66 @@ html, body, #root {
   max-width: 80%;
 }
 
+/* Stylish background for store */
+.store-background {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+/* Enhanced product cards */
+.product-card {
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Stylish welcome banner */
+.welcome-banner {
+  background: linear-gradient(90deg, #74ebd5 0%, #9face6 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+.welcome-banner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.1) 100%);
+  transform: skewX(-20deg) translateX(-100%);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: skewX(-20deg) translateX(100%);
+  }
+}
+
+/* Button styles */
+.telegram-button {
+  background: linear-gradient(90deg, #0088CC 0%, #005f8c 100%);
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.telegram-button:hover {
+  background: linear-gradient(90deg, #005f8c 0%, #0088CC 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 136, 204, 0.3);
+}
+
 :root {
       --background: 0 0% 100%;
 --foreground: 20 14.3% 4.1%;
