@@ -328,6 +328,91 @@ export default function StorePage() {
         
         {/* Container for the rest of content */}
         <div className="container mx-auto px-4">
+          {/* Style Categories - MOVED TO TOP */}
+          <section className="mb-8">
+            <h2 className="text-xl font-normal text-black mb-6 uppercase flex items-center">
+              <span className="mr-2">Стили</span>
+              <span className="text-sm bg-black text-white px-2 py-0.5">NEW</span>
+            </h2>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Old Money Style */}
+              <div 
+                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
+                onClick={() => {
+                  handleStyleChange('oldmoney');
+                  handleBrandChange(null);
+                }}
+              >
+                <img 
+                  src="/assets/luxury-brands.jpg" 
+                  alt="Old Money Style" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
+                  <h3 className="text-white text-xl font-light">Old Money</h3>
+                  <p className="text-white/80 text-sm mt-1">Элегантный и сдержанный стиль</p>
+                </div>
+              </div>
+              
+              {/* Streetwear Style */}
+              <div 
+                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
+                onClick={() => {
+                  handleStyleChange('streetwear');
+                  handleBrandChange(null);
+                }}
+              >
+                <img 
+                  src="/assets/streetwear-brands.jpg" 
+                  alt="Streetwear Style" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
+                  <h3 className="text-white text-xl font-light">Streetwear</h3>
+                  <p className="text-white/80 text-sm mt-1">Городской уличный стиль</p>
+                </div>
+              </div>
+              
+              {/* Athleisure Style */}
+              <div 
+                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
+                onClick={() => {
+                  handleStyleChange('athleisure');
+                  handleBrandChange(null);
+                }}
+              >
+                <img 
+                  src="/assets/polo-bags.jpg" 
+                  alt="Athleisure Style" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
+                  <h3 className="text-white text-xl font-light">Athleisure</h3>
+                  <p className="text-white/80 text-sm mt-1">Спортивная эстетика для повседневности</p>
+                </div>
+              </div>
+              
+              {/* Luxury Style */}
+              <div 
+                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
+                onClick={() => {
+                  handleStyleChange('luxury');
+                  handleBrandChange(null);
+                }}
+              >
+                <img 
+                  src="/assets/adidas-tags.jpg" 
+                  alt="Luxury Style" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
+                  <h3 className="text-white text-xl font-light">Luxury</h3>
+                  <p className="text-white/80 text-sm mt-1">Премиальные бренды и эксклюзивность</p>
+                </div>
+              </div>
+            </div>
+          </section>
           {/* Luxury Brands Showcase - Modern Visual Style */}
           <section className="mb-12 mt-8">
             <div className="flex items-center justify-between mb-6">
@@ -702,173 +787,7 @@ export default function StorePage() {
             </div>
           </section>
           
-          {/* Brands Showcase - Before Styles Section */}
-          <section className="mb-8">
-            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide inline-flex items-center">
-              <span className="bg-black text-white px-4 py-1.5 rounded-full mr-2 text-sm">TOP</span>
-              <span>ПОПУЛЯРНЫЕ БРЕНДЫ</span>
-            </h2>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-              <button 
-                onClick={() => handleBrandChange('Nike')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
-              >
-                <div className="transform group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-2xl font-bold">NIKE</span>
-                </div>
-                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
-                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
-                </div>
-              </button>
-              
-              <button 
-                onClick={() => handleBrandChange('Adidas')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
-              >
-                <div className="transform group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-2xl font-bold">ADIDAS</span>
-                </div>
-                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
-                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
-                </div>
-              </button>
-              
-              <button 
-                onClick={() => handleBrandChange('Jordan')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
-              >
-                <div className="transform group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-2xl font-bold">JORDAN</span>
-                </div>
-                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
-                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
-                </div>
-              </button>
-              
-              <button 
-                onClick={() => handleBrandChange('Puma')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
-              >
-                <div className="transform group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-2xl font-bold">PUMA</span>
-                </div>
-                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
-                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
-                </div>
-              </button>
-              
-              <button 
-                onClick={() => handleBrandChange('New Balance')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
-              >
-                <div className="transform group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-2xl font-bold">NB</span>
-                </div>
-                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
-                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
-                </div>
-              </button>
-              
-              <button 
-                onClick={() => handleBrandChange('Balenciaga')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
-              >
-                <div className="transform group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-xl font-bold">BALENCIAGA</span>
-                </div>
-                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
-                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
-                </div>
-              </button>
-            </div>
-          </section>
-          
-          {/* Style Categories */}
-          <section className="mb-8">
-            <h2 className="text-xl font-normal text-black mb-6 uppercase flex items-center">
-              <span className="mr-2">Стили</span>
-              <span className="text-sm bg-black text-white px-2 py-0.5">NEW</span>
-            </h2>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {/* Old Money Style */}
-              <div 
-                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
-                onClick={() => {
-                  handleStyleChange('oldmoney');
-                  handleBrandChange(null);
-                }}
-              >
-                <img 
-                  src="/assets/luxury-brands.jpg" 
-                  alt="Old Money Style" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
-                  <h3 className="text-white text-xl font-light">Old Money</h3>
-                  <p className="text-white/80 text-sm mt-1">Элегантный и сдержанный стиль</p>
-                </div>
-              </div>
-              
-              {/* Streetwear Style */}
-              <div 
-                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
-                onClick={() => {
-                  handleStyleChange('streetwear');
-                  handleBrandChange(null);
-                }}
-              >
-                <img 
-                  src="/assets/streetwear-brands.jpg" 
-                  alt="Streetwear Style" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
-                  <h3 className="text-white text-xl font-light">Streetwear</h3>
-                  <p className="text-white/80 text-sm mt-1">Городской уличный стиль</p>
-                </div>
-              </div>
-              
-              {/* Athleisure Style */}
-              <div 
-                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
-                onClick={() => {
-                  handleStyleChange('athleisure');
-                  handleBrandChange(null);
-                }}
-              >
-                <img 
-                  src="/assets/polo-bags.jpg" 
-                  alt="Athleisure Style" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
-                  <h3 className="text-white text-xl font-light">Athleisure</h3>
-                  <p className="text-white/80 text-sm mt-1">Спортивная эстетика для повседневности</p>
-                </div>
-              </div>
-              
-              {/* Luxury Style */}
-              <div 
-                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
-                onClick={() => {
-                  handleStyleChange('luxury');
-                  handleBrandChange(null);
-                }}
-              >
-                <img 
-                  src="/assets/adidas-tags.jpg" 
-                  alt="Luxury Style" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
-                  <h3 className="text-white text-xl font-light">Luxury</h3>
-                  <p className="text-white/80 text-sm mt-1">Премиальные бренды и эксклюзивность</p>
-                </div>
-              </div>
-            </div>
-          </section>
+          {/* Category Menu - MOVED AFTER STYLES - horizontal navigation */}
           
           {/* Category Menu - Horizontal Scrolling */}
           <section className="mb-8 bg-gray-100 rounded-xl overflow-hidden shadow-sm">
