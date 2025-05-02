@@ -279,27 +279,43 @@ export default function StorePage() {
               <div className="absolute inset-0 bg-black bg-opacity-40"></div>
             </div>
             
-            {/* Content */}
+            {/* Content - современный молодежный стиль */}
             <div className="absolute inset-0 flex items-center">
               <div className="container mx-auto px-4">
                 <div className="max-w-2xl text-white">
-                  <h1 className="text-4xl md:text-6xl font-light mb-6 leading-tight">
-                    ESENTION
-                    <span className="block">КОЛЛЕКЦИЯ 2025</span>
+                  <div className="mb-2">
+                    <span className="inline-block bg-white text-black px-3 py-1 text-sm font-bold rounded-full animate-pulse">
+                      NEW DROP 🔥
+                    </span>
+                  </div>
+                  
+                  <h1 className="text-5xl md:text-7xl font-bold mb-4 leading-none">
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
+                      ESENTION
+                    </span>
+                    <span className="block text-4xl md:text-6xl mt-1 font-extrabold tracking-tight">
+                      SS 2025
+                    </span>
                   </h1>
-                  <p className="text-lg md:text-xl mb-8 text-white/90 max-w-lg">
-                    Изысканные модели от ведущих европейских дизайнеров. Доставка по всей Европе.
+                  
+                  <p className="text-lg md:text-xl mb-8 text-white/90 max-w-lg font-medium">
+                    Уличная эстетика для молодых и дерзких. Твое время сиять! 
+                    <span className="ml-1 relative inline-flex">
+                      <span className="animate-ping absolute h-3 w-3 rounded-full bg-white opacity-75"></span>
+                      <span className="relative rounded-full h-3 w-3 bg-white"></span>
+                    </span>
                   </p>
+                  
                   <div className="flex flex-wrap gap-4">
                     <button 
                       onClick={() => handleCategoryChange('tshirts')}
-                      className="bg-white text-black px-10 py-4 font-medium hover:bg-gray-100 transition-colors"
+                      className="bg-white text-black px-8 py-3 font-bold rounded-full hover:bg-gray-100 transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
                     >
                       ЖЕНСКАЯ КОЛЛЕКЦИЯ
                     </button>
                     <button 
                       onClick={() => handleCategoryChange('hoodies')}
-                      className="border border-white text-white px-10 py-4 font-medium hover:bg-white/10 transition-colors"
+                      className="bg-black/50 backdrop-blur-md border-2 border-white text-white px-8 py-3 font-bold rounded-full hover:bg-white/30 transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
                     >
                       МУЖСКАЯ КОЛЛЕКЦИЯ
                     </button>
