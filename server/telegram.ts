@@ -51,23 +51,51 @@ export class TelegramBot {
 
   // Generate web app URL
   public generateWebAppUrl(): string {
-    // Check if we have a specific WEB_APP_URL environment variable
+    // Логируем переменные окружения для понимания проблемы
+    console.log("Доступные переменные окружения для генерации URL:");
+    console.log("WEB_APP_URL:", process.env.WEB_APP_URL);
+    console.log("REPLIT_DEV_DOMAIN:", process.env.REPLIT_DEV_DOMAIN);
+    console.log("REPLIT_DOMAINS:", process.env.REPLIT_DOMAINS);
+    console.log("REPL_ID:", process.env.REPL_ID);
+    console.log("REPL_SLUG:", process.env.REPL_SLUG);
+    console.log("REPL_OWNER:", process.env.REPL_OWNER);
+    
+    // Используем специальную переменную окружения WEB_APP_URL, если она доступна
     if (process.env.WEB_APP_URL) {
+      console.log("Используем WEB_APP_URL:", process.env.WEB_APP_URL);
       return process.env.WEB_APP_URL;
     }
     
-    // Use replit.dev domain when available (more reliable for preview)
-    if (process.env.REPL_ID && process.env.REPL_SLUG) {
-      // New format: https://{REPL_SLUG}.{REPL_OWNER}.repl.co or .id
-      return `https://${process.env.REPL_ID}.id.repl.co`;
+    // Приоритет 1: Используем REPLIT_DEV_DOMAIN - наиболее надежный вариант в Replit
+    if (process.env.REPLIT_DEV_DOMAIN) {
+      const url = `https://${process.env.REPLIT_DEV_DOMAIN}`;
+      console.log("Используем REPLIT_DEV_DOMAIN:", url);
+      return url;
     }
     
-    // Use repl.co domain when available (more reliable)
+    // Приоритет 2: Используем REPLIT_DOMAINS
+    if (process.env.REPLIT_DOMAINS) {
+      const url = `https://${process.env.REPLIT_DOMAINS}`;
+      console.log("Используем REPLIT_DOMAINS:", url);
+      return url;
+    }
+    
+    // Приоритет 3: Используем новый формат id.repl.co
+    if (process.env.REPL_ID) {
+      const url = `https://${process.env.REPL_ID}.id.repl.co`;
+      console.log("Используем REPL_ID:", url);
+      return url;
+    }
+    
+    // Приоритет 4: Используем формат REPL_SLUG.REPL_OWNER.repl.co
     if (process.env.REPL_SLUG && process.env.REPL_OWNER) {
-      return `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`;
+      const url = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`;
+      console.log("Используем REPL_SLUG и REPL_OWNER:", url);
+      return url;
     }
     
-    // Fallback for local development
+    // Fallback для локальной разработки
+    console.log("Используем локальный URL: http://localhost:5000");
     return 'http://localhost:5000';
   }
 
