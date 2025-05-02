@@ -191,6 +191,14 @@ export default function StorePage() {
     setSelectedCategory(category);
     // Если категория изменилась, включаем фильтр
     setIsFilterOpen(true);
+    
+    // Прокручиваем к списку товаров с небольшой задержкой
+    setTimeout(() => {
+      const productsSection = document.getElementById('products-section');
+      if (productsSection) {
+        productsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
   
   const handleBrandChange = (brand: string | null) => {
@@ -295,42 +303,42 @@ export default function StorePage() {
             <CategoryCard
               name="Кофты"
               icon="🧥"
-              onClick={() => setSelectedCategory('hoodies')}
+              onClick={() => handleCategoryChange('hoodies')}
             />
             
             {/* Карточка категории: Кроссовки */}
             <CategoryCard
               name="Кроссовки"
               icon="👟"
-              onClick={() => setSelectedCategory('sneakers')}
+              onClick={() => handleCategoryChange('sneakers')}
             />
             
             {/* Карточка категории: Футболки */}
             <CategoryCard
               name="Футболки"
               icon="👕"
-              onClick={() => setSelectedCategory('tshirts')}
+              onClick={() => handleCategoryChange('tshirts')}
             />
             
             {/* Карточка категории: Штаны */}
             <CategoryCard
               name="Штаны"
               icon="👖"
-              onClick={() => setSelectedCategory('pants')}
+              onClick={() => handleCategoryChange('pants')}
             />
             
             {/* Карточка категории: Аксессуары */}
             <CategoryCard
               name="Аксессуары"
               icon="🎒"
-              onClick={() => setSelectedCategory('accessories')}
+              onClick={() => handleCategoryChange('accessories')}
             />
             
             {/* Карточка категории: Новинки */}
             <CategoryCard
               name="Новинки"
               icon="✨"
-              onClick={() => setSelectedCategory(null)}
+              onClick={() => handleCategoryChange(null)}
               isNew={true}
             />
           </div>
@@ -412,7 +420,7 @@ export default function StorePage() {
         </div>
 
         {/* Products with filter controls */}
-        <div className="mt-8">
+        <div id="products-section" className="mt-8">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-gray-800 bg-white px-4 py-2 rounded-lg shadow-sm">
               Каталог товаров
