@@ -247,6 +247,15 @@ export default function StorePage() {
       <Header />
       
       <main className="flex-grow pb-20">
+        {/* Discount Banner */}
+        <div className="bg-black text-white py-4 mb-6">
+          <div className="container mx-auto px-4 text-center">
+            <p className="text-sm md:text-base font-medium">
+              🎉 В честь открытия магазина — скидка 10% на все товары до 1 июня 2025 года! 🎉
+            </p>
+          </div>
+        </div>
+        
         {/* Hero Banner - Farfetch Style */}
         <section className="relative mb-8">
           <div className="bg-gray-50 py-12 md:py-20">
