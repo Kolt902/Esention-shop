@@ -531,6 +531,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Admin management endpoints
+  apiRouter.get('/admin/admins', validateTelegramWebApp, checkAdmin, async (req, res) => {
+    try {
+      // Get all users
+      const users = await storage.getAllUsers();
+      
+      // Filter users to only include admins (excluding current user)
+      const telegramUser = (req as any).telegramUser;
+      const currentUser = await telegramBot.getUserFromTelegramData(telegramUser);
+      
+      if (!currentUser) {
+        return res.status(401).json({ message: 'Authentication required' });
+      }
+      
+      const adminUsers = users.filter(user => 
+        user.id !== currentUser.id && 
+        (user.username === 'illia2323' || user.isAdmin)
+      );
+      
+      res.json(adminUsers);
+    } catch (error) {
+      console.error('Error fetching admin users:', error);
+      res.status(500).json({ message: 'Failed to fetch admin users' });
+    }
+  });
+  
+  apiRouter.get('/admin/users', validateTelegramWebApp, checkAdmin, async (req, res) => {
+    try {
+      // Get all users
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ message: 'Failed to fetch users' });
+    }
+  });
+  
+  apiRouter.post('/admin/admins', validateTelegramWebApp, checkAdmin, async (req, res) => {
+    try {
+      const { username } = req.body;
+      
+      if (!username) {
+        return res.status(400).json({ message: 'Username is required' });
+      }
+      
+      // Get user by username
+      const user = await storage.getUserByUsername(username);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      // Check if user is already an admin
+      if (user.isAdmin) {
+        return res.status(400).json({ message: 'User is already an admin' });
+      }
+      
+      // Make user an admin
+      await storage.updateUserAdminStatus(user.id, true);
+      
+      res.status(200).json({ message: 'Admin added successfully' });
+    } catch (error) {
+      console.error('Error adding admin:', error);
+      res.status(500).json({ message: 'Failed to add admin' });
+    }
+  });
+  
+  apiRouter.delete('/admin/admins/:id', validateTelegramWebApp, checkAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      
+      // Check if user exists
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      // Check if user is @illia2323 - cannot remove main admin
+      if (user.username === 'illia2323') {
+        return res.status(403).json({ message: 'Cannot remove the main administrator' });
+      }
+      
+      // Remove admin privileges
+      await storage.updateUserAdminStatus(userId, false);
+      
+      res.status(200).json({ message: 'Admin removed successfully' });
+    } catch (error) {
+      console.error('Error removing admin:', error);
+      res.status(500).json({ message: 'Failed to remove admin' });
+    }
+  });
+  
   // Mount API router
   app.use('/api', apiRouter);
 
