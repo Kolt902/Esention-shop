@@ -125,74 +125,185 @@ export class MemStorage implements IStorage {
   private adminUsernames = ["illia2323", "zakharr99"];
   
   private initializeVirtualClothing() {
-    // Футболки
+    // T-shirts (tops)
+    this.createVirtualClothingItem({
+      name: "Basic White T-Shirt",
+      category: "tops",
+      type: "top",
+      productId: 11, // Связь с физическим продуктом
+      modelPath: "/models/clothing/basic_tshirt_white.glb", 
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/5d8b1a7a-bc3e-483e-a89c-2b021c278724/sportswear-club-mens-t-shirt-ShrJfX.png",
+      colors: ["white", "black", "gray", "blue", "red"],
+      sizes: ["XS", "S", "M", "L", "XL", "XXL"]
+    });
+
+    this.createVirtualClothingItem({
+      name: "Henley Long Sleeve",
+      category: "tops",
+      type: "top",
+      productId: 11,
+      modelPath: "/models/clothing/henley_blue.glb", 
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/c0bcb65d-dd70-4b62-808f-d10ce9b6deee/sportswear-mens-long-sleeve-t-shirt-2cX23n.png",
+      colors: ["blue", "gray", "black", "burgundy"],
+      sizes: ["S", "M", "L", "XL", "XXL"]
+    });
+
+    this.createVirtualClothingItem({
+      name: "Premium Polo",
+      category: "tops",
+      type: "top",
+      productId: 12,
+      modelPath: "/models/clothing/polo_black.glb", 
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/i1-51f980c8-9c57-4087-a2dd-ca2552cef19e/polo-mens-slim-fit-polo-NJ29qL.png",
+      colors: ["black", "navy", "green", "white"],
+      sizes: ["S", "M", "L", "XL"]
+    });
+
+    // Pants/jeans (bottoms)
+    this.createVirtualClothingItem({
+      name: "Classic Blue Jeans",
+      category: "bottoms",
+      type: "bottom",
+      productId: 13,
+      modelPath: "/models/clothing/jeans_blue.glb", 
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/ee3317f9-1404-48f6-8466-967c8d7de6a1/sportswear-mens-woven-cargo-pants-VfhzwG.png",
+      colors: ["blue", "black", "gray"],
+      sizes: ["28", "30", "32", "34", "36", "38"]
+    });
+
+    this.createVirtualClothingItem({
+      name: "Chino Pants",
+      category: "bottoms",
+      type: "bottom",
+      productId: 13,
+      modelPath: "/models/clothing/chinos_beige.glb", 
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/c651c5f3-de44-4b9c-9e6f-0ac264ec9fce/sportswear-mens-woven-pants-fqQw53.png",
+      colors: ["beige", "navy", "olive", "black"],
+      sizes: ["28", "30", "32", "34", "36", "38"]
+    });
+
+    this.createVirtualClothingItem({
+      name: "Jogger Sweatpants",
+      category: "bottoms",
+      type: "bottom",
+      productId: 14,
+      modelPath: "/models/clothing/joggers_gray.glb", 
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/b4722f8f-1af5-4fc7-90c3-5b34e085adff/sportswear-club-fleece-joggers-KflRdQ.png",
+      colors: ["gray", "black", "navy"],
+      sizes: ["XS", "S", "M", "L", "XL", "XXL"]
+    });
+
+    // Shoes
+    this.createVirtualClothingItem({
+      name: "Classic Sneakers",
+      category: "footwear",
+      type: "shoes",
+      productId: 1, // Air Force 1
+      modelPath: "/models/shoes/sneakers_white.glb", 
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/air-force-1-07-mens-shoes-jBrhbr.png",
+      colors: ["white", "black", "blue", "red"],
+      sizes: ["38", "39", "40", "41", "42", "43", "44", "45"]
+    });
+
+    this.createVirtualClothingItem({
+      name: "Running Shoes",
+      category: "footwear",
+      type: "shoes",
+      productId: 5, // Nike Air Zoom Pegasus
+      modelPath: "/models/shoes/running_blue.glb", 
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/c3e2c568-a726-4ded-8a1e-25098e7a994e/pegasus-40-mens-road-running-shoes-bRqpc7.png",
+      colors: ["blue", "gray", "black", "red"],
+      sizes: ["38", "39", "40", "41", "42", "43", "44", "45"]
+    });
+
+    // Accessories
+    this.createVirtualClothingItem({
+      name: "Classic Cap",
+      category: "accessories",
+      type: "accessory",
+      productId: 15,
+      modelPath: "/models/accessories/cap_black.glb", 
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/3d20a1a6-17b6-4578-8962-6c38729767f1/sportswear-heritage-86-adjustable-cap-BbSPJj.png",
+      colors: ["black", "navy", "red", "white"],
+      sizes: ["One Size"]
+    });
+
+    this.createVirtualClothingItem({
+      name: "Leather Belt",
+      category: "accessories",
+      type: "accessory",
+      productId: 16,
+      modelPath: "/models/accessories/belt_brown.glb", 
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/5fe9c4b8-f6a3-46c2-9381-36d15c4772f9/reversible-golf-belt-MnK5vK.png",
+      colors: ["brown", "black"],
+      sizes: ["85cm", "90cm", "95cm", "100cm", "105cm"]
+    });
+    
+    // Additional branded items
     this.createVirtualClothingItem({
       name: "Nike Sportswear T-Shirt",
       category: "tops",
-      type: "t-shirt",
-      productId: 1,
+      type: "top",
+      productId: 11,
       modelPath: "/models/clothing/nike-tshirt.glb",
-      thumbnailUrl: "/images/clothing/nike-tshirt-thumb.jpg",
-      sizes: ["XS", "S", "M", "L", "XL"],
-      colors: ["black", "white", "red", "blue"]
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/49c07831-df25-4122-bd15-de9794095bd0/dri-fit-legend-mens-training-t-shirt-VJGcGZ.png",
+      colors: ["black", "white", "red", "blue"],
+      sizes: ["XS", "S", "M", "L", "XL"]
     });
     
     this.createVirtualClothingItem({
       name: "Adidas Originals Tee",
       category: "tops",
-      type: "t-shirt",
-      productId: 2,
+      type: "top",
+      productId: 17,
       modelPath: "/models/clothing/adidas-tshirt.glb",
-      thumbnailUrl: "/images/clothing/adidas-tshirt-thumb.jpg",
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      colors: ["white", "black", "green"]
+      thumbnailUrl: "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/52bc0a9e8b87443481dcaf160131fd3a_9366/Essentials_Logo_Tee_Black_IC9380_01_laydown.jpg",
+      colors: ["white", "black", "green"],
+      sizes: ["S", "M", "L", "XL", "XXL"]
     });
     
-    // Брюки
     this.createVirtualClothingItem({
       name: "Nike Tech Fleece Pants",
       category: "bottoms",
-      type: "pants",
-      productId: 3,
+      type: "bottom",
+      productId: 14,
       modelPath: "/models/clothing/nike-pants.glb",
-      thumbnailUrl: "/images/clothing/nike-pants-thumb.jpg",
-      sizes: ["XS", "S", "M", "L", "XL"],
-      colors: ["black", "grey", "navy"]
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/b3bdc265-84cf-4352-a4d1-0a48a9d090c5/sportswear-tech-fleece-mens-joggers-2VXTch.png",
+      colors: ["black", "grey", "navy"],
+      sizes: ["XS", "S", "M", "L", "XL"]
     });
     
-    // Обувь
     this.createVirtualClothingItem({
       name: "Nike Air Force 1",
       category: "footwear",
-      type: "sneakers",
+      type: "shoes",
       productId: 1,
       modelPath: "/models/footwear/nike-af1.glb",
-      thumbnailUrl: "/images/footwear/nike-af1-thumb.jpg",
-      sizes: ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"],
-      colors: ["white", "black", "custom"]
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/air-force-1-07-mens-shoes-jBrhbr.png",
+      colors: ["white", "black", "custom"],
+      sizes: ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"]
     });
     
     this.createVirtualClothingItem({
       name: "Adidas Originals Superstar",
       category: "footwear",
-      type: "sneakers",
-      productId: 4,
+      type: "shoes",
+      productId: 20,
       modelPath: "/models/footwear/adidas-superstar.glb",
-      thumbnailUrl: "/images/footwear/adidas-superstar-thumb.jpg",
-      sizes: ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"],
-      colors: ["white", "black", "gold"]
+      thumbnailUrl: "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/68ae7ea7849b43eca70aac1e00f5146d_9366/Stan_Smith_Shoes_White_FX5502_01_standard.jpg",
+      colors: ["white", "black", "gold"],
+      sizes: ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"]
     });
     
-    // Верхняя одежда
     this.createVirtualClothingItem({
       name: "Nike Windrunner Jacket",
       category: "outerwear",
-      type: "jacket",
-      productId: 5,
+      type: "accessory",
+      productId: 18,
       modelPath: "/models/clothing/nike-jacket.glb",
-      thumbnailUrl: "/images/clothing/nike-jacket-thumb.jpg",
-      sizes: ["S", "M", "L", "XL"],
-      colors: ["black", "blue", "red"]
+      thumbnailUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/9a929836-4659-4a17-a341-e8a5ade3ebd7/sportswear-windrunner-big-kids-jacket-Z1JzFH.png",
+      colors: ["black", "blue", "red"],
+      sizes: ["S", "M", "L", "XL"]
     });
   }
 
@@ -232,6 +343,9 @@ export class MemStorage implements IStorage {
       telegramId: "7633144414",
       isAdmin: true
     });
+    
+    // Initialize virtual clothing items for 3D fitting
+    this.initializeVirtualClothing();
     
     // Initialize with Nike shoe products - all €80
     const price = 8000; // 80 euros in cents
