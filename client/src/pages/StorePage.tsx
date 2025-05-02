@@ -700,11 +700,49 @@ export default function StorePage() {
                 )}
               </div>
             ) : (
-              // Показываем организованный каталог, если фильтры не выбраны
-              <BrandCategoryList 
-                onAddToCart={handleAddToCart}
-                onProductClick={handleProductClick}
-              />
+              // Просим пользователя выбрать категорию или бренд для просмотра товаров
+              <div className="py-16 text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                <h3 className="text-2xl font-bold mb-3">Выберите категорию</h3>
+                <p className="text-gray-600 max-w-lg mx-auto mb-8">
+                  Для просмотра товаров выберите категорию, бренд или стиль в разделах выше. 
+                  Вы можете использовать фильтры для более точного поиска.
+                </p>
+                <div className="flex flex-wrap justify-center gap-3">
+                  <button 
+                    onClick={() => handleCategoryChange('sneakers')}
+                    className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
+                  >
+                    Кроссовки
+                  </button>
+                  <button 
+                    onClick={() => handleCategoryChange('tshirts')}
+                    className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
+                  >
+                    Футболки
+                  </button>
+                  <button 
+                    onClick={() => handleCategoryChange('hoodies')}
+                    className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
+                  >
+                    Худи
+                  </button>
+                  <button 
+                    onClick={() => handleBrandChange('Nike')}
+                    className="bg-gray-200 text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-300 transition-colors"
+                  >
+                    Nike
+                  </button>
+                  <button 
+                    onClick={() => handleBrandChange('Adidas')}
+                    className="bg-gray-200 text-black px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-300 transition-colors"
+                  >
+                    Adidas
+                  </button>
+                </div>
+              </div>
             )}
           </section>
         </div>
