@@ -100,6 +100,7 @@ export type Translation = {
     removedFromCart: string;
     addedToFavorites: string;
     removedFromFavorites: string;
+    selectSize: string;
   };
   
   // Cart related translations
@@ -260,6 +261,56 @@ export const en: Translation = {
     edit: 'Edit',
     add: 'Add',
   },
+  profile: {
+    title: 'Profile',
+    guest: 'Guest',
+    notConnected: 'Not connected to Telegram',
+    settings: 'Profile Settings',
+    logout: 'Logout',
+    logoutSuccess: 'Logout Successful',
+    logoutSuccessMessage: 'You have been logged out successfully',
+    logoutError: 'Logout Error',
+    logoutErrorMessage: 'An error occurred while logging out. Please try again.',
+    orders: 'Orders',
+    addresses: 'Addresses',
+    favorites: 'Favorites',
+    noOrders: 'No Orders',
+    noOrdersDescription: 'You have not placed any orders yet',
+    startShopping: 'Start Shopping',
+    noAddresses: 'No Addresses',
+    noAddressesDescription: 'You have not added any delivery addresses yet',
+    addFirstAddress: 'Add First Address',
+    addNewAddress: 'Add New Address',
+    noFavorites: 'No Favorites',
+    noFavoritesDescription: 'You have not added any products to your favorites yet',
+    exploreCatalog: 'Explore Catalog',
+  },
+  addresses: {
+    default: 'Default',
+    setDefault: 'Set as Default',
+    defaultSuccess: 'Default Address Updated',
+    defaultSuccessMessage: 'Your default address has been updated successfully',
+    defaultError: 'Default Address Error',
+    defaultErrorMessage: 'An error occurred while updating your default address. Please try again.',
+    deleteConfirmTitle: 'Delete Address',
+    deleteConfirmDescription: 'Are you sure you want to delete this address?',
+    deleteSuccess: 'Address Deleted',
+    deleteSuccessMessage: 'Address has been deleted successfully',
+    deleteError: 'Delete Error',
+    deleteErrorMessage: 'An error occurred while deleting the address. Please try again.',
+  },
+  orders: {
+    orderNumber: 'Order #',
+    items: 'items',
+    orderItems: 'Order Items',
+    showDetails: 'Show Details',
+    hideDetails: 'Hide Details',
+    statusPending: 'Pending',
+    statusProcessing: 'Processing',
+    statusShipped: 'Shipped',
+    statusDelivered: 'Delivered',
+    statusCancelled: 'Cancelled',
+  },
   product: {
     addToCart: 'Add to Cart',
     adding: 'Adding...',
@@ -274,6 +325,7 @@ export const en: Translation = {
     removedFromCart: 'removed from cart',
     addedToFavorites: 'added to favorites',
     removedFromFavorites: 'removed from favorites',
+    selectSize: 'Select Size',
   },
   cart: {
     title: 'Your Cart',
@@ -356,6 +408,7 @@ export const pl: Translation = {
     removedFromCart: 'usunięto z koszyka',
     addedToFavorites: 'dodano do ulubionych',
     removedFromFavorites: 'usunięto z ulubionych',
+    selectSize: 'Wybierz rozmiar',
   },
   cart: {
     title: 'Twój koszyk',
@@ -438,6 +491,7 @@ export const cs: Translation = {
     removedFromCart: 'odebráno z košíku',
     addedToFavorites: 'přidáno do oblíbených',
     removedFromFavorites: 'odebráno z oblíbených',
+    selectSize: 'Vyberte velikost',
   },
   cart: {
     title: 'Váš košík',
@@ -520,6 +574,7 @@ export const de: Translation = {
     removedFromCart: 'aus dem Warenkorb entfernt',
     addedToFavorites: 'zu Favoriten hinzugefügt',
     removedFromFavorites: 'aus Favoriten entfernt',
+    selectSize: 'Größe wählen',
   },
   cart: {
     title: 'Ihr Warenkorb',
