@@ -6,7 +6,7 @@ import ProductCard from "@/components/ProductCard";
 import CartModal from "@/components/CartModal";
 import CategoryCard from "@/components/CategoryCard";
 import BrandCard from "@/components/BrandCard";
-import { showNotification, getCategoryDisplayName } from "@/lib/utils";
+import { showNotification } from "@/lib/utils";
 import { addTelegramInitDataToRequest, getTelegramWebApp } from "@/lib/telegram";
 import { Product } from "@shared/schema";
 import { Filter, ChevronDown, X } from "lucide-react";
