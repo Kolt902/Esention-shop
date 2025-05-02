@@ -108,8 +108,21 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
   };
 
   return (
-    <Card className="product-card overflow-hidden mb-4 transition-transform duration-200 active:scale-[0.98] shadow-md rounded-xl border-0">
-      <div className="relative h-64 overflow-hidden rounded-t-xl">
+    <Card className="product-card relative overflow-hidden mb-4 transition-all duration-300 active:scale-[0.98] shadow-md rounded-xl border-0 hover:shadow-xl hover:-translate-y-1">
+      {/* Top badges for sales, new arrivals, etc */}
+      {product.isNew && (
+        <div className="absolute top-0 left-0 z-20 bg-black text-white text-xs font-medium px-2.5 py-1 m-2 rounded">
+          NEW
+        </div>
+      )}
+      
+      {product.discount > 0 && (
+        <div className="absolute top-0 right-0 z-20 bg-red-600 text-white text-xs font-medium px-2.5 py-1 m-2 rounded">
+          -{product.discount}%
+        </div>
+      )}
+    
+      <div className="relative h-72 sm:h-80 overflow-hidden rounded-t-xl">
         {/* Отображаем текущее изображение с обработкой ошибок */}
         {imageError ? (
           <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100">
@@ -120,7 +133,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           <img
             src={allImages[currentImageIndex] || defaultImage}
             alt={`${product.name} - изображение ${currentImageIndex + 1}`}
-            className="w-full h-full object-cover transition-opacity duration-300"
+            className="w-full h-full object-cover transition-all duration-700 hover:scale-105"
             loading="lazy"
             onError={(e) => {
               console.error(`Ошибка загрузки изображения: ${allImages[currentImageIndex]}`);
@@ -135,6 +148,9 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
             }}
           />
         )}
+        
+        {/* Elegant black gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70"></div>
         
         {/* Кнопки навигации по изображениям - показываем только если есть несколько изображений */}
         {allImages.length > 1 && (
@@ -155,7 +171,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
             </button>
             
             {/* Индикатор текущего изображения */}
-            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1.5">
+            <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1.5">
               {allImages.map((_, index) => (
                 <span 
                   key={index}
@@ -183,33 +199,55 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           />
         </div>
         
-        {/* Category badge */}
-        <div className="absolute bottom-8 left-2 bg-black bg-opacity-70 text-white text-xs px-3 py-1 rounded-full z-10">
-          {product.category}
-        </div>
-        
-        {/* Brand badge если есть */}
+        {/* Brand badge */}
         {product.brand && (
-          <div className="absolute bottom-2 right-2 bg-white bg-opacity-80 text-black text-xs px-3 py-1 rounded-full z-10 font-medium">
-            {product.brand}
+          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 z-20">
+            <div className="bg-white bg-opacity-90 text-black text-xs px-3 py-1 rounded-full font-medium">
+              {product.brand}
+            </div>
+          </div>
+        )}
+        
+        {/* Рейтинг продукта если есть */}
+        {product.rating > 0 && (
+          <div className="absolute top-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-0.5 rounded-md flex items-center z-10">
+            <svg className="w-3 h-3 text-yellow-300 mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+            </svg>
+            <span>{(product.rating/10).toFixed(1)}</span>
           </div>
         )}
       </div>
 
       <CardContent className="p-5">
-        <div className="flex justify-between items-start">
-          <div>
-            <h4 className="text-lg font-medium text-gray-800">{product.name}</h4>
-            {product.description && (
-              <p className="text-sm text-gray-500 mt-1">
-                {product.description.length > 60 
-                  ? `${product.description.substring(0, 60)}...` 
-                  : product.description}
-              </p>
-            )}
+        <div className="flex flex-col">
+          <div className="flex justify-between items-start mb-1">
+            <h4 className="text-lg font-semibold text-gray-800 tracking-tight line-clamp-1">{product.name}</h4>
+            <div className="font-bold text-lg text-black pl-2">
+              {formatPrice(product.price)}
+            </div>
           </div>
-          <div className="font-bold text-lg text-black">
-            {formatPrice(product.price)}
+          
+          {product.description && (
+            <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+              {product.description}
+            </p>
+          )}
+          
+          <div className="flex items-center space-x-2 mb-1.5">
+            <span className="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2 py-1 rounded">
+              {product.category}
+            </span>
+            
+            {product.inStock ? (
+              <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">
+                В наличии
+              </span>
+            ) : (
+              <span className="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded">
+                Нет в наличии
+              </span>
+            )}
           </div>
         </div>
 

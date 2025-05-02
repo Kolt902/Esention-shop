@@ -336,3 +336,63 @@ button[data-telegram-action],
 *[style*="color:#0088cc"] {
   color: #111111 !important;
 }
+
+/* Custom scrollbar styling */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Horizontal scroll snap styling */
+.snap-x {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.snap-center {
+  scroll-snap-align: center;
+}
+
+/* Mobile horizontal category styles */
+.mobile-horizontal-scroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 1rem;
+  gap: 1rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.mobile-horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-scroll-item {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Better mobile styling for card layouts */
+@media (max-width: 640px) {
+  .brand-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .brand-item {
+    min-width: 220px;
+    scroll-snap-align: start;
+  }
+}

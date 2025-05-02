@@ -1,17 +1,15 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-interface CategoryCardProps {
-  title: string;
-  description: string;
+interface BrandCardProps {
+  name: string;
   imageUrl: string;
   onClick: () => void;
   isSelected?: boolean;
 }
 
-const CategoryCard: React.FC<CategoryCardProps> = ({
-  title,
-  description,
+const BrandCard: React.FC<BrandCardProps> = ({
+  name,
   imageUrl,
   onClick,
   isSelected = false
@@ -20,25 +18,24 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
     <div 
       onClick={onClick}
       className={cn(
-        "relative overflow-hidden rounded-xl cursor-pointer transform transition-all duration-300",
-        "hover:shadow-xl hover:scale-[1.02] shadow-md h-40 md:h-48",
+        "relative overflow-hidden rounded-xl shadow-md cursor-pointer transform transition-all duration-300 h-36 md:h-44",
+        "hover:shadow-xl hover:scale-[1.02]",
         isSelected ? "ring-2 ring-black ring-offset-2 scale-[1.02]" : ""
       )}
     >
       {/* Background Image with Gradient Overlay */}
-      <div className="absolute inset-0 w-full h-full bg-gradient-to-t from-black to-transparent opacity-70 z-10"></div>
+      <div className="absolute inset-0 w-full h-full bg-gradient-to-t from-black via-transparent to-transparent z-10"></div>
       
       {/* Image */}
       <img 
         src={imageUrl} 
-        alt={title} 
+        alt={name} 
         className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 hover:scale-105"
       />
       
       {/* Content */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
-        <h3 className="text-xl font-bold text-white">{title}</h3>
-        <p className="text-sm text-gray-200 mt-1">{description}</p>
+      <div className="absolute bottom-0 left-0 right-0 p-4 z-20 flex flex-col items-center justify-center">
+        <h3 className="text-xl md:text-2xl font-bold text-white text-center">{name}</h3>
       </div>
       
       {/* Selected indicator */}
@@ -51,4 +48,4 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   );
 };
 
-export default CategoryCard;
+export default BrandCard;

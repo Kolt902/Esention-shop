@@ -29,6 +29,10 @@ export const products = pgTable("products", {
   sizes: text("sizes").array().notNull(),
   description: text("description").default("").notNull(),
   brand: text("brand").default("").notNull(),
+  isNew: boolean("is_new").default(false).notNull(),
+  discount: integer("discount").default(0).notNull(),
+  rating: integer("rating").default(0).notNull(),
+  inStock: boolean("in_stock").default(true).notNull(),
 });
 
 export const insertProductSchema = createInsertSchema(products).pick({
@@ -40,6 +44,10 @@ export const insertProductSchema = createInsertSchema(products).pick({
   sizes: true,
   description: true,
   brand: true,
+  isNew: true,
+  discount: true,
+  rating: true,
+  inStock: true,
 });
 
 // Cart Item Schema - could be used for storing cart items

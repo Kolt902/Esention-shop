@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import CartModal from "@/components/CartModal";
 import CategoryCard from "@/components/CategoryCard";
+import BrandCard from "@/components/BrandCard";
 import { showNotification, getCategoryDisplayName } from "@/lib/utils";
 import { addTelegramInitDataToRequest, getTelegramWebApp } from "@/lib/telegram";
 import { Product } from "@shared/schema";
@@ -308,115 +309,143 @@ export default function StorePage() {
             </div>
           </section>
           
-          {/* Category Menu - Horizontal Scrolling */}
-          <section className="mb-8 bg-gray-100 rounded-xl overflow-hidden shadow-sm">
-            <div className="py-5 px-5">
-              <div className="flex justify-between items-center mb-4">
-                <h4 className="text-base font-semibold text-black uppercase bg-white py-1.5 px-4 rounded-full shadow-sm">Все категории</h4>
-                <button 
-                  onClick={() => {
-                    refetch();
-                    queryClient.invalidateQueries({queryKey: ['/api/products']});
-                    showNotification('Данные обновлены');
-                  }}
-                  className="text-black flex items-center text-sm font-medium hover:bg-white px-3 py-1.5 rounded-full transition-all hover:shadow-sm"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  Обновить
-                </button>
+          {/* Popular Brands Section with images */}
+          <section className="mb-10">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-black uppercase tracking-wide">Популярные бренды</h2>
+              <button 
+                onClick={() => {
+                  refetch();
+                  queryClient.invalidateQueries({queryKey: ['/api/products']});
+                  showNotification('Данные обновлены');
+                }}
+                className="text-black flex items-center text-sm font-medium hover:bg-gray-100 px-3 py-1.5 rounded-full transition-all"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Обновить
+              </button>
+            </div>
+            
+            {/* Brand Cards Grid - Scrollable on mobile */}
+            <div className="flex space-x-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+              {/* Nike */}
+              <div className="snap-center min-w-[220px] sm:min-w-[260px]">
+                <BrandCard 
+                  name="Nike" 
+                  imageUrl="/assets/5235752188695932056.jpg"
+                  onClick={() => handleBrandChange('Nike')}
+                  isSelected={selectedBrand === 'Nike'}
+                />
               </div>
-              <div className="flex space-x-3 py-1 px-1 min-w-full overflow-x-auto scrollbar-hide">
-                <button
-                  onClick={() => handleCategoryChange(null)}
-                  className={`whitespace-nowrap px-5 py-2 rounded-full font-medium text-sm transition-all flex items-center ${
-                    selectedCategory === null 
-                      ? 'bg-black text-white shadow-md' 
-                      : 'bg-white text-gray-700 hover:text-black hover:bg-gray-50 shadow-sm'
-                  }`}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                  </svg>
-                  Все категории
-                </button>
-                
-                {filterData?.categories?.map(category => {
-                  // Выбираем подходящую иконку в зависимости от категории
-                  let icon;
-                  switch(category) {
-                    case 'tshirts':
-                      icon = (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 2L2 8l2 2m0 0l4 12h12l4-12-4-4M4 10h16M2 8l6-6h8l6 6" />
-                        </svg>
-                      );
-                      break;
-                    case 'hoodies':
-                      icon = (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7l-5-5H8L3 7z M8 2v5 M16 2v5" />
-                        </svg>
-                      );
-                      break;
-                    case 'shoes':
-                    case 'sneakers':
-                    case 'running':
-                    case 'basketball':
-                      icon = (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l-4-4m0 0l-8 8V4h8l4 4m-4-4v16" />
-                        </svg>
-                      );
-                      break;
-                    case 'streetwear':
-                      icon = (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                      );
-                      break;
-                    default:
-                      icon = (
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      );
-                  }
-                  
-                  return (
-                    <button
-                      key={category}
-                      onClick={() => handleCategoryChange(category)}
-                      className={`whitespace-nowrap px-5 py-2 rounded-full font-medium text-sm transition-all flex items-center ${
-                        selectedCategory === category 
-                          ? 'bg-black text-white shadow-md' 
-                          : 'bg-white text-gray-700 hover:text-black hover:bg-gray-50 shadow-sm'
-                      }`}
-                    >
-                      {icon}
-                      {getCategoryDisplayName(category)}
-                    </button>
-                  );
-                })}
+              
+              {/* Adidas */}
+              <div className="snap-center min-w-[220px] sm:min-w-[260px]">
+                <BrandCard 
+                  name="Adidas" 
+                  imageUrl="/assets/5235752188695932008.jpg"
+                  onClick={() => handleBrandChange('Adidas')}
+                  isSelected={selectedBrand === 'Adidas'}
+                />
               </div>
+              
+              {/* Jordan */}
+              <div className="snap-center min-w-[220px] sm:min-w-[260px]">
+                <BrandCard 
+                  name="Jordan" 
+                  imageUrl="/assets/5235752188695932040.jpg"
+                  onClick={() => handleBrandChange('Jordan')}
+                  isSelected={selectedBrand === 'Jordan'}
+                />
+              </div>
+              
+              {/* Stussy */}
+              <div className="snap-center min-w-[220px] sm:min-w-[260px]">
+                <BrandCard 
+                  name="Stussy" 
+                  imageUrl="/assets/5233500388882249248.jpg"
+                  onClick={() => handleBrandChange('Stussy')}
+                  isSelected={selectedBrand === 'Stussy'}
+                />
+              </div>
+              
+              {/* Balenciaga */}
+              <div className="snap-center min-w-[220px] sm:min-w-[260px]">
+                <BrandCard 
+                  name="Balenciaga" 
+                  imageUrl="/assets/5235826719263420314.jpg"
+                  onClick={() => handleBrandChange('Balenciaga')}
+                  isSelected={selectedBrand === 'Balenciaga'}
+                />
+              </div>
+              
+              {/* All Brands */}
+              <div className="snap-center min-w-[220px] sm:min-w-[260px]">
+                <BrandCard 
+                  name="Все бренды" 
+                  imageUrl="/assets/5235689757051321832.jpg"
+                  onClick={() => handleBrandChange(null)}
+                  isSelected={selectedBrand === null}
+                />
+              </div>
+            </div>
+          </section>
+          
+          {/* Categories with Images */}
+          <section className="mb-10">
+            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Категории товаров</h2>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {/* All Categories */}
+              <CategoryCard 
+                title="Все товары" 
+                description="Все категории" 
+                imageUrl="/assets/5235752188695933189.jpg"
+                onClick={() => handleCategoryChange(null)}
+                isSelected={selectedCategory === null}
+              />
+              
+              {/* Clothing */}
+              <CategoryCard 
+                title="Одежда" 
+                description="Футболки, худи, куртки" 
+                imageUrl="/assets/5235752188695932083.jpg"
+                onClick={() => handleCategoryChange('tshirts')}
+                isSelected={selectedCategory === 'tshirts'}
+              />
+              
+              {/* Shoes */}
+              <CategoryCard 
+                title="Обувь" 
+                description="Кроссовки, ботинки" 
+                imageUrl="/assets/5235752188695931952.jpg"
+                onClick={() => handleCategoryChange('shoes')}
+                isSelected={selectedCategory === 'shoes'}
+              />
+              
+              {/* Accessories */}
+              <CategoryCard 
+                title="Аксессуары" 
+                description="Сумки, головные уборы" 
+                imageUrl="/assets/5235759361291318073.jpg"
+                onClick={() => handleCategoryChange('accessories')}
+                isSelected={selectedCategory === 'accessories'}
+              />
             </div>
           </section>
 
           {/* Products with filter controls */}
           <section className="mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl uppercase text-black bg-gray-100 px-6 py-2 rounded-full shadow-sm">
+            <div className="relative mb-12 pb-4 overflow-hidden">
+              <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+              <h3 className="text-xl uppercase text-black relative inline-block py-4 font-bold after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:bg-black">
                 Каталог товаров
               </h3>
               
               <button 
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="flex items-center gap-2 text-sm font-medium bg-black text-white py-2 px-4 rounded-full hover:bg-gray-800 transition-all shadow-sm"
+                className="absolute right-0 top-4 flex items-center gap-2 text-sm font-medium bg-black text-white py-2 px-4 rounded-full hover:bg-gray-800 transition-all shadow-sm"
               >
                 <Filter className="h-4 w-4" />
                 Фильтры {isFilterOpen ? <ChevronDown className="h-4 w-4 transform rotate-180" /> : <ChevronDown className="h-4 w-4" />}
