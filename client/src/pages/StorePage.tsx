@@ -308,16 +308,22 @@ export default function StorePage() {
                   
                   <div className="flex flex-wrap gap-4">
                     <button 
-                      onClick={() => handleCategoryChange('tshirts')}
+                      onClick={() => handleStyleChange('oldmoney')}
                       className="bg-white text-black px-8 py-3 font-bold rounded-full hover:bg-gray-100 transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
                     >
-                      ЖЕНСКАЯ КОЛЛЕКЦИЯ
+                      OLD MONEY STYLE
                     </button>
                     <button 
-                      onClick={() => handleCategoryChange('hoodies')}
+                      onClick={() => handleStyleChange('streetwear')}
                       className="bg-black/50 backdrop-blur-md border-2 border-white text-white px-8 py-3 font-bold rounded-full hover:bg-white/30 transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
                     >
-                      МУЖСКАЯ КОЛЛЕКЦИЯ
+                      STREETWEAR
+                    </button>
+                    <button 
+                      onClick={() => handleStyleChange('luxury')}
+                      className="bg-gradient-to-r from-amber-500 to-amber-700 text-white px-8 py-3 font-bold rounded-full hover:from-amber-600 hover:to-amber-800 transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
+                    >
+                      LUXURY
                     </button>
                   </div>
                 </div>
