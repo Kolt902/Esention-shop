@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Product } from "@shared/schema";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
-import { getImagesByCategory, DEFAULT_IMAGE, SNEAKERS_IMAGES } from '@/lib/placeholder-images';
+import { getImagesByCategory, DEFAULT_IMAGE } from '@/lib/placeholder-images';
 
 // Функция для проверки валидности URL изображения
 const isValidImageUrl = (url?: string | null): boolean => {
@@ -35,7 +35,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
     ? product.additionalImages.filter(url => isValidImageUrl(url)) 
     : [];
   
-  // Если нет валидных изображений, используем плейсхолдеры по категории
+  // Выбираем подходящие изображения с проверкой на ошибки
   let allImages: string[] = [];
   
   if (validMainImage || validAdditionalImages.length > 0) {
@@ -45,15 +45,16 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
       ...validAdditionalImages
     ];
   } else {
-    // Если валидных изображений нет, генерируем резервные изображения по категории
-    const categoryImage = getImagesByCategory(product.category, product.id);
+    // Если валидных изображений нет, генерируем резервные изображения
+    
+    // Сначала проверяем по имени продукта конкретную модель
+    const productName = product.name || "";
     
     // Создаем несколько вариаций изображений для разнообразия
     allImages = [
-      categoryImage,
-      // Добавляем дополнительные изображения из подходящей категории
-      getImagesByCategory(product.category, product.id + 1),
-      getImagesByCategory(product.category, product.id + 2)
+      getImagesByCategory(product.category, product.id, productName),
+      getImagesByCategory(product.category, product.id + 1, productName),
+      getImagesByCategory(product.category, product.id + 2, productName)
     ];
   }
   
