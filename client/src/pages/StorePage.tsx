@@ -71,22 +71,24 @@ export default function StorePage() {
     console.log("StorePage mounted");
     
     // Применяем фильтры из URL при наличии
-    const categoryMatch = categoryRoute && categoryRoute[0];
-    if (categoryMatch) {
-      console.log("Category from URL:", categoryRoute[1].category);
-      setSelectedCategory(categoryRoute[1].category);
+    // В useRoute первый элемент - это булево значение (совпадение найдено или нет)
+    // второй элемент - это объект параметров
+    if (categoryRoute && categoryRoute[0]) {
+      const categoryParam = categoryRoute[1] as { category: string };
+      console.log("Category from URL:", categoryParam.category);
+      setSelectedCategory(categoryParam.category);
     }
     
-    const brandMatch = brandRoute && brandRoute[0];
-    if (brandMatch) {
-      console.log("Brand from URL:", brandRoute[1].brand);
-      setSelectedBrand(brandRoute[1].brand);
+    if (brandRoute && brandRoute[0]) {
+      const brandParam = brandRoute[1] as { brand: string };
+      console.log("Brand from URL:", brandParam.brand);
+      setSelectedBrand(brandParam.brand);
     }
     
-    const styleMatch = styleRoute && styleRoute[0];
-    if (styleMatch) {
-      console.log("Style from URL:", styleRoute[1].style);
-      setSelectedStyle(styleRoute[1].style);
+    if (styleRoute && styleRoute[0]) {
+      const styleParam = styleRoute[1] as { style: string };
+      console.log("Style from URL:", styleParam.style);
+      setSelectedStyle(styleParam.style);
     }
     
     // Восстановление корзины из localStorage (для постоянного хранения)
@@ -316,7 +318,7 @@ export default function StorePage() {
                 title="Old Money" 
                 description="Элегантный и утонченный стиль" 
                 imageUrl={oldMoneyImg}
-                onClick={() => handleStyleChange('oldmoney')}
+                onClick={() => { setLocation("/style/oldmoney"); handleStyleChange('oldmoney'); }}
                 isSelected={selectedStyle === 'oldmoney'}
               />
               
@@ -325,7 +327,7 @@ export default function StorePage() {
                 title="Streetwear" 
                 description="Современный уличный стиль" 
                 imageUrl={streetwearImg}
-                onClick={() => handleStyleChange('streetwear')}
+                onClick={() => { setLocation("/style/streetwear"); handleStyleChange('streetwear'); }}
                 isSelected={selectedStyle === 'streetwear'}
               />
               
@@ -334,7 +336,7 @@ export default function StorePage() {
                 title="Luxury" 
                 description="Роскошь и премиальные бренды" 
                 imageUrl={luxuryImg}
-                onClick={() => handleStyleChange('luxury')}
+                onClick={() => { setLocation("/style/luxury"); handleStyleChange('luxury'); }}
                 isSelected={selectedStyle === 'luxury'}
               />
               
@@ -343,7 +345,7 @@ export default function StorePage() {
                 title="Athleisure" 
                 description="Спортивный городской стиль" 
                 imageUrl={sportImg}
-                onClick={() => handleStyleChange('sport')}
+                onClick={() => { setLocation("/style/sport"); handleStyleChange('sport'); }}
                 isSelected={selectedStyle === 'sport'}
               />
             </div>

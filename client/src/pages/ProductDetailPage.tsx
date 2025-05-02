@@ -16,7 +16,8 @@ export default function ProductDetailPage() {
   
   // Получаем ID продукта из URL-параметра
   const productRoute = useRoute<{ id: string }>("/product/:id");
-  const productId = productRoute?.params?.id;
+  const productId = productRoute && productRoute[0] ? 
+    (productRoute[1] as { id: string }).id : null;
   
   const { addToCart, removeFromCart, items: cartItems } = useCartStore();
   
