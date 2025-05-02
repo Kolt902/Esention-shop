@@ -20,6 +20,14 @@ export default function BrandPage() {
   // Состояние для категории выбранной на этой странице
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   
+  // Состояние для отслеживания гендерного контекста
+  const [genderContext, setGenderContext] = useState<'mens' | 'womens'>('mens');
+  
+  // Функция для определения пути сброса фильтров в зависимости от гендерного контекста
+  const getResetPath = () => {
+    return `/brand/${brand}`;
+  };
+  
   // Получаем все товары и категории для фильтрации
   const { data: filterData, refetch } = useQuery<{
     categories: string[];
@@ -113,38 +121,46 @@ export default function BrandPage() {
         {/* Фильтр по категориям - горизонтальный скролл */}
         <div className="mb-8 overflow-x-auto pb-2">
           <div className="flex space-x-2 min-w-max">
-            <button
-              onClick={() => handleCategoryChange(null)}
-              className={`px-4 py-2 border rounded-full transition-colors whitespace-nowrap ${
+            <a
+              href={getResetPath()}
+              className={`px-4 py-2 border rounded-full transition-colors whitespace-nowrap inline-block ${
                 selectedCategory === null 
                   ? 'bg-black text-white border-black' 
                   : 'border-gray-300 text-gray-700 hover:border-gray-500'
               }`}
             >
               Все категории
-            </button>
+            </a>
             
-            <button
-              onClick={() => handleCategoryChange('mens')}
-              className={`px-4 py-2 border rounded-full transition-colors whitespace-nowrap ${
+            <a
+              href={`/brand/${brand}?gender=mens`}
+              className={`px-4 py-2 border rounded-full transition-colors whitespace-nowrap inline-block ${
                 selectedCategory === 'mens' 
                   ? 'bg-black text-white border-black' 
                   : 'border-gray-300 text-gray-700 hover:border-gray-500'
               }`}
+              onClick={() => {
+                setGenderContext('mens');
+                handleCategoryChange('mens');
+              }}
             >
               Мужское
-            </button>
+            </a>
             
-            <button
-              onClick={() => handleCategoryChange('womens')}
-              className={`px-4 py-2 border rounded-full transition-colors whitespace-nowrap ${
+            <a
+              href={`/brand/${brand}?gender=womens`}
+              className={`px-4 py-2 border rounded-full transition-colors whitespace-nowrap inline-block ${
                 selectedCategory === 'womens' 
                   ? 'bg-black text-white border-black' 
                   : 'border-gray-300 text-gray-700 hover:border-gray-500'
               }`}
+              onClick={() => {
+                setGenderContext('womens');
+                handleCategoryChange('womens');
+              }}
             >
               Женское
-            </button>
+            </a>
             
             {filterData?.categories?.map(category => (
               category !== 'mens' && category !== 'womens' && (
