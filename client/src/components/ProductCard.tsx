@@ -17,6 +17,26 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
   );
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // Создаем массив всех изображений продукта
+  const allImages = [
+    product.imageUrl,
+    ...(product.additionalImages || [])
+  ].filter(Boolean); // Удаляем пустые значения из массива
+  
+  // Функции для переключения изображений
+  const nextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
+  };
+  
+  const prevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => 
+      prev === 0 ? allImages.length - 1 : prev - 1
+    );
+  };
   
   // Use Telegram MainButton when viewing product details
   useEffect(() => {
@@ -58,14 +78,51 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
   return (
     <Card className="product-card overflow-hidden mb-4 transition-transform duration-200 active:scale-[0.98]">
       <div className="relative h-64 overflow-hidden">
+        {/* Отображаем текущее изображение */}
         <img
-          src={product.imageUrl}
-          alt={product.name}
-          className="w-full h-full object-cover"
-          loading="lazy" // Add lazy loading for images
+          src={allImages[currentImageIndex]}
+          alt={`${product.name} - изображение ${currentImageIndex + 1}`}
+          className="w-full h-full object-cover transition-opacity duration-300"
+          loading="lazy"
         />
+        
+        {/* Кнопки навигации по изображениям - показываем только если есть несколько изображений */}
+        {allImages.length > 1 && (
+          <>
+            <button 
+              onClick={prevImage}
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-1 hover:bg-opacity-90 transition-all"
+              aria-label="Предыдущее изображение"
+            >
+              <ChevronLeft className="h-6 w-6 text-gray-800" />
+            </button>
+            <button 
+              onClick={nextImage}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-70 rounded-full p-1 hover:bg-opacity-90 transition-all"
+              aria-label="Следующее изображение"
+            >
+              <ChevronRight className="h-6 w-6 text-gray-800" />
+            </button>
+            
+            {/* Индикатор текущего изображения */}
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
+              {allImages.map((_, index) => (
+                <span 
+                  key={index}
+                  className={`block h-1.5 rounded-full transition-all ${
+                    currentImageIndex === index 
+                      ? 'w-4 bg-white' 
+                      : 'w-1.5 bg-white bg-opacity-60'
+                  }`}
+                />
+              ))}
+            </div>
+          </>
+        )}
+        
+        {/* Кнопка избранного */}
         <div 
-          className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm"
+          className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm z-10"
           onClick={handleToggleFavorite}  
         >
           <Heart 
@@ -77,9 +134,16 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
         </div>
         
         {/* Category badge */}
-        <div className="absolute bottom-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+        <div className="absolute bottom-8 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded z-10">
           {product.category}
         </div>
+        
+        {/* Brand badge если есть */}
+        {product.brand && (
+          <div className="absolute bottom-2 right-2 bg-white bg-opacity-70 text-black text-xs px-2 py-1 rounded z-10 font-medium">
+            {product.brand}
+          </div>
+        )}
       </div>
 
       <CardContent className="p-4">

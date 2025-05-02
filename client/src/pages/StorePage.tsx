@@ -349,7 +349,7 @@ export default function StorePage() {
           <h4 className="text-base font-semibold text-gray-800 mb-3 pl-2">Все категории</h4>
           <div className="flex space-x-3 py-1 px-1 min-w-full">
             <button
-              onClick={() => setSelectedCategory(null)}
+              onClick={() => handleCategoryChange(null)}
               className={`whitespace-nowrap px-5 py-2 rounded-full font-medium text-sm transition-all flex items-center ${
                 selectedCategory === null 
                   ? 'bg-blue-600 text-white shadow-md' 
@@ -404,7 +404,7 @@ export default function StorePage() {
               return (
                 <button
                   key={category}
-                  onClick={() => setSelectedCategory(category)}
+                  onClick={() => handleCategoryChange(category)}
                   className={`whitespace-nowrap px-5 py-2 rounded-full font-medium text-sm transition-all flex items-center ${
                     selectedCategory === category 
                       ? 'bg-blue-600 text-white shadow-md' 
