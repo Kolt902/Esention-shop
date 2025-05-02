@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import StorePage from "@/pages/StorePage";
+import AdminPage from "@/pages/AdminPage";
 import NotFound from "@/pages/not-found";
 import { useEffect, useState } from "react";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
@@ -13,6 +14,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={StorePage}/>
+      <Route path="/admin" component={AdminPage}/>
       <Route component={NotFound} />
     </Switch>
   );
