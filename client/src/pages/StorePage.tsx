@@ -247,11 +247,14 @@ export default function StorePage() {
       <Header />
       
       <main className="flex-grow pb-20">
-        {/* Discount Banner */}
-        <div className="bg-black text-white py-4 mb-6">
+        {/* Stylish Discount Banner */}
+        <div className="bg-gradient-to-r from-black via-gray-800 to-black text-white py-6 mb-6">
           <div className="container mx-auto px-4 text-center">
-            <p className="text-sm md:text-base font-medium">
-              🎉 В честь открытия магазина — скидка 10% на все товары до 1 июня 2025 года! 🎉
+            <p className="text-lg md:text-xl font-light tracking-wider uppercase">
+              СКИДКА 10% НА ВСЕ ТОВАРЫ
+            </p>
+            <p className="text-sm md:text-base text-gray-300 mt-1">
+              До 1 июня 2025 • Используйте промокод <span className="font-bold">ESENTION10</span>
             </p>
           </div>
         </div>
@@ -356,20 +359,20 @@ export default function StorePage() {
                 </div>
               </div>
               
-              {/* Kids & Accessories - 2-row grid */}
+              {/* Streetwear & Accessories - 2-row grid */}
               <div className="grid grid-rows-2 gap-4">
-                {/* Kids Category */}
+                {/* Streetwear Category */}
                 <div 
                   className="relative aspect-[4/3] overflow-hidden cursor-pointer group"
-                  onClick={() => handleCategoryChange('tshirts')}
+                  onClick={() => handleCategoryChange('streetwear')}
                 >
                   <img 
-                    src="https://images.unsplash.com/photo-1514090458221-65bb69cf63e6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" 
-                    alt="Kids Collection" 
+                    src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                    alt="Streetwear Collection" 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
-                    <h3 className="text-white text-xl font-light">Детская коллекция</h3>
+                    <h3 className="text-white text-xl font-light">Streetwear</h3>
                   </div>
                 </div>
                 

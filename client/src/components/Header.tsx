@@ -1,4 +1,4 @@
-import { X, User, ShoppingCart, Search, Menu, Heart, ChevronDown } from "lucide-react";
+import { X, User, ShoppingCart, Search, Menu, Heart, ChevronDown, Zap } from "lucide-react";
 import { closeTelegramWebApp } from "@/lib/telegram";
 import { Link } from "wouter";
 import { useStore } from "@/lib/StoreContext";
@@ -19,15 +19,14 @@ export default function Header({ title = "FASHION HUB" }: HeaderProps) {
   const [showSearch, setShowSearch] = useState(false);
   const [showWomenMenu, setShowWomenMenu] = useState(false);
   const [showMenMenu, setShowMenMenu] = useState(false);
-  const [showKidsMenu, setShowKidsMenu] = useState(false);
   
   const cartItemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <>
-      {/* Top notification bar - Farfetch style */}
-      <div className="bg-gray-100 py-1.5 px-4 text-center text-xs font-medium text-gray-700">
-        <span>Доставка по всей Европе • Бесплатный возврат в течение 28 дней • Официальная гарантия</span>
+      {/* Top notification bar - Modernized */}
+      <div className="bg-black py-1.5 px-4 text-center text-xs font-medium text-white">
+        <span>Premium Delivery • Free Returns • Official Guarantee</span>
       </div>
 
       {/* Main header */}
@@ -50,7 +49,6 @@ export default function Header({ title = "FASHION HUB" }: HeaderProps) {
                 onClick={() => {
                   setShowWomenMenu(!showWomenMenu);
                   setShowMenMenu(false);
-                  setShowKidsMenu(false);
                 }}
                 className="flex items-center space-x-1 font-medium text-black hover:text-gray-600 transition-colors uppercase text-sm"
               >
@@ -85,7 +83,6 @@ export default function Header({ title = "FASHION HUB" }: HeaderProps) {
                 onClick={() => {
                   setShowMenMenu(!showMenMenu);
                   setShowWomenMenu(false);
-                  setShowKidsMenu(false);
                 }}
                 className="flex items-center space-x-1 font-medium text-black hover:text-gray-600 transition-colors uppercase text-sm"
               >
@@ -114,40 +111,13 @@ export default function Header({ title = "FASHION HUB" }: HeaderProps) {
               )}
             </div>
             
-            {/* Kids dropdown */}
-            <div className="relative">
-              <button 
-                onClick={() => {
-                  setShowKidsMenu(!showKidsMenu);
-                  setShowWomenMenu(false);
-                  setShowMenMenu(false);
-                }}
-                className="flex items-center space-x-1 font-medium text-black hover:text-gray-600 transition-colors uppercase text-sm"
-              >
-                <span>Детям</span>
-                <ChevronDown className="h-4 w-4" />
-              </button>
-              
-              {showKidsMenu && (
-                <div className="absolute top-full left-0 w-64 bg-white shadow-lg p-4 grid grid-cols-1 gap-2">
-                  <Link href="/?category=tshirts&gender=kids">
-                    <a className="py-2 text-sm text-gray-800 hover:text-black hover:underline">Футболки и топы</a>
-                  </Link>
-                  <Link href="/?category=hoodies&gender=kids">
-                    <a className="py-2 text-sm text-gray-800 hover:text-black hover:underline">Кофты и толстовки</a>
-                  </Link>
-                  <Link href="/?category=pants&gender=kids">
-                    <a className="py-2 text-sm text-gray-800 hover:text-black hover:underline">Брюки и шорты</a>
-                  </Link>
-                  <Link href="/?category=sneakers&gender=kids">
-                    <a className="py-2 text-sm text-gray-800 hover:text-black hover:underline">Обувь</a>
-                  </Link>
-                  <Link href="/?category=accessories&gender=kids">
-                    <a className="py-2 text-sm text-gray-800 hover:text-black hover:underline">Аксессуары</a>
-                  </Link>
-                </div>
-              )}
-            </div>
+            {/* Streetwear link */}
+            <Link href="/?category=streetwear">
+              <a className="font-medium text-black hover:text-gray-600 transition-colors uppercase text-sm flex items-center">
+                <Zap className="h-4 w-4 mr-1" />
+                <span>Streetwear</span>
+              </a>
+            </Link>
             
             {/* Designer link */}
             <Link href="/?designer=true">
@@ -228,11 +198,11 @@ export default function Header({ title = "FASHION HUB" }: HeaderProps) {
               </div>
               
               <div className="mt-3 flex flex-wrap gap-2">
-                <span className="text-xs font-medium text-gray-500">Популярные запросы:</span>
+                <span className="text-xs font-medium text-gray-500">Трендовые поиски:</span>
                 <button className="text-xs text-gray-700 hover:text-black hover:underline">Nike</button>
                 <button className="text-xs text-gray-700 hover:text-black hover:underline">Adidas</button>
                 <button className="text-xs text-gray-700 hover:text-black hover:underline">Кроссовки</button>
-                <button className="text-xs text-gray-700 hover:text-black hover:underline">Куртки</button>
+                <button className="text-xs text-gray-700 hover:text-black hover:underline">Streetwear</button>
                 <button className="text-xs text-gray-700 hover:text-black hover:underline">Новинки</button>
               </div>
             </div>
