@@ -1,6 +1,5 @@
 import { storage } from "./storage";
 import { User } from "@shared/schema";
-import { setTimeout } from "node:timers/promises";
 
 interface TelegramUser {
   id: number;
@@ -373,12 +372,12 @@ export class TelegramBot {
             }
           } else {
             // Wait a bit before next poll if no updates
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => { setTimeout(resolve, 1000); });
           }
         } catch (error) {
           console.error('Error in polling loop:', error);
           // Wait before retrying on error
-          await new Promise(resolve => setTimeout(resolve, 5000));
+          await new Promise(resolve => { setTimeout(resolve, 5000); });
         }
       }
     } catch (error) {
