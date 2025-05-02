@@ -695,12 +695,12 @@ export default function StorePage() {
                   )}
                   
                   {(selectedCategory || selectedBrand || selectedStyle) && (
-                    <a 
-                      href={getResetPath()}
+                    <button 
+                      onClick={() => setLocation(getResetPath())}
                       className="py-1 px-3 rounded-full text-sm text-black border border-gray-300 hover:bg-gray-50"
                     >
                       Сбросить все фильтры
-                    </a>
+                    </button>
                   )}
                 </div>
               </div>
@@ -727,12 +727,12 @@ export default function StorePage() {
                     <p className="text-gray-500 max-w-md mx-auto">
                       По выбранным фильтрам товаров не найдено. Попробуйте изменить параметры фильтрации.
                     </p>
-                    <a
-                      href={getResetPath()}
+                    <button
+                      onClick={() => setLocation(getResetPath())}
                       className="mt-6 bg-black text-white py-2 px-6 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors inline-block"
                     >
                       Сбросить фильтры
-                    </a>
+                    </button>
                   </div>
                 )}
               </div>
