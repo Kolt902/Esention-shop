@@ -72,9 +72,35 @@ html, body, #root {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* Category Cards */
+.category-card {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.category-icon-container {
+  transition: all 0.3s ease;
+  background: linear-gradient(145deg, #f0f0f0, #e6e6e6);
+  border-radius: 50%;
+  font-size: 2rem;
+  color: #0088CC;
+}
+
+.category-card:hover .category-icon-container {
+  background: linear-gradient(145deg, #0088CC, #006699);
+  color: white;
+}
+
 /* Stylish welcome banner */
 .welcome-banner {
-  background: linear-gradient(90deg, #74ebd5 0%, #9face6 100%);
+  background: linear-gradient(90deg, #0088CC, #00a1f1);
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;

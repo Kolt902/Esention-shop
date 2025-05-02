@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import CartModal from "@/components/CartModal";
+import CategoryCard from "@/components/CategoryCard";
 import { showNotification } from "@/lib/utils";
 import { addTelegramInitDataToRequest, getTelegramWebApp } from "@/lib/telegram";
 import { Product } from "@shared/schema";
@@ -276,18 +277,68 @@ export default function StorePage() {
       <main className="flex-grow container mx-auto px-4 py-6 pb-20">
         {/* Добавлен нижний отступ pb-20 для области футера */}
         {/* Welcome Banner */}
-        <div className="welcome-banner p-6 mb-4">
-          <h2 className="text-2xl font-bold text-center text-white drop-shadow-md">
+        <div className="welcome-banner p-6 mb-6 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg">
+          <h2 className="text-3xl font-bold text-center text-white drop-shadow-md">
             Добро пожаловать в магазин
           </h2>
           <p className="text-white text-center mt-2 font-medium drop-shadow-sm">
-            Explore our latest collection
+            Выберите категорию или смотрите все товары
           </p>
         </div>
         
-        {/* Category Menu */}
+        {/* Featured Categories Grid */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 pl-2">Выберите категорию</h2>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {/* Карточка категории: Кофты */}
+            <CategoryCard
+              name="Кофты"
+              icon="🧥"
+              onClick={() => setSelectedCategory('hoodies')}
+            />
+            
+            {/* Карточка категории: Кроссовки */}
+            <CategoryCard
+              name="Кроссовки"
+              icon="👟"
+              onClick={() => setSelectedCategory('sneakers')}
+            />
+            
+            {/* Карточка категории: Футболки */}
+            <CategoryCard
+              name="Футболки"
+              icon="👕"
+              onClick={() => setSelectedCategory('tshirts')}
+            />
+            
+            {/* Карточка категории: Штаны */}
+            <CategoryCard
+              name="Штаны"
+              icon="👖"
+              onClick={() => setSelectedCategory('pants')}
+            />
+            
+            {/* Карточка категории: Аксессуары */}
+            <CategoryCard
+              name="Аксессуары"
+              icon="🎒"
+              onClick={() => setSelectedCategory('accessories')}
+            />
+            
+            {/* Карточка категории: Новинки */}
+            <CategoryCard
+              name="Новинки"
+              icon="✨"
+              onClick={() => setSelectedCategory(null)}
+              isNew={true}
+            />
+          </div>
+        </div>
+        
+        {/* Category Menu - Horizontal Scrolling */}
         <div className="overflow-x-auto mb-6 bg-white/80 backdrop-blur-sm rounded-lg shadow-sm p-4">
-          <h4 className="text-base font-semibold text-gray-800 mb-3 pl-2">Категории</h4>
+          <h4 className="text-base font-semibold text-gray-800 mb-3 pl-2">Все категории</h4>
           <div className="flex space-x-3 py-1 px-1 min-w-full">
             <button
               onClick={() => setSelectedCategory(null)}
