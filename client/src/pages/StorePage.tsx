@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import CartModal from "@/components/CartModal";
 import { showNotification } from "@/lib/utils";
-import { initTelegramWebApp, addTelegramInitDataToRequest } from "@/lib/telegram";
+import { addTelegramInitDataToRequest } from "@/lib/telegram";
 import { Product } from "@shared/schema";
 
 interface CartItem {
@@ -18,21 +18,17 @@ export default function StorePage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Initialize Telegram WebApp
+  // Записываем в консоль для отладки, что компонент загружен
   useEffect(() => {
-    initTelegramWebApp();
+    console.log("StorePage mounted");
   }, []);
 
   // Fetch products
-  const { data: products, isLoading, error } = useQuery({
+  const { data: products = [], isLoading, error } = useQuery<Product[]>({
     queryKey: ['/api/products'],
     staleTime: 60000, // 1 minute
     retry: 3, // Retry failed requests up to 3 times
     retryDelay: 1000, // Wait 1 second between retries
-    onError: (err) => {
-      console.error('Error fetching products:', err);
-      showNotification('Не удалось загрузить продукты. Пожалуйста, попробуйте снова.');
-    }
   });
 
   // Add to cart handler
@@ -94,21 +90,37 @@ export default function StorePage() {
           </h3>
 
           {isLoading ? (
-            <div className="text-center py-8">Loading products...</div>
+            <div className="text-center py-8">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Загрузка...</span>
+              </div>
+              <p className="mt-4">Загрузка продуктов...</p>
+            </div>
           ) : error ? (
-            <div className="text-center py-8 text-red-500">
-              Error loading products
+            <div className="text-center py-8">
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <p>Ошибка загрузки продуктов. Пожалуйста, попробуйте снова.</p>
+              </div>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Обновить страницу
+              </button>
             </div>
           ) : products && products.length > 0 ? (
-            products.map((product: Product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={handleAddToCart}
-              />
-            ))
+            <div className="space-y-4">
+              {products.map((product: Product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={handleAddToCart}
+                />
+              ))}
+            </div>
           ) : (
-            <div className="text-center py-8">No products available</div>
+            <div className="text-center py-8 bg-yellow-50 border border-yellow-200 rounded p-4">
+              <p className="text-yellow-700">Нет доступных продуктов</p>
+            </div>
           )}
         </div>
       </main>
