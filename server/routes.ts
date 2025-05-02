@@ -68,7 +68,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Products API
   apiRouter.get('/products', async (req, res) => {
     try {
-      const products = await storage.getProducts();
+      const { category, brand } = req.query;
+      let products = await storage.getProducts();
+      
+      // Apply category filter if specified
+      if (category && typeof category === 'string') {
+        products = products.filter(p => p.category === category);
+      }
+      
+      // Apply brand filter if specified
+      // Extract brand from product name, assuming format like "Nike Air Force 1"
+      if (brand && typeof brand === 'string') {
+        products = products.filter(p => p.name.toLowerCase().includes(brand.toLowerCase()));
+      }
+      
       res.json(products);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -192,6 +205,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error clearing cart:', error);
       res.status(500).json({ message: 'Failed to clear cart' });
+    }
+  });
+  
+  // Endpoint to get all unique categories and brands
+  apiRouter.get('/categories', async (req, res) => {
+    try {
+      const products = await storage.getProducts();
+      
+      // Extract unique categories
+      const categories = [...new Set(products.map(p => p.category))];
+      
+      // Extract brands from product names (assuming first word is brand name)
+      const brandSet = new Set<string>();
+      products.forEach(p => {
+        const brandName = p.name.split(' ')[0]; // Extract first word as brand
+        if (brandName) brandSet.add(brandName);
+      });
+      const brands = [...brandSet];
+      
+      res.json({ categories, brands });
+    } catch (error) {
+      console.error('Error fetching categories and brands:', error);
+      res.status(500).json({ message: 'Failed to fetch categories and brands' });
     }
   });
   
