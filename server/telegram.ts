@@ -130,29 +130,80 @@ export class TelegramBot {
 
   // Send welcome message with web app button
   public async sendWelcomeMessage(chatId: number): Promise<any> {
-    // Используем прямой URL для Replit, чтобы обеспечить надежное соединение
+    // Получаем URL через единую функцию для согласованности
     let webAppUrl = this.generateWebAppUrl();
     
     // Логируем URL для отладки
     console.log(`Generating welcome message with WebApp URL: ${webAppUrl}`);
     
-    // Проверим наличие REPLIT_DEV_DOMAIN или REPLIT_DOMAINS (высокий приоритет)
-    if (process.env.REPLIT_DEV_DOMAIN) {
-      webAppUrl = `https://${process.env.REPLIT_DEV_DOMAIN}`;
-      console.log(`Using REPLIT_DEV_DOMAIN for WebApp URL: ${webAppUrl}`);
-    } else if (process.env.REPLIT_DOMAINS) {
-      webAppUrl = `https://${process.env.REPLIT_DOMAINS}`;
-      console.log(`Using REPLIT_DOMAINS for WebApp URL: ${webAppUrl}`);
+    // Проверяем доступность URL с повторными попытками
+    let isUrlAccessible = false;
+    let retryCount = 0;
+    const maxRetries = 3;
+    
+    // Повторяем проверку доступности несколько раз в случае проблем с сетью
+    while (!isUrlAccessible && retryCount < maxRetries) {
+      try {
+        console.log(`Checking WebApp URL availability (attempt ${retryCount + 1}/${maxRetries}): ${webAppUrl}`);
+        // Создаем контроллер для обработки таймаута
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 секунд таймаут
+        
+        const response = await fetch(webAppUrl, { 
+          method: 'HEAD',
+          headers: { 'Cache-Control': 'no-cache' }, // Избегаем кеширования
+          signal: controller.signal // Используем AbortController вместо timeout
+        });
+        
+        // Очищаем таймаут, если запрос завершился до его срабатывания
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+          console.log(`WebApp URL is accessible: ${response.status} ${response.statusText}`);
+          isUrlAccessible = true;
+        } else {
+          console.warn(`WebApp URL responded with status: ${response.status} ${response.statusText}`);
+        }
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        console.warn(`Error checking WebApp URL (attempt ${retryCount + 1}): ${errorMessage}`);
+        
+        // Только для последней попытки выводим детали
+        if (retryCount === maxRetries - 1) {
+          console.error(`Final WebApp URL check failed after ${maxRetries} attempts`);
+        }
+      }
+      
+      retryCount++;
+      
+      if (!isUrlAccessible && retryCount < maxRetries) {
+        // Ждем перед следующей попыткой (с нарастающим временем ожидания)
+        const waitTime = 1000 * retryCount; 
+        console.log(`Waiting ${waitTime}ms before next attempt...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+      }
     }
     
-    // Проверка доступности URL
-    try {
-      const response = await fetch(webAppUrl, { method: 'HEAD' });
-      console.log(`WebApp URL status check: ${response.status} ${response.statusText}`);
-    } catch (e) {
-      // Безопасно обрабатываем ошибку как любой тип
-      const errorMessage = e instanceof Error ? e.message : String(e);
-      console.warn(`Error checking WebApp URL: ${errorMessage}`);
+    // Если URL недоступен после всех попыток, используем альтернативные варианты
+    if (!isUrlAccessible) {
+      console.warn("WebApp URL is not accessible, trying alternative methods");
+      
+      // Пробуем другие варианты URL
+      if (process.env.REPLIT_DEV_DOMAIN) {
+        const altUrl = `https://${process.env.REPLIT_DEV_DOMAIN}`;
+        console.log(`Trying alternative URL (REPLIT_DEV_DOMAIN): ${altUrl}`);
+        
+        try {
+          const altResponse = await fetch(altUrl, { method: 'HEAD' });
+          if (altResponse.ok) {
+            console.log(`Alternative URL is accessible: ${altResponse.status}`);
+            webAppUrl = altUrl;
+            isUrlAccessible = true;
+          }
+        } catch (e) {
+          console.warn(`Alternative URL is also not accessible`);
+        }
+      }
     }
     
     // Проверяем, является ли пользователь администратором
@@ -303,7 +354,7 @@ export class TelegramBot {
             console.error(`Telegram getUpdates error: ${JSON.stringify(errorData)}`);
             
             // Wait before retrying on error
-            await setTimeout(5000);
+            await new Promise(resolve => setTimeout(resolve, 5000));
             continue;
           }
           
@@ -322,12 +373,12 @@ export class TelegramBot {
             }
           } else {
             // Wait a bit before next poll if no updates
-            await setTimeout(1000);
+            await new Promise(resolve => setTimeout(resolve, 1000));
           }
         } catch (error) {
           console.error('Error in polling loop:', error);
           // Wait before retrying on error
-          await setTimeout(5000);
+          await new Promise(resolve => setTimeout(resolve, 5000));
         }
       }
     } catch (error) {

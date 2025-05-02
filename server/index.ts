@@ -73,69 +73,94 @@ app.use((req, res, next) => {
       console.log("Bot will be accessible to everyone as requested");
       
       try {
-        // Get replit domains for the web app
-        const webAppUrl = process.env.REPLIT_DEV_DOMAIN ? 
-          `https://${process.env.REPLIT_DEV_DOMAIN}` : 
-          process.env.REPLIT_DOMAINS ? 
-            `https://${process.env.REPLIT_DOMAINS}` : 
-            null;
-            
-        if (webAppUrl) {
-          console.log(`Using Web App URL: ${webAppUrl}`);
-          
-          // Set bot commands and menu button
-          fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/setMyCommands`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              commands: [
-                {
-                  command: 'start',
-                  description: 'Открыть магазин'
-                },
-                {
-                  command: 'help',
-                  description: 'Показать справку'
-                }
-              ]
-            })
-          }).then(res => res.json())
-            .then(data => console.log('Set bot commands result:', data))
-            .catch(err => console.error('Error setting bot commands:', err));
-          
-          // Set the web app as a menu button for the bot
-          fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/setChatMenuButton`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              menu_button: {
-                type: 'web_app',
-                text: 'Открыть магазин',
-                web_app: {
-                  url: webAppUrl
-                }
-              }
-            })
-          }).then(res => res.json())
-            .then(data => console.log('Set menu button result:', data))
-            .catch(err => console.error('Error setting menu button:', err));
+        // Используем метод из класса TelegramBot для получения URL
+        const webAppUrl = telegramBot.generateWebAppUrl();
+        console.log(`Using Web App URL: ${webAppUrl}`);
+        
+        // Проверяем доступность URL перед использованием
+        try {
+          const response = await fetch(webAppUrl, { method: 'HEAD' });
+          if (response.ok) {
+            console.log(`Web App URL is accessible: ${response.status} ${response.statusText}`);
+          } else {
+            console.warn(`Web App URL responded with status: ${response.status} ${response.statusText}`);
+          }
+        } catch (error) {
+          console.warn(`Error checking Web App URL accessibility: ${error instanceof Error ? error.message : String(error)}`);
         }
         
-        // Start polling for updates instead of using webhook
+        // Настраиваем команды бота с повторными попытками
+        const setCommands = async (retries = 3) => {
+          for (let i = 0; i < retries; i++) {
+            try {
+              const response = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/setMyCommands`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  commands: [
+                    { command: 'start', description: 'Открыть магазин' },
+                    { command: 'help', description: 'Показать справку' }
+                  ]
+                })
+              });
+              const data = await response.json();
+              console.log('Set bot commands result:', data);
+              return data;
+            } catch (err) {
+              console.error(`Error setting bot commands (attempt ${i+1}/${retries}):`, err);
+              if (i === retries - 1) throw err;
+              await new Promise(r => setTimeout(r, 1000)); // Ждем секунду перед повторной попыткой
+            }
+          }
+        };
+        
+        // Настраиваем кнопку меню с повторными попытками
+        const setMenuButton = async (retries = 3) => {
+          for (let i = 0; i < retries; i++) {
+            try {
+              const response = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/setChatMenuButton`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  menu_button: {
+                    type: 'web_app',
+                    text: 'Открыть магазин',
+                    web_app: { url: webAppUrl }
+                  }
+                })
+              });
+              const data = await response.json();
+              console.log('Set menu button result:', data);
+              return data;
+            } catch (err) {
+              console.error(`Error setting menu button (attempt ${i+1}/${retries}):`, err);
+              if (i === retries - 1) throw err;
+              await new Promise(r => setTimeout(r, 1000)); // Ждем секунду перед повторной попыткой
+            }
+          }
+        };
+        
+        // Выполняем настройку параллельно для ускорения
+        await Promise.all([
+          setCommands().catch(e => console.error('Failed to set commands:', e)),
+          setMenuButton().catch(e => console.error('Failed to set menu button:', e))
+        ]);
+        
+        // Запускаем поллинг после настройки команд и меню
         console.log("Starting Telegram polling (long-polling mode)");
         
-        // Start polling in background
+        // Удаляем webhook перед началом поллинга
+        const webhookResponse = await telegramBot.deleteWebhook();
+        console.log("Webhook deleted response:", webhookResponse);
+        
+        // Запускаем поллинг в фоне
         telegramBot.startPolling().catch(error => {
           console.error("Error in polling main loop:", error);
         });
         
         console.log("Telegram bot initialized in polling mode");
       } catch (error) {
-        console.error("Error setting up Telegram webhook:", error);
+        console.error("Error setting up Telegram bot:", error);
       }
     } else {
       console.warn("TELEGRAM_BOT_TOKEN not provided, bot functionality will be limited");

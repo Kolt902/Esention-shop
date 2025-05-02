@@ -77,58 +77,122 @@ export function getTelegramWebApp(): TelegramWebApp | null {
 }
 
 // Initialize Telegram WebApp with enhanced error handling and retries
-export function initTelegramWebApp(): boolean {
+export function initTelegramWebApp(maxRetries = 3): boolean {
   try {
     console.log("Initializing Telegram Web App...");
     
-    // Проверка наличия Telegram WebApp - более надежная проверка
+    // Проверка наличия Window объекта
     if (typeof window === 'undefined') {
       console.error("Window object is not available");
       return false;
     }
     
-    // Дополнительная проверка, чтобы видеть, что доступно
+    // Определяем, скаким методом мы должны инициализировать TG WebApp
+    // (поведение зависит от версии Telegram WebApp API)
+    let useInitializationMethod = 'auto';
+    
+    // Проверяем доступность объектов с подробным логированием
     if ('Telegram' in window) {
-      console.log("Telegram object is available in window");
+      console.log("√ Telegram object is available in window");
+      
       if ('WebApp' in (window as any).Telegram) {
-        console.log("WebApp object is available in Telegram");
+        console.log("√ WebApp object is available in Telegram");
+        
+        // Получаем объект WebApp
+        const webApp = (window as any).Telegram.WebApp;
+        
+        // Логируем версию для отладки
+        try {
+          const versionInfo = webApp.version || 'unknown';
+          console.log(`Detected Telegram WebApp version: ${versionInfo}`);
+          
+          // Определяем метод инициализации в зависимости от версии
+          if (versionInfo && typeof versionInfo === 'string') {
+            // Версия может быть в формате "6.0" или "6.5"
+            const majorVersion = parseFloat(versionInfo);
+            if (majorVersion >= 6.0) {
+              useInitializationMethod = 'modern';
+              console.log("Using modern WebApp initialization method (v6.0+)");
+            } else {
+              useInitializationMethod = 'legacy';
+              console.log("Using legacy WebApp initialization method (<v6.0)");
+            }
+          }
+        } catch (e) {
+          console.warn("Couldn't detect Telegram WebApp version, using auto detection");
+        }
+        
+        // Начинаем инициализацию с проверкой и повторными попытками
+        return initializeWebAppWithRetries(maxRetries, useInitializationMethod);
       } else {
-        console.warn("WebApp object is NOT available in Telegram");
+        console.warn("× WebApp object is NOT available in Telegram");
       }
     } else {
-      console.warn("Telegram object is NOT available in window");
+      console.warn("× Telegram object is NOT available in window");
     }
     
-    const webApp = getTelegramWebApp();
-    
-    if (webApp) {
-      // Call ready() to notify Telegram that we're ready
-      console.log("Telegram Web App found, calling ready()");
+    // Если Telegram не доступен, используем запасной режим
+    console.log("Telegram Web App not found, running in standalone mode");
+    setFallbackColors();
+    return false;
+  } catch (error) {
+    console.error("Error in main initTelegramWebApp function:", error);
+    setFallbackColors();
+    return false;
+  }
+}
+
+// Вспомогательная функция для инициализации WebApp с повторными попытками
+function initializeWebAppWithRetries(maxRetries: number, method: string): boolean {
+  let retryCount = 0;
+  let success = false;
+  
+  while (retryCount < maxRetries && !success) {
+    try {
+      const webApp = getTelegramWebApp();
       
-      try {
-        webApp.ready();
-      } catch (readyError) {
-        console.error("Error calling WebApp.ready():", readyError);
-        // Continue anyway, as the app can still function
+      if (!webApp) {
+        console.warn(`WebApp not available (attempt ${retryCount + 1}/${maxRetries})`);
+        retryCount++;
+        if (retryCount < maxRetries) {
+          console.log(`Waiting before retry ${retryCount + 1}...`);
+          // В браузере мы должны использовать setTimeout вместо await
+          // Здесь делаем синхронную задержку между попытками
+          const now = Date.now();
+          while (Date.now() - now < 300 * retryCount) { /* синхронное ожидание */ }
+        }
+        continue;
       }
       
-      // Ensure the viewport is expanded in Telegram
+      // Call ready() to notify Telegram that we're ready
+      console.log(`Attempting to initialize WebApp (attempt ${retryCount + 1}/${maxRetries})`);
+      
+      // 1. Инициализация с вызовом ready()
+      if (method === 'auto' || method === 'modern' || method === 'legacy') {
+        try {
+          console.log("Calling WebApp.ready()");
+          webApp.ready();
+        } catch (readyError) {
+          console.error("Error calling WebApp.ready():", readyError);
+        }
+      }
+      
+      // 2. Расширяем видимую область в Telegram (если поддерживается)
       try {
-        if (webApp.expand && !webApp.isExpanded) {
+        if (typeof webApp.expand === 'function' && !webApp.isExpanded) {
           console.log("Expanding Telegram WebApp viewport");
           webApp.expand();
         }
       } catch (expandError) {
-        console.error("Error expanding Telegram viewport:", expandError);
-        // Continue anyway, as this is not critical
+        console.warn("Error expanding Telegram viewport:", expandError);
       }
       
-      // Настройка цветов темы
+      // 3. Настройка цветов темы
       try {
         if (webApp.themeParams) {
-          console.log("Applying Telegram theme parameters:", webApp.themeParams);
+          console.log("Applying Telegram theme parameters");
           
-          // Set CSS variables for theming
+          // Маппинг параметров темы на CSS переменные
           const themeMapping = {
             bg_color: '--tg-theme-bg-color',
             text_color: '--tg-theme-text-color',
@@ -138,7 +202,7 @@ export function initTelegramWebApp(): boolean {
             link_color: '--tg-theme-link-color'
           };
           
-          // Apply all available theme parameters
+          // Применяем все доступные параметры темы
           Object.entries(themeMapping).forEach(([key, cssVar]) => {
             const value = webApp.themeParams[key as keyof typeof webApp.themeParams];
             if (value) {
@@ -146,7 +210,7 @@ export function initTelegramWebApp(): boolean {
             }
           });
           
-          // Устанавливаем дополнительные свойства для дизайна в Telegram
+          // Добавляем класс, чтобы CSS мог определить запуск в Telegram
           document.documentElement.classList.add('telegram-webapp');
         } else {
           console.log("No Telegram theme parameters found, using defaults");
@@ -157,28 +221,38 @@ export function initTelegramWebApp(): boolean {
         setFallbackColors();
       }
       
-      // Настройка кнопки возврата (Back Button)
+      // 4. Настройка кнопки возврата (если поддерживается)
       try {
-        // Проверяем наличие BackButton и поддержку его методов
         if (webApp.BackButton && typeof webApp.BackButton.hide === 'function') {
           webApp.BackButton.hide();
         }
       } catch (backError) {
-        console.log("BackButton is not supported in this version");
+        console.warn("BackButton operations not supported");
       }
       
-      console.log("Telegram Web App initialization complete");
+      console.log("✓ Telegram Web App initialization complete");
+      success = true;
       return true;
-    } else {
-      console.log("Telegram Web App not found in window, running in standalone mode");
-      setFallbackColors();
-      return false;
+    } catch (error) {
+      console.error(`Error during WebApp initialization (attempt ${retryCount + 1}):`, error);
+      retryCount++;
+      
+      if (retryCount < maxRetries) {
+        console.log(`Waiting before retry ${retryCount + 1}...`);
+        // Синхронная задержка перед следующей попыткой
+        const now = Date.now();
+        while (Date.now() - now < 300 * retryCount) { /* синхронное ожидание */ }
+      }
     }
-  } catch (error) {
-    console.error("Error initializing Telegram Web App:", error);
+  }
+  
+  if (!success) {
+    console.error(`WebApp initialization failed after ${maxRetries} attempts, falling back to standalone mode`);
     setFallbackColors();
     return false;
   }
+  
+  return success;
 }
 
 // Set fallback colors for standalone mode or error cases
