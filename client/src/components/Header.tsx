@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import { useStore } from "@/lib/StoreContext";
 import { useTranslation } from "@/lib/translations";
 import { useState, useEffect } from "react";
+import EsentionLogo from "@/lib/header-logo";
 
 interface HeaderProps {
   title?: string;
@@ -45,9 +46,7 @@ export default function Header({ title = "FASHION HUB" }: HeaderProps) {
           <div className="flex items-center">
             <Link href="/">
               <a className="flex items-center">
-                <h1 className="text-black text-xl font-bold uppercase tracking-widest">
-                  ESENTION
-                </h1>
+                <EsentionLogo />
               </a>
             </Link>
           </div>

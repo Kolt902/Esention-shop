@@ -10,9 +10,10 @@ import { getOfficialProductImages } from '@/lib/official-product-images';
 interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product, size?: string) => void;
+  onClick?: (productId: number) => void;
 }
 
-export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
+export default function ProductCard({ product, onAddToCart, onClick }: ProductCardProps) {
   const [selectedSize, setSelectedSize] = useState<string | undefined>(
     product.sizes.length > 0 ? product.sizes[0] : undefined
   );
@@ -107,8 +108,17 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
     }, 500);
   };
 
+  const handleCardClick = () => {
+    if (onClick) {
+      onClick(product.id);
+    }
+  };
+
   return (
-    <Card className="product-card relative overflow-hidden mb-4 transition-all duration-300 active:scale-[0.98] shadow-md rounded-xl border-0 hover:shadow-xl hover:-translate-y-1">
+    <Card 
+      className="product-card relative overflow-hidden mb-4 transition-all duration-300 active:scale-[0.98] shadow-md rounded-xl border-0 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+      onClick={handleCardClick}
+    >
       {/* Top badges for sales, new arrivals, etc */}
       {product.isNew && (
         <div className="absolute top-0 left-0 z-20 bg-black text-white text-xs font-medium px-2.5 py-1 m-2 rounded">
