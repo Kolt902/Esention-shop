@@ -315,154 +315,185 @@ export default function StorePage() {
         </div>
         
         <div className="container mx-auto px-4">
-          {/* Gender Categories */}
-          <section className="mb-12 mt-6">
-            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Магазин</h2>
-            
-            <div className="grid grid-cols-2 gap-4">
-              {/* Men */}
-              <CategoryCard 
-                title="Мужское" 
-                description="Одежда, обувь и аксессуары для мужчин" 
-                imageUrl={allBrandsImg}
-                onClick={() => handleCategoryChange('mens')}
-                isSelected={selectedCategory === 'mens'}
-              />
+          {/* Большая секция с Мужским/Женским выбором */}
+          <section className="mb-8 mt-6">
+            <div className="grid grid-cols-2 gap-4 mb-8">
+              {/* Men's Shop */}
+              <div className="relative overflow-hidden rounded-xl shadow-lg h-64">
+                <img 
+                  src={jordanImg} 
+                  alt="Мужская одежда" 
+                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700 ease-in-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent flex flex-col justify-end p-6">
+                  <h3 className="text-2xl font-bold text-white mb-2">MEN</h3>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <button 
+                      onClick={() => handleCategoryChange('mens')}
+                      className="bg-white text-black text-sm font-medium px-3 py-1.5 rounded-full hover:bg-gray-200 transition"
+                    >
+                      Смотреть все
+                    </button>
+                  </div>
+                </div>
+              </div>
               
-              {/* Women */}
-              <CategoryCard 
-                title="Женское" 
-                description="Одежда, обувь и аксессуары для женщин" 
-                imageUrl={allCategoriesImg}
-                onClick={() => handleCategoryChange('womens')}
-                isSelected={selectedCategory === 'womens'}
-              />
-            </div>
-          </section>
-          
-          {/* Categories with Images */}
-          <section className="mb-10">
-            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Категории товаров</h2>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {/* All Categories */}
-              <CategoryCard 
-                title="Все товары" 
-                description="Все категории" 
-                imageUrl={allCategoriesImg}
-                onClick={() => handleCategoryChange(null)}
-                isSelected={selectedCategory === null}
-              />
-              
-              {/* Clothing */}
-              <CategoryCard 
-                title="Одежда" 
-                description="Футболки, худи, куртки" 
-                imageUrl={clothingImg}
-                onClick={() => handleCategoryChange('tshirts')}
-                isSelected={selectedCategory === 'tshirts'}
-              />
-              
-              {/* Shoes */}
-              <CategoryCard 
-                title="Обувь" 
-                description="Кроссовки, ботинки" 
-                imageUrl={shoesImg}
-                onClick={() => handleCategoryChange('shoes')}
-                isSelected={selectedCategory === 'shoes'}
-              />
-              
-              {/* Accessories */}
-              <CategoryCard 
-                title="Аксессуары" 
-                description="Сумки, головные уборы" 
-                imageUrl={accessoriesImg}
-                onClick={() => handleCategoryChange('accessories')}
-                isSelected={selectedCategory === 'accessories'}
-              />
+              {/* Women's Shop */}
+              <div className="relative overflow-hidden rounded-xl shadow-lg h-64">
+                <img 
+                  src={allCategoriesImg} 
+                  alt="Женская одежда" 
+                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700 ease-in-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent flex flex-col justify-end p-6">
+                  <h3 className="text-2xl font-bold text-white mb-2">WOMEN</h3>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <button 
+                      onClick={() => handleCategoryChange('womens')}
+                      className="bg-white text-black text-sm font-medium px-3 py-1.5 rounded-full hover:bg-gray-200 transition"
+                    >
+                      Смотреть все
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
           
           {/* Popular Brands Section with images */}
-          <section className="mb-10">
+          <section className="mb-12">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-black uppercase tracking-wide">Популярные бренды</h2>
-              <button 
-                onClick={() => {
-                  refetch();
-                  queryClient.invalidateQueries({queryKey: ['/api/products']});
-                  showNotification('Данные обновлены');
-                }}
-                className="text-black flex items-center text-sm font-medium hover:bg-gray-100 px-3 py-1.5 rounded-full transition-all"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                Обновить
-              </button>
+              <h2 className="text-xl font-bold text-black uppercase tracking-wide">Бренды</h2>
             </div>
             
-            {/* Brand Cards Grid - Scrollable on mobile */}
-            <div className="flex space-x-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+            {/* Brand Cards Grid - Scrollable on mobile with modern design */}
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-3 mb-4">
               {/* Nike */}
-              <div className="snap-center min-w-[220px] sm:min-w-[260px]">
-                <BrandCard 
-                  name="Nike" 
-                  imageUrl={nikeImg}
-                  onClick={() => handleBrandChange('Nike')}
-                  isSelected={selectedBrand === 'Nike'}
-                />
-              </div>
+              <button 
+                onClick={() => handleBrandChange('Nike')}
+                className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
+                  selectedBrand === 'Nike' 
+                    ? 'border-black shadow-md bg-black text-white' 
+                    : 'border-gray-200 hover:border-gray-400'
+                }`}
+              >
+                <span className="font-medium text-sm">Nike</span>
+              </button>
               
               {/* Adidas */}
-              <div className="snap-center min-w-[220px] sm:min-w-[260px]">
-                <BrandCard 
-                  name="Adidas" 
-                  imageUrl={adidasImg}
-                  onClick={() => handleBrandChange('Adidas')}
-                  isSelected={selectedBrand === 'Adidas'}
-                />
-              </div>
+              <button 
+                onClick={() => handleBrandChange('Adidas')}
+                className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
+                  selectedBrand === 'Adidas' 
+                    ? 'border-black shadow-md bg-black text-white' 
+                    : 'border-gray-200 hover:border-gray-400'
+                }`}
+              >
+                <span className="font-medium text-sm">Adidas</span>
+              </button>
               
               {/* Jordan */}
-              <div className="snap-center min-w-[220px] sm:min-w-[260px]">
-                <BrandCard 
-                  name="Jordan" 
-                  imageUrl={jordanImg}
-                  onClick={() => handleBrandChange('Jordan')}
-                  isSelected={selectedBrand === 'Jordan'}
-                />
-              </div>
+              <button 
+                onClick={() => handleBrandChange('Jordan')}
+                className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
+                  selectedBrand === 'Jordan' 
+                    ? 'border-black shadow-md bg-black text-white' 
+                    : 'border-gray-200 hover:border-gray-400'
+                }`}
+              >
+                <span className="font-medium text-sm">Jordan</span>
+              </button>
               
               {/* Stussy */}
-              <div className="snap-center min-w-[220px] sm:min-w-[260px]">
-                <BrandCard 
-                  name="Stussy" 
-                  imageUrl={stussyImg}
-                  onClick={() => handleBrandChange('Stussy')}
-                  isSelected={selectedBrand === 'Stussy'}
-                />
-              </div>
+              <button 
+                onClick={() => handleBrandChange('Stussy')}
+                className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
+                  selectedBrand === 'Stussy' 
+                    ? 'border-black shadow-md bg-black text-white' 
+                    : 'border-gray-200 hover:border-gray-400'
+                }`}
+              >
+                <span className="font-medium text-sm">Stussy</span>
+              </button>
               
               {/* Balenciaga */}
-              <div className="snap-center min-w-[220px] sm:min-w-[260px]">
-                <BrandCard 
-                  name="Balenciaga" 
-                  imageUrl={balenciagaImg}
-                  onClick={() => handleBrandChange('Balenciaga')}
-                  isSelected={selectedBrand === 'Balenciaga'}
-                />
-              </div>
+              <button 
+                onClick={() => handleBrandChange('Balenciaga')}
+                className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
+                  selectedBrand === 'Balenciaga' 
+                    ? 'border-black shadow-md bg-black text-white' 
+                    : 'border-gray-200 hover:border-gray-400'
+                }`}
+              >
+                <span className="font-medium text-sm">Balenciaga</span>
+              </button>
               
               {/* All Brands */}
-              <div className="snap-center min-w-[220px] sm:min-w-[260px]">
-                <BrandCard 
-                  name="Все бренды" 
-                  imageUrl={allBrandsImg}
-                  onClick={() => handleBrandChange(null)}
-                  isSelected={selectedBrand === null}
-                />
-              </div>
+              <button 
+                onClick={() => handleBrandChange(null)}
+                className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
+                  selectedBrand === null 
+                    ? 'border-black shadow-md bg-black text-white' 
+                    : 'border-gray-200 hover:border-gray-400'
+                }`}
+              >
+                <span className="font-medium text-sm">Все</span>
+              </button>
+            </div>
+          </section>
+          
+          {/* Categories with modern layout */}
+          <section className="mb-12">
+            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Категории</h2>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {/* All Categories */}
+              <button 
+                onClick={() => handleCategoryChange(null)}
+                className={`flex items-center justify-center p-4 border rounded-xl transition-all ${
+                  selectedCategory === null 
+                    ? 'border-black shadow-md bg-black text-white' 
+                    : 'border-gray-200 hover:border-gray-400'
+                }`}
+              >
+                <span className="font-medium">Все товары</span>
+              </button>
+              
+              {/* Clothing */}
+              <button 
+                onClick={() => handleCategoryChange('tshirts')}
+                className={`flex items-center justify-center p-4 border rounded-xl transition-all ${
+                  selectedCategory === 'tshirts' 
+                    ? 'border-black shadow-md bg-black text-white' 
+                    : 'border-gray-200 hover:border-gray-400'
+                }`}
+              >
+                <span className="font-medium">Одежда</span>
+              </button>
+              
+              {/* Shoes */}
+              <button 
+                onClick={() => handleCategoryChange('shoes')}
+                className={`flex items-center justify-center p-4 border rounded-xl transition-all ${
+                  selectedCategory === 'shoes' 
+                    ? 'border-black shadow-md bg-black text-white' 
+                    : 'border-gray-200 hover:border-gray-400'
+                }`}
+              >
+                <span className="font-medium">Обувь</span>
+              </button>
+              
+              {/* Accessories */}
+              <button 
+                onClick={() => handleCategoryChange('accessories')}
+                className={`flex items-center justify-center p-4 border rounded-xl transition-all ${
+                  selectedCategory === 'accessories' 
+                    ? 'border-black shadow-md bg-black text-white' 
+                    : 'border-gray-200 hover:border-gray-400'
+                }`}
+              >
+                <span className="font-medium">Аксессуары</span>
+              </button>
             </div>
           </section>
 
@@ -667,20 +698,36 @@ export default function StorePage() {
               </div>
             )}
             
-            {/* Products Grid - optimized for mobile with 2 columns */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Products Grid - Modern design with hover effects */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
               {filteredProducts && filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (
                   <ProductCard 
                     key={product.id} 
                     product={product} 
                     onAddToCart={handleAddToCart}
+                    onClick={() => handleProductClick(product.id)}
                   />
                 ))
               ) : (
-                <div className="col-span-2 md:col-span-4 flex flex-col items-center justify-center py-16">
-                  <p className="text-lg font-medium text-gray-800">Товары не найдены</p>
-                  <p className="text-gray-500 mt-2">Попробуйте изменить параметры фильтрации</p>
+                <div className="col-span-2 md:col-span-3 lg:col-span-4 py-16 text-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7V5a2 2 0 012-2h14a2 2 0 012 2v2M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M3 7h18" />
+                  </svg>
+                  <h3 className="text-xl font-bold mb-2">Товары не найдены</h3>
+                  <p className="text-gray-500 max-w-md mx-auto">
+                    По выбранным фильтрам товаров не найдено. Попробуйте изменить параметры фильтрации.
+                  </p>
+                  <button
+                    onClick={() => {
+                      handleCategoryChange(null);
+                      handleBrandChange(null);
+                      handleStyleChange(null);
+                    }}
+                    className="mt-6 bg-black text-white py-2 px-6 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
+                  >
+                    Сбросить фильтры
+                  </button>
                 </div>
               )}
             </div>
