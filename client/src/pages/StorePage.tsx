@@ -114,16 +114,22 @@ export default function StorePage() {
   const handleCategoryChange = (category: string | null) => {
     setSelectedCategory(category);
     console.log("Selected category:", category);
+    // После изменения категории явно перезапрашиваем данные с сервера
+    refetch();
   };
   
   const handleBrandChange = (brand: string | null) => {
     setSelectedBrand(brand);
     console.log("Selected brand:", brand);
+    // После изменения бренда явно перезапрашиваем данные с сервера
+    refetch();
   };
   
   const handleStyleChange = (style: string | null) => {
     setSelectedStyle(style);
     console.log("Selected style:", style);
+    // После изменения стиля явно перезапрашиваем данные с сервера
+    refetch();
   };
   
   // Функция для добавления товара в корзину
@@ -188,12 +194,12 @@ export default function StorePage() {
       }
     }
     
-    // Фильтр по бренду
+    // Фильтр по бренду - теперь сравниваем напрямую с брендом товара
     if (selectedBrand && product.brand !== selectedBrand) {
       return false;
     }
     
-    // Фильтр по стилю (TODO: добавить поле style в модель Product)
+    // Фильтр по стилю
     if (selectedStyle) {
       // Временная логика для демонстрации
       if (selectedStyle === 'oldmoney' && !['Gucci', 'Ralph Lauren', 'Balenciaga'].includes(product.brand)) {

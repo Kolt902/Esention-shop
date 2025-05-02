@@ -250,15 +250,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       products.forEach(p => categoriesSet.add(p.category));
       const categories = Array.from(categoriesSet);
       
-      // Extract brands from product names (assuming first word is brand name)
+      // Extract brands from product database
       const brandSet = new Set<string>();
       products.forEach(p => {
-        const brandName = p.name.split(' ')[0]; // Extract first word as brand
-        if (brandName) brandSet.add(brandName);
+        if (p.brand) brandSet.add(p.brand);
       });
       const brands = Array.from(brandSet);
       
-      res.json({ categories, brands });
+      // Return products along with categories and brands
+      res.json({ categories, brands, products });
     } catch (error) {
       console.error('Error fetching categories and brands:', error);
       res.status(500).json({ message: 'Failed to fetch categories and brands' });
