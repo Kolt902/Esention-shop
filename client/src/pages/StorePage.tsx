@@ -524,7 +524,7 @@ export default function StorePage() {
                     <h4 className="font-medium mb-2 text-gray-700">Категории</h4>
                     <div className="space-y-2">
                       <a
-                        href="/"
+                        href="/category/mens"
                         className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedCategory === null 
                             ? 'text-black font-medium underline' 
@@ -555,7 +555,7 @@ export default function StorePage() {
                     <h4 className="font-medium mb-2 text-gray-700">Бренды</h4>
                     <div className="space-y-2">
                       <a
-                        href="/"
+                        href="/category/mens"
                         className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedBrand === null 
                             ? 'text-black font-medium underline' 
@@ -586,7 +586,7 @@ export default function StorePage() {
                     <h4 className="font-medium mb-2 text-gray-700">Стили</h4>
                     <div className="space-y-2">
                       <a
-                        href="/"
+                        href="/category/mens"
                         className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedStyle === null 
                             ? 'text-black font-medium underline' 
@@ -685,7 +685,7 @@ export default function StorePage() {
                   
                   {(selectedCategory || selectedBrand || selectedStyle) && (
                     <a 
-                      href="/"
+                      href="/category/mens"
                       className="py-1 px-3 rounded-full text-sm text-black border border-gray-300 hover:bg-gray-50"
                     >
                       Сбросить все фильтры
@@ -717,7 +717,7 @@ export default function StorePage() {
                       По выбранным фильтрам товаров не найдено. Попробуйте изменить параметры фильтрации.
                     </p>
                     <a
-                      href="/"
+                      href="/category/mens"
                       className="mt-6 bg-black text-white py-2 px-6 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors inline-block"
                     >
                       Сбросить фильтры
