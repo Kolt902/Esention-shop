@@ -173,9 +173,15 @@ export default function StorePage() {
   
   // Фильтрация продуктов
   const filteredProducts = filterData?.products?.filter(product => {
-    // Фильтр по категории
-    if (selectedCategory && product.category !== selectedCategory) {
-      return false;
+    // Фильтр по категории (включая мужское/женское)
+    if (selectedCategory) {
+      if (selectedCategory === 'mens' && !product.category.includes('men')) {
+        return false;
+      } else if (selectedCategory === 'womens' && !product.category.includes('women')) {
+        return false;
+      } else if (selectedCategory !== 'mens' && selectedCategory !== 'womens' && product.category !== selectedCategory) {
+        return false;
+      }
     }
     
     // Фильтр по бренду
@@ -265,7 +271,7 @@ export default function StorePage() {
         {/* Full-width background banner for styles */}
         <div className="w-full bg-gradient-to-b from-gray-800 to-gray-900 py-10 mb-8">
           <div className="container mx-auto px-4">
-            <h2 className="text-xl font-bold text-white mb-6 uppercase tracking-wide">Популярные категории</h2>
+            <h2 className="text-xl font-bold text-white mb-6 uppercase tracking-wide">Стили</h2>
             
             {/* Style Categories - Horizontal Scrolling for Mobile */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
@@ -309,8 +315,33 @@ export default function StorePage() {
         </div>
         
         <div className="container mx-auto px-4">
+          {/* Gender Categories */}
+          <section className="mb-12 mt-6">
+            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Магазин</h2>
+            
+            <div className="grid grid-cols-2 gap-4">
+              {/* Men */}
+              <CategoryCard 
+                title="Мужское" 
+                description="Одежда, обувь и аксессуары для мужчин" 
+                imageUrl={allBrandsImg}
+                onClick={() => handleCategoryChange('mens')}
+                isSelected={selectedCategory === 'mens'}
+              />
+              
+              {/* Women */}
+              <CategoryCard 
+                title="Женское" 
+                description="Одежда, обувь и аксессуары для женщин" 
+                imageUrl={allCategoriesImg}
+                onClick={() => handleCategoryChange('womens')}
+                isSelected={selectedCategory === 'womens'}
+              />
+            </div>
+          </section>
+          
           {/* Categories with Images */}
-          <section className="mb-10 mt-6">
+          <section className="mb-10">
             <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Категории товаров</h2>
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
