@@ -243,23 +243,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint to get all unique categories and brands
   apiRouter.get('/categories', async (req, res) => {
     try {
-      // Получаем параметры фильтрации
+      // Определяем фиксированные категории согласно требованиям
+      const categories = [
+        "sneakers", // кроссовки
+        "hoodies", // худи
+        "tshirts", // футболки
+        "pants", // брюки
+        "glasses", // очки
+        "bags", // сумки
+        "accessories", // аксессуары
+      ];
+      
+      // Получаем все бренды из базы данных
+      const brands = await storage.getBrands();
+      
+      // Получаем все стили из базы данных
+      const styles = await storage.getStyles();
+      
+      // Получаем полный список продуктов с возможной фильтрацией
       const { category, brand, style } = req.query;
+      let products = await storage.getProducts();
       
-      // Получаем полный список продуктов
-      const products = await storage.getProducts();
+      // Применяем фильтрацию, если указаны параметры
+      if (category && typeof category === 'string') {
+        products = products.filter(p => p.category === category);
+      }
       
-      // Извлекаем уникальные категории
-      const categoriesSet = new Set<string>();
-      products.forEach(p => categoriesSet.add(p.category));
-      const categories = Array.from(categoriesSet);
+      if (brand && typeof brand === 'string') {
+        products = products.filter(p => p.brand === brand);
+      }
       
-      // Извлекаем бренды из базы продуктов
-      const brandSet = new Set<string>();
-      products.forEach(p => {
-        if (p.brand) brandSet.add(p.brand);
-      });
-      const brands = Array.from(brandSet);
+      if (style && typeof style === 'string') {
+        // Фильтрация по стилю (при условии, что у продуктов есть поле style)
+        products = products.filter(p => p.style === style);
+      }
       
       // Устанавливаем заголовки для предотвращения кэширования
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
@@ -267,11 +284,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader('Expires', '0');
       res.setHeader('Surrogate-Control', 'no-store');
       
-      // Возвращаем продукты вместе с категориями и брендами
-      res.json({ categories, brands, products, timestamp: Date.now() });
+      // Возвращаем все данные
+      res.json({ 
+        categories, 
+        brands: brands.map(b => b.name),
+        styles: styles.map(s => s.name),
+        brandDetails: brands,
+        styleDetails: styles,
+        products, 
+        timestamp: Date.now()
+      });
     } catch (error) {
-      console.error('Error fetching categories and brands:', error);
-      res.status(500).json({ message: 'Failed to fetch categories and brands' });
+      console.error('Error fetching categories, brands and styles:', error);
+      res.status(500).json({ message: 'Failed to fetch categories, brands and styles' });
     }
   });
   

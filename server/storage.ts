@@ -187,6 +187,23 @@ export class MemStorage implements IStorage {
   // Add admin user for @illia2323
   private adminUsernames = ["illia2323", "zakharr99"];
   
+  // Добавляем методы для работы с брендами и стилями
+  async getBrands(): Promise<Brand[]> {
+    return Array.from(this.brands.values());
+  }
+  
+  async getStyles(): Promise<Style[]> {
+    return Array.from(this.styles.values());
+  }
+  
+  async getAllBrands(): Promise<Brand[]> {
+    return Array.from(this.brands.values());
+  }
+  
+  async getAllStyles(): Promise<Style[]> {
+    return Array.from(this.styles.values());
+  }
+  
   private initializeVirtualClothing() {
     // T-shirts (tops)
     this.createVirtualClothingItem({
