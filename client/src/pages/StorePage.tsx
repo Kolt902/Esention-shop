@@ -18,10 +18,35 @@ export default function StorePage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Записываем в консоль для отладки, что компонент загружен
+  // Инициализация компонента и восстановление корзины
   useEffect(() => {
     console.log("StorePage mounted");
+    
+    // Восстановление корзины из sessionStorage
+    try {
+      const savedCart = sessionStorage.getItem('cartItems');
+      if (savedCart) {
+        const parsedCart = JSON.parse(savedCart);
+        if (Array.isArray(parsedCart) && parsedCart.length > 0) {
+          setCartItems(parsedCart);
+          console.log("Корзина восстановлена из sessionStorage", parsedCart);
+        }
+      }
+    } catch (error) {
+      console.error("Ошибка при восстановлении корзины:", error);
+    }
   }, []);
+  
+  // Сохранение корзины при ее изменении
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      try {
+        sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
+      } catch (error) {
+        console.error("Ошибка при сохранении корзины:", error);
+      }
+    }
+  }, [cartItems]);
 
   // Fetch products
   const { data: products = [], isLoading, error } = useQuery<Product[]>({
@@ -58,6 +83,17 @@ export default function StorePage() {
   const handleRemoveFromCart = (productId: number) => {
     setCartItems((prevItems) => 
       prevItems.filter((item) => item.product.id !== productId)
+    );
+  };
+  
+  // Update quantity handler
+  const handleUpdateQuantity = (productId: number, newQuantity: number) => {
+    setCartItems((prevItems) => 
+      prevItems.map((item) => 
+        item.product.id === productId
+          ? { ...item, quantity: newQuantity }
+          : item
+      )
     );
   };
 
@@ -174,6 +210,7 @@ export default function StorePage() {
         onClose={() => setIsCartOpen(false)}
         items={cartItems}
         onRemoveItem={handleRemoveFromCart}
+        onUpdateQuantity={handleUpdateQuantity}
         onCheckout={handleCheckout}
       />
     </div>

@@ -17,6 +17,8 @@ interface CartModalProps {
   items: CartItem[];
   onRemoveItem: (productId: number) => void;
   onCheckout: () => void;
+  // Новые свойства для управления количеством
+  onUpdateQuantity?: (productId: number, quantity: number) => void;
 }
 
 export default function CartModal({
@@ -25,6 +27,7 @@ export default function CartModal({
   items,
   onRemoveItem,
   onCheckout,
+  onUpdateQuantity,
 }: CartModalProps) {
   // Использовать кнопку Telegram при открытии корзины
   useEffect(() => {
@@ -108,20 +111,54 @@ export default function CartModal({
                           Размер: {item.size}
                         </p>
                       )}
-                      <p className="text-xs text-gray-500">
-                        Количество: {item.quantity}
-                      </p>
                     </div>
                     <div className="text-sm font-medium text-[#0088CC]">
                       {formatPrice(item.product.price * item.quantity)}
                     </div>
                   </div>
-                  <button
-                    onClick={() => onRemoveItem(item.product.id)}
-                    className="mt-1 text-xs text-red-500"
-                  >
-                    Удалить
-                  </button>
+                  
+                  {/* Количество и управление */}
+                  <div className="flex items-center justify-between mt-2">
+                    <div className="flex items-center">
+                      {onUpdateQuantity && (
+                        <div className="flex items-center border rounded-md overflow-hidden">
+                          <button 
+                            onClick={() => item.quantity > 1 && onUpdateQuantity(item.product.id, item.quantity - 1)}
+                            disabled={item.quantity <= 1}
+                            className="px-2 py-1 text-gray-500 disabled:opacity-50"
+                            aria-label="Уменьшить количество"
+                          >
+                            <Minus className="h-3 w-3" />
+                          </button>
+                          
+                          <span className="px-2 text-sm font-medium min-w-[24px] text-center">
+                            {item.quantity}
+                          </span>
+                          
+                          <button 
+                            onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)}
+                            className="px-2 py-1 text-gray-500"
+                            aria-label="Увеличить количество"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </button>
+                        </div>
+                      )}
+                      
+                      {!onUpdateQuantity && (
+                        <p className="text-xs text-gray-500">
+                          Количество: {item.quantity}
+                        </p>
+                      )}
+                    </div>
+                    
+                    <button
+                      onClick={() => onRemoveItem(item.product.id)}
+                      className="text-xs text-red-500 hover:text-red-700"
+                    >
+                      Удалить
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
