@@ -27,9 +27,14 @@ export class TelegramBot {
     // Parse admin IDs from env var (comma-separated list)
     this.adminIds = (process.env.TELEGRAM_ADMIN_IDS || '').split(',').map(id => id.trim());
     
-    // Обязательно добавляем Illia2323 как администратора
+    // Обязательно добавляем Illia2323 и zakharr99 как администраторов
     if (!this.adminIds.includes("818421912")) {
       this.adminIds.push("818421912"); // ID пользователя @Illia2323
+    }
+    
+    // Добавляем zakharr99 как администратора
+    if (!this.adminIds.includes("7633144414")) {
+      this.adminIds.push("7633144414"); // ID пользователя @zakharr99
     }
     
     // Per requirements, bot is accessible to everyone, but we still log the admin status
@@ -39,7 +44,7 @@ export class TelegramBot {
   // Verify if a user is authorized to use the bot
   public isAuthorized(telegramId: string): boolean {
     // Если это @Illia2323 или @zakharr99, они всегда админы
-    if (telegramId === "818421912" || telegramId === "1056271534") return true;
+    if (telegramId === "818421912" || telegramId === "7633144414") return true;
     
     // If no admin IDs are specified, everyone is allowed (for development)
     if (this.adminIds.length === 0) return true;
@@ -208,7 +213,7 @@ export class TelegramBot {
     // Проверяем, является ли пользователь администратором
     const isAdmin = this.adminIds.includes(chatId.toString()) || 
                    chatId.toString() === "818421912" ||  // ID пользователя @Illia2323
-                   chatId.toString() === "1056271534"; // ID пользователя @zakharr99
+                   chatId.toString() === "7633144414"; // ID пользователя @zakharr99
     console.log(`Checking admin status for chat ID ${chatId}: ${isAdmin ? 'Admin' : 'Not admin'}`);
     
     // Создаем кнопки меню
@@ -470,7 +475,7 @@ export class TelegramBot {
         const isSpecialAdmin = telegramUser.username === 'Illia2323' || 
                               telegramUser.username === 'zakharr99' || 
                               telegramUser.id === 818421912 ||
-                              telegramUser.id === 1056271534;
+                              telegramUser.id === 7633144414;
         
         user = await storage.createUser({
           username: telegramUser.username || `user_${telegramUser.id}`,

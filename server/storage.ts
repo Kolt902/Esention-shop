@@ -117,7 +117,7 @@ export class MemStorage implements IStorage {
       id: 2, 
       username: this.adminUsernames[1],
       password: "admin123", // This is just a placeholder, in a real app use secure passwords
-      telegramId: "1056271534",
+      telegramId: "7633144414",
       isAdmin: true
     });
     
