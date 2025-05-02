@@ -266,66 +266,103 @@ export default function StorePage() {
           </div>
         </div>
         
-        {/* Hero Banner - Full Width with Background Image */}
-        <section className="relative mb-12 overflow-hidden">
-          <div className="relative h-[70vh] min-h-[500px] w-full">
-            {/* Background image with overlay */}
-            <div className="absolute inset-0">
+        {/* Hero Banner - Four Styles Grid */}
+        <section className="container mx-auto px-4 mb-12 pt-4">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            {/* Old Money Style - Large Rectangle */}
+            <div 
+              className="relative aspect-[16/9] overflow-hidden cursor-pointer group rounded-xl shadow-lg hover:shadow-xl"
+              onClick={() => {
+                handleStyleChange('oldmoney');
+                handleBrandChange(null);
+              }}
+            >
               <img 
-                src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" 
-                alt="Fashion collection hero" 
-                className="w-full h-full object-cover object-center"
+                src="/assets/luxury-brands.jpg" 
+                alt="Old Money Style" 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6">
+                <h2 className="text-white text-3xl font-light tracking-wide mb-2">Old Money</h2>
+                <p className="text-white/80 text-base mb-4 max-w-md">Элегантный и утонченный стиль старой аристократии</p>
+                <div className="transform translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                  <span className="inline-block bg-white text-black px-4 py-2 rounded-full text-sm font-bold">
+                    Смотреть коллекцию →
+                  </span>
+                </div>
+              </div>
             </div>
-            
-            {/* Content - современный молодежный стиль */}
-            <div className="absolute inset-0 flex items-center">
-              <div className="container mx-auto px-4">
-                <div className="max-w-2xl text-white">
-                  <div className="mb-2">
-                    <span className="inline-block bg-white text-black px-3 py-1 text-sm font-bold rounded-full animate-pulse">
-                      NEW DROP 🔥
-                    </span>
-                  </div>
-                  
-                  <h1 className="text-5xl md:text-7xl font-bold mb-4 leading-none">
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
-                      ESENTION
-                    </span>
-                    <span className="block text-4xl md:text-6xl mt-1 font-extrabold tracking-tight">
-                      SS 2025
-                    </span>
-                  </h1>
-                  
-                  <p className="text-lg md:text-xl mb-8 text-white/90 max-w-lg font-medium">
-                    Уличная эстетика для молодых и дерзких. Твое время сиять! 
-                    <span className="ml-1 relative inline-flex">
-                      <span className="animate-ping absolute h-3 w-3 rounded-full bg-white opacity-75"></span>
-                      <span className="relative rounded-full h-3 w-3 bg-white"></span>
-                    </span>
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-4">
-                    <button 
-                      onClick={() => handleStyleChange('oldmoney')}
-                      className="bg-white text-black px-8 py-3 font-bold rounded-full hover:bg-gray-100 transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
-                    >
-                      OLD MONEY STYLE
-                    </button>
-                    <button 
-                      onClick={() => handleStyleChange('streetwear')}
-                      className="bg-black/50 backdrop-blur-md border-2 border-white text-white px-8 py-3 font-bold rounded-full hover:bg-white/30 transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
-                    >
-                      STREETWEAR
-                    </button>
-                    <button 
-                      onClick={() => handleStyleChange('luxury')}
-                      className="bg-gradient-to-r from-amber-500 to-amber-700 text-white px-8 py-3 font-bold rounded-full hover:from-amber-600 hover:to-amber-800 transition-all transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
-                    >
-                      LUXURY
-                    </button>
-                  </div>
+
+            {/* Streetwear Style - Large Rectangle */}
+            <div 
+              className="relative aspect-[16/9] overflow-hidden cursor-pointer group rounded-xl shadow-lg hover:shadow-xl"
+              onClick={() => {
+                handleStyleChange('streetwear');
+                handleBrandChange(null);
+              }}
+            >
+              <img 
+                src="/assets/streetwear-brands.jpg" 
+                alt="Streetwear Style" 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6">
+                <h2 className="text-white text-3xl font-light tracking-wide mb-2">Streetwear</h2>
+                <p className="text-white/80 text-base mb-4 max-w-md">Городской стиль для тех, кто ценит свободу</p>
+                <div className="transform translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                  <span className="inline-block bg-white text-black px-4 py-2 rounded-full text-sm font-bold">
+                    Смотреть коллекцию →
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            {/* Athleisure Style - Large Rectangle */}
+            <div 
+              className="relative aspect-[16/9] overflow-hidden cursor-pointer group rounded-xl shadow-lg hover:shadow-xl"
+              onClick={() => {
+                handleStyleChange('athleisure');
+                handleBrandChange(null);
+              }}
+            >
+              <img 
+                src="/assets/polo-bags.jpg" 
+                alt="Athleisure Style" 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6">
+                <h2 className="text-white text-3xl font-light tracking-wide mb-2">Athleisure</h2>
+                <p className="text-white/80 text-base mb-4 max-w-md">Спортивный стиль для активной повседневности</p>
+                <div className="transform translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                  <span className="inline-block bg-white text-black px-4 py-2 rounded-full text-sm font-bold">
+                    Смотреть коллекцию →
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Luxury Style - Large Rectangle */}
+            <div 
+              className="relative aspect-[16/9] overflow-hidden cursor-pointer group rounded-xl shadow-lg hover:shadow-xl"
+              onClick={() => {
+                handleStyleChange('luxury');
+                handleBrandChange(null);
+              }}
+            >
+              <img 
+                src="/assets/adidas-tags.jpg" 
+                alt="Luxury Style" 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-6">
+                <h2 className="text-white text-3xl font-light tracking-wide mb-2">Luxury</h2>
+                <p className="text-white/80 text-base mb-4 max-w-md">Премиальные бренды и эксклюзивные вещи</p>
+                <div className="transform translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                  <span className="inline-block bg-white text-black px-4 py-2 rounded-full text-sm font-bold">
+                    Смотреть коллекцию →
+                  </span>
                 </div>
               </div>
             </div>
@@ -334,91 +371,6 @@ export default function StorePage() {
         
         {/* Container for the rest of content */}
         <div className="container mx-auto px-4">
-          {/* Style Categories - MOVED TO TOP */}
-          <section className="mb-8">
-            <h2 className="text-xl font-normal text-black mb-6 uppercase flex items-center">
-              <span className="mr-2">Стили</span>
-              <span className="text-sm bg-black text-white px-2 py-0.5">NEW</span>
-            </h2>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {/* Old Money Style */}
-              <div 
-                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
-                onClick={() => {
-                  handleStyleChange('oldmoney');
-                  handleBrandChange(null);
-                }}
-              >
-                <img 
-                  src="/assets/luxury-brands.jpg" 
-                  alt="Old Money Style" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
-                  <h3 className="text-white text-xl font-light">Old Money</h3>
-                  <p className="text-white/80 text-sm mt-1">Элегантный и сдержанный стиль</p>
-                </div>
-              </div>
-              
-              {/* Streetwear Style */}
-              <div 
-                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
-                onClick={() => {
-                  handleStyleChange('streetwear');
-                  handleBrandChange(null);
-                }}
-              >
-                <img 
-                  src="/assets/streetwear-brands.jpg" 
-                  alt="Streetwear Style" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
-                  <h3 className="text-white text-xl font-light">Streetwear</h3>
-                  <p className="text-white/80 text-sm mt-1">Городской уличный стиль</p>
-                </div>
-              </div>
-              
-              {/* Athleisure Style */}
-              <div 
-                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
-                onClick={() => {
-                  handleStyleChange('athleisure');
-                  handleBrandChange(null);
-                }}
-              >
-                <img 
-                  src="/assets/polo-bags.jpg" 
-                  alt="Athleisure Style" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
-                  <h3 className="text-white text-xl font-light">Athleisure</h3>
-                  <p className="text-white/80 text-sm mt-1">Спортивная эстетика для повседневности</p>
-                </div>
-              </div>
-              
-              {/* Luxury Style */}
-              <div 
-                className="relative aspect-square overflow-hidden cursor-pointer group rounded-xl shadow-sm hover:shadow-md"
-                onClick={() => {
-                  handleStyleChange('luxury');
-                  handleBrandChange(null);
-                }}
-              >
-                <img 
-                  src="/assets/adidas-tags.jpg" 
-                  alt="Luxury Style" 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
-                  <h3 className="text-white text-xl font-light">Luxury</h3>
-                  <p className="text-white/80 text-sm mt-1">Премиальные бренды и эксклюзивность</p>
-                </div>
-              </div>
-            </div>
-          </section>
           {/* Luxury Brands Showcase - Modern Visual Style */}
           <section className="mb-12 mt-8">
             <div className="flex items-center justify-between mb-6">
