@@ -12,7 +12,13 @@ import {
   orders,
   type Order,
   type InsertOrder,
-  insertDeliveryAddressSchema
+  insertDeliveryAddressSchema,
+  avatarParams,
+  type InsertAvatarParams,
+  virtualClothingItems,
+  type InsertVirtualClothingItem,
+  userVirtualWardrobe,
+  type InsertUserVirtualWardrobe
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -27,6 +33,11 @@ export type OnlineUser = {
   username: string;
   lastActive: Date;
 };
+
+// Types for virtual fitting feature
+export type AvatarParams = typeof avatarParams.$inferSelect;
+export type VirtualClothingItem = typeof virtualClothingItems.$inferSelect;
+export type UserVirtualWardrobe = typeof userVirtualWardrobe.$inferSelect;
 
 export interface IStorage {
   // User Operations
@@ -72,6 +83,23 @@ export interface IStorage {
   
   // Admin Operations
   isAdmin(userId: number): Promise<boolean>;
+  
+  // Avatar Operations
+  getAvatarParams(userId: number): Promise<AvatarParams | undefined>;
+  createAvatarParams(params: InsertAvatarParams): Promise<AvatarParams>;
+  updateAvatarParams(userId: number, params: Partial<InsertAvatarParams>): Promise<AvatarParams | undefined>;
+  
+  // Virtual Clothing Operations
+  getVirtualClothingItems(filters?: { category?: string, type?: string }): Promise<VirtualClothingItem[]>;
+  getVirtualClothingItem(id: number): Promise<VirtualClothingItem | undefined>;
+  createVirtualClothingItem(item: InsertVirtualClothingItem): Promise<VirtualClothingItem>;
+  
+  // User Virtual Wardrobe Operations
+  getUserVirtualWardrobe(userId: number): Promise<UserVirtualWardrobe[]>;
+  getVirtualWardrobeItem(id: number): Promise<UserVirtualWardrobe | undefined>;
+  addToVirtualWardrobe(item: InsertUserVirtualWardrobe): Promise<UserVirtualWardrobe>;
+  updateVirtualWardrobeItem(id: number, updates: Partial<InsertUserVirtualWardrobe>): Promise<UserVirtualWardrobe | undefined>;
+  removeFromVirtualWardrobe(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -81,11 +109,17 @@ export class MemStorage implements IStorage {
   private deliveryAddresses: Map<number, DeliveryAddress>;
   private orders: Map<number, Order>;
   private onlineUsers: Map<number, OnlineUser>;
+  private avatarParams: Map<number, AvatarParams>;
+  private virtualClothingItems: Map<number, VirtualClothingItem>;
+  private userVirtualWardrobe: Map<number, UserVirtualWardrobe>;
   private currentUserId: number;
   private currentProductId: number;
   private currentCartItemId: number;
   private currentDeliveryAddressId: number;
   private currentOrderId: number;
+  private currentAvatarParamsId: number;
+  private currentVirtualClothingId: number;
+  private currentWardrobeItemId: number;
   
   // Add admin user for @illia2323
   private adminUsernames = ["illia2323", "zakharr99"];
@@ -97,11 +131,17 @@ export class MemStorage implements IStorage {
     this.deliveryAddresses = new Map();
     this.orders = new Map();
     this.onlineUsers = new Map();
+    this.avatarParams = new Map();
+    this.virtualClothingItems = new Map();
+    this.userVirtualWardrobe = new Map();
     this.currentUserId = 1;
     this.currentProductId = 1;
     this.currentCartItemId = 1;
     this.currentDeliveryAddressId = 1;
     this.currentOrderId = 1;
+    this.currentAvatarParamsId = 1;
+    this.currentVirtualClothingId = 1;
+    this.currentWardrobeItemId = 1;
     
     // Create main admin user (illia2323)
     this.users.set(this.currentUserId++, {

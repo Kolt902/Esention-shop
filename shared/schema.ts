@@ -151,3 +151,76 @@ export const insertOnlineUserSchema = createInsertSchema(onlineUsers).pick({
 
 export type InsertOnlineUser = z.infer<typeof insertOnlineUserSchema>;
 export type OnlineUser = typeof onlineUsers.$inferSelect;
+
+// Avatar Parameters Schema
+export const avatarParams = pgTable("avatar_params", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().unique(),
+  height: integer("height").default(175).notNull(),
+  weight: integer("weight").default(70).notNull(),
+  bodyType: text("body_type").default("regular").notNull(), // slim, regular, athletic
+  gender: text("gender").default("male").notNull(), // male, female
+  measurements: jsonb("measurements").default({}).notNull(), // chest, waist, hips, etc.
+});
+
+export const insertAvatarParamsSchema = createInsertSchema(avatarParams).pick({
+  userId: true,
+  height: true,
+  weight: true,
+  bodyType: true,
+  gender: true,
+  measurements: true,
+});
+
+export type InsertAvatarParams = z.infer<typeof insertAvatarParamsSchema>;
+export type AvatarParams = typeof avatarParams.$inferSelect;
+
+// Virtual Clothing Schema (for AR/VR try-on)
+export const virtualClothingItems = pgTable("virtual_clothing_items", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  type: text("type").notNull(), // top, bottom, shoes, accessory
+  category: text("category").notNull(), // same as products.category
+  productId: integer("product_id").notNull(), // reference to the physical product
+  modelPath: text("model_path").notNull(), // path to 3D model file
+  thumbnailUrl: text("thumbnail_url").notNull(),
+  colors: text("colors").array().default([]).notNull(),
+  sizes: text("sizes").array().default([]).notNull(),
+});
+
+export const insertVirtualClothingItemSchema = createInsertSchema(virtualClothingItems).pick({
+  name: true,
+  type: true,
+  category: true,
+  productId: true,
+  modelPath: true,
+  thumbnailUrl: true,
+  colors: true,
+  sizes: true,
+});
+
+export type InsertVirtualClothingItem = z.infer<typeof insertVirtualClothingItemSchema>;
+export type VirtualClothingItem = typeof virtualClothingItems.$inferSelect;
+
+// User's Virtual Wardrobe (saved clothing items for the avatar)
+export const userVirtualWardrobe = pgTable("user_virtual_wardrobe", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  clothingItemId: integer("clothing_item_id").notNull(),
+  selectedColor: text("selected_color").notNull(),
+  selectedSize: text("selected_size").notNull(),
+  isFavorite: boolean("is_favorite").default(false).notNull(),
+  dateAdded: text("date_added").notNull(),
+});
+
+export const insertUserVirtualWardrobeSchema = createInsertSchema(userVirtualWardrobe).pick({
+  userId: true,
+  clothingItemId: true,
+  selectedColor: true,
+  selectedSize: true,
+  isFavorite: true,
+  dateAdded: true,
+});
+
+export type InsertUserVirtualWardrobe = z.infer<typeof insertUserVirtualWardrobeSchema>;
+export type UserVirtualWardrobe = typeof userVirtualWardrobe.$inferSelect;
