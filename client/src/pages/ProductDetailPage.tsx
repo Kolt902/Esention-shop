@@ -15,8 +15,7 @@ export default function ProductDetailPage() {
   const { language, t } = useStore();
   const [searchParams] = useState(new URLSearchParams(window.location.search));
   const productId = searchParams.get('id');
-  const { showNotification } = useNotification();
-  const { cartItems, addCartItem, removeCartItem } = useCart();
+  const { addToCart, removeFromCart, items: cartItems } = useCartStore();
   
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
@@ -79,11 +78,7 @@ export default function ProductDetailPage() {
     
     // Simulate network request
     setTimeout(() => {
-      addCartItem({
-        product,
-        quantity: 1,
-        size: selectedSize
-      });
+      addToCart(product, selectedSize);
       showNotification(t.product.addedToCart);
       setIsAddingToCart(false);
     }, 500);
