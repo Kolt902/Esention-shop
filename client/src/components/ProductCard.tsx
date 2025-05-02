@@ -1,17 +1,13 @@
 import { useState, useEffect } from "react";
 import { Heart, ShoppingCart, ChevronLeft, ChevronRight, ImageOff } from "lucide-react";
-import { cn, formatPrice, showNotification } from "@/lib/utils";
+import { cn, formatPrice, showNotification, isValidImageUrl, getCategoryDefaultImage } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Product } from "@shared/schema";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
 import { getOfficialProductImages } from '@/lib/official-product-images';
 
-// Функция для проверки валидности URL изображения
-const isValidImageUrl = (url?: string | null): boolean => {
-  if (!url) return false;
-  return url.startsWith('http://') || url.startsWith('https://');
-};
+// Используем импортированную функцию проверки URL из utils
 
 interface ProductCardProps {
   product: Product;
@@ -35,13 +31,10 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
     ? product.additionalImages.filter(url => isValidImageUrl(url)) 
     : [];
   
-  // Получаем официальные изображения с сайтов Nike и Adidas по имени продукта и категории
-  const officialImages = getOfficialProductImages(product.name, product.category);
+  // Массив для хранения всех изображений продукта
+  let allImages: string[] = [];
   
-  // Создаем массив изображений, сначала добавляя официальные, затем добавляя валидные если они есть
-  let allImages: string[] = [...officialImages];
-  
-  // Если уже есть валидные URL из базы, тоже их используем
+  // Сначала пробуем использовать изображения из базы, если они есть и валидны
   if (validMainImage) {
     allImages.push(validMainImage);
   }
@@ -50,8 +43,16 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
     allImages = [...allImages, ...validAdditionalImages];
   }
   
-  // Дефолтное изображение для запасного случая
-  const defaultImage = officialImages[0];
+  // Если изображений не найдено в базе или их недостаточно, добавляем официальные из каталога
+  if (allImages.length === 0) {
+    // Получаем официальные изображения с сайтов Nike и Adidas по имени продукта и категории
+    const officialImages = getOfficialProductImages(product.name, product.category);
+    allImages = [...officialImages];
+  }
+  
+  // Получаем дефолтное изображение на случай ошибки
+  const backupImages = getOfficialProductImages(product.name, product.category);
+  const defaultImage = backupImages[0] || getCategoryDefaultImage(product.category);
   
   console.log("Validated images array:", allImages);
   
