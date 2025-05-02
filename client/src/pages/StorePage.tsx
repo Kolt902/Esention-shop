@@ -27,6 +27,12 @@ export default function StorePage() {
   const { data: products, isLoading, error } = useQuery({
     queryKey: ['/api/products'],
     staleTime: 60000, // 1 minute
+    retry: 3, // Retry failed requests up to 3 times
+    retryDelay: 1000, // Wait 1 second between retries
+    onError: (err) => {
+      console.error('Error fetching products:', err);
+      showNotification('Не удалось загрузить продукты. Пожалуйста, попробуйте снова.');
+    }
   });
 
   // Add to cart handler
