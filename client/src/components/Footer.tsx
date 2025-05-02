@@ -76,6 +76,9 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
       case "favorites":
         // In a real app, would implement favorites page
         break;
+      case "admin":
+        handleAdminClick();
+        break;
     }
   };
   
@@ -153,6 +156,21 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
               {activeTab === "profile" && <ActiveIndicator />}
               <User className="h-6 w-6" />
               <span className="text-xs font-medium mt-1">Профиль</span>
+            </button>
+          )}
+          
+          {/* Show admin button if user is admin */}
+          {isAdmin && (
+            <button 
+              onClick={() => handleTabClick("admin")}
+              className={`flex flex-col items-center justify-center transition-all duration-200 relative ${
+                activeTab === "admin" ? activeStyle : inactiveStyle
+              }`}
+              aria-label="Admin Panel"
+            >
+              {activeTab === "admin" && <ActiveIndicator />}
+              <ShieldCheck className="h-6 w-6" />
+              <span className="text-xs font-medium mt-1">Админ</span>
             </button>
           )}
         </div>
