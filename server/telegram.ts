@@ -42,24 +42,16 @@ export class TelegramBot {
 
   // Generate web app URL
   public generateWebAppUrl(): string {
-    // Get the replit URL
-    const replitId = process.env.REPL_ID || '';
-    const replitOwner = process.env.REPL_OWNER || '';
-    const replitSlug = process.env.REPL_SLUG || '';
-    
-    // For Replit environments
-    if (replitId) {
-      // This is the format for Replit hosting URLs
-      return `https://${replitSlug}.${replitOwner}.repl.co`;
-    }
-    
-    // If we have an explicitly set web app URL, use it
+    // Check if we have a specific WEB_APP_URL environment variable
     if (process.env.WEB_APP_URL) {
       return process.env.WEB_APP_URL;
     }
     
-    // Default for local development (note: using http instead of https)
-    return 'http://localhost:5000';
+    // For development and testing in Telegram
+    // We use a basic URL that will always redirect to the webview 
+    // in Replit environment
+    return 'https://replit.com/@' + process.env.REPL_OWNER + '/' + 
+           process.env.REPL_SLUG;
   }
 
   // Send message to a user
