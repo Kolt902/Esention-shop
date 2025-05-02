@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 
 // Utility function for formatting prices
 export function formatPrice(price: number) {
-  return `${price.toLocaleString()} ₽`;
+  return `${price.toLocaleString()} €`;
 }
 
 // Utility for showing notifications
