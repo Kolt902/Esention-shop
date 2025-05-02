@@ -654,7 +654,7 @@ export default function StorePage() {
                     <div className="bg-gray-100 py-1 px-3 rounded-full text-sm flex items-center">
                       <span>Категория: {selectedCategory}</span>
                       <a 
-                        href="/"
+                        href={getResetPath()}
                         className="ml-2 text-black hover:text-gray-800"
                       >
                         <X className="h-3 w-3" />
@@ -666,7 +666,7 @@ export default function StorePage() {
                     <div className="bg-gray-100 py-1 px-3 rounded-full text-sm flex items-center">
                       <span>Бренд: {selectedBrand}</span>
                       <a 
-                        href="/"
+                        href={getResetPath()}
                         className="ml-2 text-black hover:text-gray-800"
                       >
                         <X className="h-3 w-3" />
@@ -680,7 +680,7 @@ export default function StorePage() {
                                     selectedStyle === 'streetwear' ? 'Streetwear' : 
                                     selectedStyle === 'luxury' ? 'Luxury' : 'Athleisure'}</span>
                       <a 
-                        href="/"
+                        href={getResetPath()}
                         className="ml-2 text-black hover:text-gray-800"
                       >
                         <X className="h-3 w-3" />
