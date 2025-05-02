@@ -213,6 +213,83 @@ export class MemStorage implements IStorage {
       sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
       description: "Nike's first lifestyle Air Max brings you style, comfort and big attitude in the Nike Air Max 270. The design draws inspiration from Air Max icons, showcasing Nike's greatest innovation with its large window and fresh array of colors.",
     });
+    
+    // Добавим футболки
+    this.createProduct({
+      name: "Nike Sportswear Club",
+      price: 2500,
+      category: "tshirts",
+      imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/5d8b1a7a-bc3e-483e-a89c-2b021c278724/sportswear-club-mens-t-shirt-ShrJfX.png",
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      description: "The Nike Sportswear Club T-Shirt is made with our everyday cotton fabric and a classic fit for a familiar feel right out of the bag. An embroidered Futura logo on the chest provides a signature Nike look.",
+    });
+    
+    this.createProduct({
+      name: "Nike Dri-FIT Legend",
+      price: 3000,
+      category: "tshirts",
+      imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/49c07831-df25-4122-bd15-de9794095bd0/dri-fit-legend-mens-training-t-shirt-VJGcGZ.png",
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      description: "The Nike Dri-FIT Legend T-Shirt delivers a soft feel, sweat-wicking performance and great range of motion to get you through your workout in total comfort.",
+    });
+    
+    // Добавим кофты (толстовки)
+    this.createProduct({
+      name: "Nike Sportswear Club Fleece",
+      price: 5500,
+      category: "hoodies",
+      imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/4c9eafe3-18c6-41bb-9cef-104a523f4d66/sportswear-club-fleece-pullover-hoodie-5ZcD7G.png",
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      description: "The Nike Sportswear Club Fleece Pullover Hoodie combines soft fleece fabric with a classic silhouette and minimalist design details to create an essential for your daily wardrobe.",
+    });
+    
+    this.createProduct({
+      name: "Nike Sportswear Tech Fleece",
+      price: 7500,
+      category: "hoodies",
+      imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/9a8ee4fe-3047-4fee-9b6d-7940c39c5304/sportswear-tech-fleece-mens-full-zip-hoodie-5ZtTtk.png",
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      description: "Low-profile, lightweight and warm, Nike Tech Fleece offers innovative comfort that easily transitions between seasons. This zip hoodie hits at the hip and features a lightweight 3-piece scuba hood.",
+    });
+    
+    // Добавим штаны
+    this.createProduct({
+      name: "Nike Sportswear Club Fleece",
+      price: 5000,
+      category: "pants",
+      imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/2f6ca908-f593-461b-b1b2-40ee9be57ff6/sportswear-club-fleece-joggers-KflRdQ.png",
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      description: "The Nike Sportswear Club Fleece Joggers combine the comfort of soft fleece fabric with a tailored look that you can wear every day.",
+    });
+    
+    this.createProduct({
+      name: "Nike Dri-FIT",
+      price: 4500,
+      category: "pants",
+      imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/u1hgnjassyx93bsiogzq/dri-fit-mens-training-pants-VTcVkx.png",
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      description: "The Nike Dri-FIT Training Pants combine sweat-wicking technology with breathable construction to keep you cool and comfortable for the duration of your workout."
+    });
+    
+    // Добавим куртки
+    this.createProduct({
+      name: "Nike Sportswear Windrunner",
+      price: 8000,
+      category: "jackets",
+      imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/8b8fbbd5-3e9a-4203-835a-40872626bb38/sportswear-windrunner-mens-hooded-jacket-5qQ49n.png",
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      description: "The Nike Sportswear Windrunner Jacket updates our first running windbreaker with lightweight fabric, bright retroinspired colors and a adjustable hood for custom coverage.",
+    });
+    
+    // Добавим аксессуары
+    this.createProduct({
+      name: "Nike Heritage",
+      price: 2000,
+      category: "accessories",
+      imageUrl: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/80a3db1f-7e3f-4915-94ba-d7c9cc8fd0a0/heritage-crossbody-bag-xKv3Gk.png",
+      sizes: ["One Size"],
+      description: "The Nike Heritage Crossbody Bag has a main compartment with a small zippered pocket. The shoulder strap is removable and adjustable so you can carry it close to your body or in your hand."
+    });
   }
 
   // User Methods
