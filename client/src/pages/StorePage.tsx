@@ -55,7 +55,7 @@ export default function StorePage() {
   };
   
   // Получаем параметры из URL с использованием wouter
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const categoryRoute = useRoute("/category/:category");
   const brandRoute = useRoute("/brand/:brand");
   const styleRoute = useRoute("/style/:style");
@@ -371,12 +371,12 @@ export default function StorePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent flex flex-col justify-end p-6">
                   <h3 className="text-2xl font-bold text-white mb-2">MEN</h3>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <a 
-                      href="/category/mens" 
+                    <button 
+                      onClick={() => setLocation("/category/mens")}
                       className="bg-white text-black text-sm font-medium px-3 py-1.5 rounded-full hover:bg-gray-200 transition inline-block"
                     >
                       Смотреть все
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -391,12 +391,12 @@ export default function StorePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent flex flex-col justify-end p-6">
                   <h3 className="text-2xl font-bold text-white mb-2">WOMEN</h3>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    <a 
-                      href="/category/womens" 
+                    <button 
+                      onClick={() => setLocation("/category/womens")}
                       className="bg-white text-black text-sm font-medium px-3 py-1.5 rounded-full hover:bg-gray-200 transition inline-block"
                     >
                       Смотреть все
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -412,8 +412,8 @@ export default function StorePage() {
             {/* Brand Cards Grid - Scrollable on mobile with modern design */}
             <div className="grid grid-cols-3 md:grid-cols-6 gap-3 mb-4">
               {/* Nike */}
-              <a 
-                href="/brand/Nike"
+              <button 
+                onClick={() => setLocation("/brand/Nike")}
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === 'Nike' 
                     ? 'border-black shadow-md bg-black text-white' 
@@ -421,7 +421,7 @@ export default function StorePage() {
                 }`}
               >
                 <span className="font-medium text-sm">Nike</span>
-              </a>
+              </button>
               
               {/* Adidas */}
               <a 
@@ -472,8 +472,8 @@ export default function StorePage() {
               </a>
               
               {/* All Brands */}
-              <a 
-                href="/category/mens"
+              <button 
+                onClick={() => setLocation("/category/mens")}
                 className={`flex items-center justify-center p-3 border rounded-xl transition-all ${
                   selectedBrand === null 
                     ? 'border-black shadow-md bg-black text-white' 
@@ -481,7 +481,7 @@ export default function StorePage() {
                 }`}
               >
                 <span className="font-medium text-sm">Все</span>
-              </a>
+              </button>
             </div>
           </section>
           
@@ -528,8 +528,8 @@ export default function StorePage() {
                   <div className="flex-1">
                     <h4 className="font-medium mb-2 text-gray-700">Категории</h4>
                     <div className="space-y-2">
-                      <a
-                        href="/category/mens"
+                      <button
+                        onClick={() => setLocation("/category/mens")}
                         className={`w-full text-left px-3 py-2 text-sm block ${
                           selectedCategory === null 
                             ? 'text-black font-medium underline' 
@@ -537,7 +537,7 @@ export default function StorePage() {
                         }`}
                       >
                         Все категории
-                      </a>
+                      </button>
                       
                       {filterData?.categories?.map((category) => (
                         <a
