@@ -255,7 +255,7 @@ export default function StorePage() {
       
       <main className="flex-grow pb-20">
         {/* Stylish Discount Banner */}
-        <div className="bg-gradient-to-r from-black via-gray-800 to-black text-white py-6 mb-0">
+        <div className="bg-gradient-to-r from-black via-gray-800 to-black text-white py-4 mb-0">
           <div className="container mx-auto px-4 text-center">
             <p className="text-lg md:text-xl font-light tracking-wider uppercase">
               СКИДКА 10% НА ВСЕ ТОВАРЫ
@@ -266,294 +266,230 @@ export default function StorePage() {
           </div>
         </div>
         
-        {/* Hero Banner - Four Styles Grid */}
-        <section className="container mx-auto px-4 mb-10 pt-8">
-          {/* Section header with label */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="inline-flex items-center">
-              <div className="bg-black text-white text-sm px-4 py-2 rounded-l-md uppercase font-bold">
-                СЕЗОНЫ
-              </div>
-              <h2 className="text-xl font-bold uppercase ml-3">
-                ВЫБЕРИТЕ СВОЙ СТИЛЬ
-              </h2>
-            </div>
-            <div className="hidden md:block">
-              <button className="text-sm font-medium text-black hover:underline">Все стили</button>
-            </div>
-          </div>
-          
-          {/* Four style cards in a grid */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            {/* Old Money Style */}
-            <div 
-              className="relative aspect-[3/4] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
-              onClick={() => {
-                handleStyleChange('oldmoney');
-                handleBrandChange(null);
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-b from-green-500/20 via-green-500/10 to-green-900/70"></div>
-              <div className="absolute inset-0 flex flex-col justify-between p-5">
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                    <div className="w-7 h-7 rounded-full bg-green-600"></div>
-                  </div>
-                  <span className="text-white text-xs px-3 py-1 rounded-full bg-black/30 backdrop-blur-sm">Spring</span>
+        {/* Full-width background banner for styles */}
+        <div className="w-full bg-gradient-to-b from-gray-100 to-gray-200 py-8 mb-8">
+          {/* Hero Banner - Four Styles Grid */}
+          <div className="container mx-auto px-4">
+            {/* Section header with label */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="inline-flex items-center">
+                <div className="bg-black text-white text-sm px-4 py-2 rounded-l-md uppercase font-bold">
+                  СТИЛИ
                 </div>
-                <div>
-                  <h3 className="text-white text-2xl font-bold mb-1">Old Money</h3>
-                  <p className="text-white/80 text-sm mb-3">Элегантный и утонченный стиль</p>
-                  <div className="transform opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                    <button className="bg-white text-black text-sm px-4 py-2 rounded-full font-medium hover:bg-black hover:text-white transition-colors">
-                      Смотреть коллекцию
-                    </button>
+                <h2 className="text-xl font-bold uppercase ml-3">
+                  ВЫБЕРИТЕ СВОЙ СТИЛЬ
+                </h2>
+              </div>
+            </div>
+            
+            {/* Four style cards in a grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
+              {/* Old Money Style */}
+              <div 
+                className="relative aspect-[2/3] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
+                onClick={() => {
+                  handleStyleChange('oldmoney');
+                  handleBrandChange(null);
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-green-400/20 via-green-500/20 to-green-800/60"></div>
+                <div className="absolute inset-0 flex flex-col justify-end p-5">
+                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
+                    <div className="w-8 h-8 rounded-full bg-green-600"></div>
+                  </div>
+                  <div>
+                    <h3 className="text-white text-2xl font-bold mb-1">Old Money</h3>
+                    <p className="text-white/80 text-sm mb-4">Элегантный и утонченный стиль</p>
+                    <div className="transform opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                      <button className="bg-white text-black text-sm px-4 py-2 rounded-full font-medium hover:bg-black hover:text-white transition-colors">
+                        Смотреть коллекцию
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Streetwear Style */}
-            <div 
-              className="relative aspect-[3/4] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
-              onClick={() => {
-                handleStyleChange('streetwear');
-                handleBrandChange(null);
-              }}
-            >
-              <img 
-                src="/assets/streetwear-brands.jpg" 
-                alt="Streetwear Style" 
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/80"></div>
-              <div className="absolute inset-0 flex flex-col justify-between p-5">
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                    <div className="w-7 h-7 rounded-full bg-teal-500"></div>
+              {/* Streetwear Style */}
+              <div 
+                className="relative aspect-[2/3] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
+                onClick={() => {
+                  handleStyleChange('streetwear');
+                  handleBrandChange(null);
+                }}
+              >
+                <img 
+                  src="/assets/streetwear-brands.jpg" 
+                  alt="Streetwear Style" 
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/70"></div>
+                <div className="absolute inset-0 flex flex-col justify-end p-5">
+                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
+                    <div className="w-8 h-8 rounded-full bg-teal-500"></div>
                   </div>
-                  <span className="text-white text-xs px-3 py-1 rounded-full bg-black/30 backdrop-blur-sm">Summer</span>
-                </div>
-                <div>
-                  <h3 className="text-white text-2xl font-bold mb-1">Streetwear</h3>
-                  <p className="text-white/80 text-sm mb-3">Современный уличный стиль</p>
-                  <div className="transform opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                    <button className="bg-white text-black text-sm px-4 py-2 rounded-full font-medium hover:bg-black hover:text-white transition-colors">
-                      Смотреть коллекцию
-                    </button>
+                  <div>
+                    <h3 className="text-white text-2xl font-bold mb-1">Streetwear</h3>
+                    <p className="text-white/80 text-sm mb-4">Современный уличный стиль</p>
+                    <div className="transform opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                      <button className="bg-white text-black text-sm px-4 py-2 rounded-full font-medium hover:bg-black hover:text-white transition-colors">
+                        Смотреть коллекцию
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Luxury Style */}
-            <div 
-              className="relative aspect-[3/4] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
-              onClick={() => {
-                handleStyleChange('luxury');
-                handleBrandChange(null);
-              }}
-            >
-              <img 
-                src="/assets/luxury-bags.jpg" 
-                alt="Luxury Style" 
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/80"></div>
-              <div className="absolute inset-0 flex flex-col justify-between p-5">
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                    <div className="w-7 h-7 rounded-full bg-amber-500"></div>
+              {/* Luxury Style */}
+              <div 
+                className="relative aspect-[2/3] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
+                onClick={() => {
+                  handleStyleChange('luxury');
+                  handleBrandChange(null);
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-amber-400/20 via-amber-500/20 to-amber-800/60"></div>
+                <div className="absolute inset-0 flex flex-col justify-end p-5">
+                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
+                    <div className="w-8 h-8 rounded-full bg-amber-500"></div>
                   </div>
-                  <span className="text-white text-xs px-3 py-1 rounded-full bg-black/30 backdrop-blur-sm">Autumn</span>
-                </div>
-                <div>
-                  <h3 className="text-white text-2xl font-bold mb-1">Luxury</h3>
-                  <p className="text-white/80 text-sm mb-3">Премиальные бренды</p>
-                  <div className="transform opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                    <button className="bg-white text-black text-sm px-4 py-2 rounded-full font-medium hover:bg-black hover:text-white transition-colors">
-                      Смотреть коллекцию
-                    </button>
+                  <div>
+                    <h3 className="text-white text-2xl font-bold mb-1">Luxury</h3>
+                    <p className="text-white/80 text-sm mb-4">Премиальные бренды</p>
+                    <div className="transform opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                      <button className="bg-white text-black text-sm px-4 py-2 rounded-full font-medium hover:bg-black hover:text-white transition-colors">
+                        Смотреть коллекцию
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Athleisure Style */}
-            <div 
-              className="relative aspect-[3/4] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
-              onClick={() => {
-                handleStyleChange('athleisure');
-                handleBrandChange(null);
-              }}
-            >
-              <img 
-                src="/assets/adidas-tags.jpg" 
-                alt="Athleisure Style" 
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/80"></div>
-              <div className="absolute inset-0 flex flex-col justify-between p-5">
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                    <div className="w-7 h-7 rounded-full bg-blue-600"></div>
+              {/* Athleisure Style */}
+              <div 
+                className="relative aspect-[2/3] overflow-hidden rounded-xl shadow-lg group cursor-pointer transition-all duration-300 hover:shadow-xl"
+                onClick={() => {
+                  handleStyleChange('athleisure');
+                  handleBrandChange(null);
+                }}
+              >
+                <img 
+                  src="/assets/adidas-tags.jpg" 
+                  alt="Athleisure Style" 
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/70"></div>
+                <div className="absolute inset-0 flex flex-col justify-end p-5">
+                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-600"></div>
                   </div>
-                  <span className="text-white text-xs px-3 py-1 rounded-full bg-black/30 backdrop-blur-sm">Winter</span>
-                </div>
-                <div>
-                  <h3 className="text-white text-2xl font-bold mb-1">Athleisure</h3>
-                  <p className="text-white/80 text-sm mb-3">Спортивный стиль</p>
-                  <div className="transform opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                    <button className="bg-white text-black text-sm px-4 py-2 rounded-full font-medium hover:bg-black hover:text-white transition-colors">
-                      Смотреть коллекцию
-                    </button>
+                  <div>
+                    <h3 className="text-white text-2xl font-bold mb-1">Athleisure</h3>
+                    <p className="text-white/80 text-sm mb-4">Спортивный стиль</p>
+                    <div className="transform opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                      <button className="bg-white text-black text-sm px-4 py-2 rounded-full font-medium hover:bg-black hover:text-white transition-colors">
+                        Смотреть коллекцию
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
         
         {/* Container for the rest of content */}
         <div className="container mx-auto px-4">
-          {/* Luxury Brands Showcase - Modern Visual Style */}
-          <section className="mb-12 mt-8">
+          {/* Popular Categories Section */}
+          <section className="mb-12 pt-2">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-black uppercase tracking-wide inline-flex items-center">
-                <span className="bg-black text-white px-4 py-1.5 rounded-full mr-2 text-sm">PREMIUM</span>
-                <span>ЛЮКСОВЫЕ БРЕНДЫ</span>
+                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-1.5 rounded-full mr-2 text-sm">КАТЕГОРИИ</span>
+                <span>ПОПУЛЯРНЫЕ НАПРАВЛЕНИЯ</span>
               </h2>
               <div className="hidden md:block">
-                <button className="text-sm font-medium text-black hover:underline">Показать все</button>
+                <button className="text-sm font-medium text-black hover:underline">Все категории</button>
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Left side - Luxury shopping bags */}
-              <div className="relative overflow-hidden rounded-2xl shadow-lg group">
-                <img 
-                  src="/assets/luxury-bags.jpg" 
-                  alt="Luxury Brands" 
-                  className="w-full h-[300px] object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-6">
-                  <div className="overflow-hidden">
-                    <h3 className="text-white text-2xl font-bold mb-2 transform translate-y-0 transition-transform duration-300 group-hover:translate-y-[-5px]">Премиум коллекция</h3>
-                  </div>
-                  <div className="overflow-hidden">
-                    <p className="text-white/80 mb-4 transform translate-y-0 transition-transform duration-300 group-hover:translate-y-[-5px] delay-75">
-                      CHANEL • CELINE • CARTIER • HERMES
-                    </p>
-                  </div>
-                  <div className="overflow-hidden">
-                    <button 
-                      onClick={() => handleBrandChange('Gucci')}
-                      className="bg-white text-black px-6 py-3 rounded-full text-sm font-bold transform translate-y-0 transition-all duration-300 group-hover:translate-y-[-5px] delay-100 hover:bg-black hover:text-white"
-                    >
-                      СМОТРЕТЬ КОЛЛЕКЦИЮ
-                    </button>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {filterData?.categories.slice(0, 4).map((category, index) => (
+                <div 
+                  key={index}
+                  className="relative aspect-square overflow-hidden rounded-xl shadow-md cursor-pointer transition-transform duration-300 hover:shadow-xl hover:-translate-y-1"
+                  onClick={() => handleCategoryChange(category)}
+                >
+                  {/* Category background color based on category */}
+                  <div className={`absolute inset-0 ${
+                    category === 'lifestyle' ? 'bg-gradient-to-br from-emerald-500 to-teal-700' :
+                    category === 'basketball' ? 'bg-gradient-to-br from-red-500 to-orange-700' :
+                    category === 'running' ? 'bg-gradient-to-br from-blue-500 to-indigo-700' :
+                    category === 'soccer' ? 'bg-gradient-to-br from-lime-500 to-green-700' :
+                    'bg-gradient-to-br from-gray-500 to-gray-700'
+                  }`}></div>
+                  
+                  {/* Category Icon */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                    <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3">
+                      {category === 'lifestyle' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                      )}
+                      {category === 'basketball' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                          <path d="M2 12h20"></path>
+                        </svg>
+                      )}
+                      {category === 'running' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M13 4v16"></path>
+                          <path d="M17 4v16"></path>
+                          <path d="M21 4v16"></path>
+                          <path d="M9 4v16"></path>
+                          <path d="M5 4v16"></path>
+                          <path d="M1 4v16"></path>
+                        </svg>
+                      )}
+                      {category === 'soccer' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <path d="M12 2v4"></path>
+                          <path d="M12 18v4"></path>
+                          <path d="M4.93 4.93l2.83 2.83"></path>
+                          <path d="M16.24 16.24l2.83 2.83"></path>
+                          <path d="M2 12h4"></path>
+                          <path d="M18 12h4"></path>
+                          <path d="M4.93 19.07l2.83-2.83"></path>
+                          <path d="M16.24 7.76l2.83-2.83"></path>
+                        </svg>
+                      )}
+                      {(category !== 'lifestyle' && category !== 'basketball' && category !== 'running' && category !== 'soccer') && (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                      )}
+                    </div>
+                    <h3 className="text-white font-semibold text-center">
+                      {getCategoryDisplayName(category)}
+                    </h3>
                   </div>
                 </div>
-              </div>
-              
-              {/* Right side - 2 smaller blocks */}
-              <div className="grid grid-rows-2 gap-6">
-                {/* Polo brand */}
-                <div className="relative overflow-hidden rounded-2xl shadow-lg group">
-                  <img 
-                    src="/assets/polo-bags.jpg" 
-                    alt="Polo Ralph Lauren" 
-                    className="w-full h-[140px] object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-4">
-                    <div className="overflow-hidden">
-                      <h3 className="text-white text-xl font-bold transform translate-y-0 transition-transform duration-300 group-hover:translate-y-[-5px]">
-                        Polo Ralph Lauren
-                      </h3>
-                    </div>
-                    <div className="overflow-hidden">
-                      <button 
-                        onClick={() => handleBrandChange('Polo')}
-                        className="mt-2 bg-transparent border border-white text-white px-4 py-1.5 rounded-full text-xs font-medium transform translate-y-0 transition-all duration-300 group-hover:translate-y-[-5px] hover:bg-white hover:text-black"
-                      >
-                        ПОДРОБНЕЕ
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Streetwear brands */}
-                <div className="relative overflow-hidden rounded-2xl shadow-lg group">
-                  <img 
-                    src="/assets/streetwear-brands.jpg" 
-                    alt="Streetwear Brands" 
-                    className="w-full h-[140px] object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-4">
-                    <div className="overflow-hidden">
-                      <h3 className="text-white text-xl font-bold transform translate-y-0 transition-transform duration-300 group-hover:translate-y-[-5px]">
-                        Уличная мода
-                      </h3>
-                    </div>
-                    <div className="overflow-hidden">
-                      <button 
-                        onClick={() => handleStyleChange('streetwear')}
-                        className="mt-2 bg-transparent border border-white text-white px-4 py-1.5 rounded-full text-xs font-medium transform translate-y-0 transition-all duration-300 group-hover:translate-y-[-5px] hover:bg-white hover:text-black"
-                      >
-                        КОЛЛЕКЦИЯ
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </section>
           
-          {/* Sportswear Brands Showcase */}
+          {/* Popular Brands Section */}
           <section className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-black uppercase tracking-wide inline-flex items-center">
-                <span className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-1.5 rounded-full mr-2 text-sm">HOT</span>
-                <span>СПОРТИВНЫЕ БРЕНДЫ</span>
+                <span className="bg-gradient-to-r from-amber-500 to-red-500 text-white px-4 py-1.5 rounded-full mr-2 text-sm">БРЕНДЫ</span>
+                <span>ПОПУЛЯРНЫЕ БРЕНДЫ</span>
               </h2>
               <div className="hidden md:block">
-                <button className="text-sm font-medium text-black hover:underline">Показать все</button>
-              </div>
-            </div>
-            
-            <div className="relative overflow-hidden rounded-2xl shadow-lg group mb-8">
-              <img 
-                src="/assets/adidas-tags.jpg" 
-                alt="Adidas Collection" 
-                className="w-full h-[250px] object-cover object-center transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent flex flex-col justify-center p-8">
-                <div className="max-w-lg">
-                  <div className="overflow-hidden">
-                    <h3 className="text-white text-3xl font-extrabold mb-3 transform translate-y-0 transition-transform duration-300 group-hover:translate-y-[-5px]">ADIDAS ORIGINALS</h3>
-                  </div>
-                  <div className="overflow-hidden">
-                    <p className="text-white/90 mb-6 transform translate-y-0 transition-transform duration-300 group-hover:translate-y-[-5px] delay-75">
-                      Культовая коллекция Originals сочетает спортивное наследие и современную моду. Эксклюзивно в нашем магазине.
-                    </p>
-                  </div>
-                  <div className="overflow-hidden">
-                    <div className="flex flex-wrap gap-3">
-                      <button 
-                        onClick={() => handleBrandChange('Adidas')}
-                        className="bg-white text-black px-6 py-3 rounded-full text-sm font-bold transform translate-y-0 transition-all duration-300 group-hover:translate-y-[-5px] delay-100 hover:bg-black hover:text-white"
-                      >
-                        МУЖСКАЯ КОЛЛЕКЦИЯ
-                      </button>
-                      <button 
-                        onClick={() => handleCategoryChange('tshirts')}
-                        className="bg-transparent border border-white text-white px-6 py-3 rounded-full text-sm font-bold transform translate-y-0 transition-all duration-300 group-hover:translate-y-[-5px] delay-150 hover:bg-white hover:text-black"
-                      >
-                        ЖЕНСКАЯ КОЛЛЕКЦИЯ
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                <button className="text-sm font-medium text-black hover:underline">Все бренды</button>
               </div>
             </div>
             
@@ -561,55 +497,55 @@ export default function StorePage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <button 
                 onClick={() => handleBrandChange('Nike')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-800 to-slate-950 p-6 text-center group shadow-md hover:shadow-lg transition-all"
               >
                 <div className="transform group-hover:scale-110 transition-transform duration-300">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" alt="Nike" className="h-10 mx-auto" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png" alt="Nike" className="h-10 mx-auto invert" />
                 </div>
-                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
-                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
+                <div className="mt-4 text-white text-sm">
+                  <span className="font-medium">Nike</span>
                 </div>
               </button>
               
               <button 
                 onClick={() => handleBrandChange('Adidas')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-indigo-800 to-indigo-950 p-6 text-center group shadow-md hover:shadow-lg transition-all"
               >
                 <div className="transform group-hover:scale-110 transition-transform duration-300">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg" alt="Adidas" className="h-10 mx-auto" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/1280px-Adidas_Logo.svg.png" alt="Adidas" className="h-10 mx-auto invert" />
                 </div>
-                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
-                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
+                <div className="mt-4 text-white text-sm">
+                  <span className="font-medium">Adidas</span>
+                </div>
+              </button>
+              
+              <button 
+                onClick={() => handleBrandChange('Gucci')}
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-emerald-800 to-emerald-950 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+              >
+                <div className="transform group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-2xl font-bold text-white">GUCCI</span>
+                </div>
+                <div className="mt-4 text-white text-sm">
+                  <span className="font-medium">Luxury</span>
                 </div>
               </button>
               
               <button 
                 onClick={() => handleBrandChange('Jordan')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
+                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-red-800 to-red-950 p-6 text-center group shadow-md hover:shadow-lg transition-all"
               >
                 <div className="transform group-hover:scale-110 transition-transform duration-300">
-                  <img src="https://upload.wikimedia.org/wikipedia/en/3/37/Jumpman_logo.svg" alt="Jordan" className="h-12 mx-auto" />
+                  <img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Jumpman_logo.svg/1200px-Jumpman_logo.svg.png" alt="Jordan" className="h-12 mx-auto invert" />
                 </div>
-                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
-                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
-                </div>
-              </button>
-              
-              <button 
-                onClick={() => handleBrandChange('Puma')}
-                className="relative overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 p-6 text-center group shadow-md hover:shadow-lg transition-all"
-              >
-                <div className="transform group-hover:scale-110 transition-transform duration-300">
-                  <span className="text-2xl font-bold">PUMA</span>
-                </div>
-                <div className="mt-4 transform opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4 transition-all">
-                  <span className="text-sm font-bold">ВЫБРАТЬ</span>
+                <div className="mt-4 text-white text-sm">
+                  <span className="font-medium">Jordan</span>
                 </div>
               </button>
             </div>
           </section>
           
-          {/* Featured Categories - Modern Grid */}
+          {/* Latest Products */}
           <section className="mb-12">
             <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Популярные категории</h2>
             
