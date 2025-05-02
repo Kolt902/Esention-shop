@@ -29,8 +29,9 @@ body {
   color: var(--tg-theme-button-text-color, #ffffff);
 }
 
-.telegram-webapp a {
+.telegram-webapp a, a {
   color: var(--tg-theme-link-color, #111111);
+  text-decoration: none;
 }
 
 /* Make sure content is visible in Telegram Mini App */
@@ -39,6 +40,23 @@ html, body, #root {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+}
+
+/* Override Telegram blue styles */
+button.bg-blue-600, 
+button.bg-\[\#0088CC\] {
+  background-color: #111111 !important;
+}
+
+button.hover\:bg-blue-800:hover {
+  background-color: #333333 !important;
+}
+
+.text-blue-100,
+.text-blue-600,
+.hover\:text-blue-100:hover,
+.hover\:text-blue-800:hover {
+  color: #111111 !important;
 }
 
 /* Ensure loading screen looks good in Telegram */
@@ -106,18 +124,18 @@ html, body, #root {
   background: linear-gradient(145deg, #f0f0f0, #e6e6e6);
   border-radius: 50%;
   font-size: 2rem;
-  color: #0088CC;
+  color: #111111;
 }
 
 .category-card:hover .category-icon-container {
-  background: linear-gradient(145deg, #0088CC, #006699);
+  background: linear-gradient(145deg, #111111, #333333);
   color: white;
 }
 
 /* Stylish welcome banner */
 .welcome-banner {
-  background: linear-gradient(90deg, #0088CC, #00a1f1);
-  border-radius: 12px;
+  background: linear-gradient(90deg, #111111, #333333);
+  border-radius: 0;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   position: relative;
@@ -130,7 +148,7 @@ html, body, #root {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.1) 100%);
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 100%);
   transform: skewX(-20deg) translateX(-100%);
   animation: shimmer 3s infinite;
 }
@@ -143,17 +161,20 @@ html, body, #root {
 
 /* Button styles */
 .telegram-button {
-  background: linear-gradient(90deg, #0088CC 0%, #005f8c 100%);
+  background: #111111;
   color: white;
-  font-weight: bold;
-  border-radius: 8px;
+  font-weight: normal;
+  border-radius: 0;
   transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem;
 }
 
 .telegram-button:hover {
-  background: linear-gradient(90deg, #005f8c 0%, #0088CC 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 136, 204, 0.3);
+  background: #333333;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 :root {

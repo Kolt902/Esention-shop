@@ -37,7 +37,7 @@ export default function Header({ title = "FASHION HUB" }: HeaderProps) {
           <div className="flex items-center">
             <Link href="/">
               <a className="flex items-center">
-                <h1 className="text-black text-xl font-bold uppercase tracking-widest">{title}</h1>
+                <h1 className="text-black text-xl font-bold uppercase tracking-widest">Esention</h1>
               </a>
             </Link>
           </div>
