@@ -691,6 +691,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.use('/auth', authRoutes);
   apiRouter.use('/products', productRoutes);
   apiRouter.use('/user', userRoutes);
+  apiRouter.use('/avatar', avatarRoutes);
   
   // Mount API router
   app.use('/api', apiRouter);

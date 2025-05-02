@@ -745,7 +745,8 @@ export class MemStorage implements IStorage {
   // Avatar Operations
   async getAvatarParams(userId: number): Promise<AvatarParams | undefined> {
     // Find by userId, not by the avatarParam's id
-    for (const [id, params] of this.avatarParams.entries()) {
+    const avatarParamsArray = Array.from(this.avatarParams.entries());
+    for (const [id, params] of avatarParamsArray) {
       if (params.userId === userId) {
         return params;
       }
@@ -757,7 +758,12 @@ export class MemStorage implements IStorage {
     const id = this.currentAvatarParamsId++;
     const avatarParams: AvatarParams = {
       id,
-      ...params
+      userId: params.userId,
+      height: params.height ?? 170, // default height in cm
+      weight: params.weight ?? 70, // default weight in kg
+      bodyType: params.bodyType ?? 'regular', // default body type
+      gender: params.gender ?? 'male', // default gender
+      measurements: params.measurements ?? {}
     };
     this.avatarParams.set(id, avatarParams);
     return avatarParams;
@@ -768,7 +774,8 @@ export class MemStorage implements IStorage {
     let foundParams: AvatarParams | undefined;
     let foundId: number | undefined;
     
-    for (const [id, existingParams] of this.avatarParams.entries()) {
+    const avatarParamsArray = Array.from(this.avatarParams.entries());
+    for (const [id, existingParams] of avatarParamsArray) {
       if (existingParams.userId === userId) {
         foundParams = existingParams;
         foundId = id;
@@ -808,7 +815,14 @@ export class MemStorage implements IStorage {
     const id = this.currentVirtualClothingId++;
     const clothingItem: VirtualClothingItem = {
       id,
-      ...item
+      name: item.name,
+      category: item.category,
+      type: item.type,
+      productId: item.productId,
+      modelPath: item.modelPath,
+      thumbnailUrl: item.thumbnailUrl,
+      sizes: item.sizes ?? [],
+      colors: item.colors ?? []
     };
     this.virtualClothingItems.set(id, clothingItem);
     return clothingItem;
@@ -817,8 +831,9 @@ export class MemStorage implements IStorage {
   // User Virtual Wardrobe Operations
   async getUserVirtualWardrobe(userId: number): Promise<UserVirtualWardrobe[]> {
     const items: UserVirtualWardrobe[] = [];
+    const wardrobeItems = Array.from(this.userVirtualWardrobe.values());
     
-    for (const item of this.userVirtualWardrobe.values()) {
+    for (const item of wardrobeItems) {
       if (item.userId === userId) {
         items.push(item);
       }
