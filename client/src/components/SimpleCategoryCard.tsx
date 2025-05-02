@@ -29,7 +29,7 @@ const SimpleCategoryCard: React.FC<SimpleCategoryCardProps> = ({
         />
       </div>
       
-      {/* Название категории */}
+      {/* Название категории - простой лаконичный стиль */}
       <h3 className="mt-2 text-center font-medium text-sm">{title}</h3>
     </div>
   );

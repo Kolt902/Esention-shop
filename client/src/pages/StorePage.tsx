@@ -445,9 +445,9 @@ export default function StorePage() {
             </div>
           </section>
           
-          {/* Top Kategorien - в стиле SNIPES */}
+          {/* Категории в стиле SNIPES - простые карточки с изображениями */}
           <section className="mb-12">
-            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Top Kategorien</h2>
+            <h2 className="text-xl font-bold text-black mb-6 uppercase tracking-wide">Категории</h2>
             
             <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
               {/* Отобразим категории в стиле SNIPES */}
