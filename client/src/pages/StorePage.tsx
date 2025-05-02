@@ -49,6 +49,11 @@ export default function StorePage() {
   const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   
+  // Функция для определения пути сброса фильтров в зависимости от выбранной категории
+  const getResetPath = () => {
+    return selectedCategory?.includes('women') ? "/category/womens" : "/category/mens";
+  };
+  
   // Получаем параметры из URL с использованием wouter
   const [location] = useLocation();
   const categoryRoute = useRoute("/category/:category");
@@ -685,7 +690,7 @@ export default function StorePage() {
                   
                   {(selectedCategory || selectedBrand || selectedStyle) && (
                     <a 
-                      href="/category/mens"
+                      href={getResetPath()}
                       className="py-1 px-3 rounded-full text-sm text-black border border-gray-300 hover:bg-gray-50"
                     >
                       Сбросить все фильтры
@@ -717,7 +722,7 @@ export default function StorePage() {
                       По выбранным фильтрам товаров не найдено. Попробуйте изменить параметры фильтрации.
                     </p>
                     <a
-                      href="/category/mens"
+                      href={getResetPath()}
                       className="mt-6 bg-black text-white py-2 px-6 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors inline-block"
                     >
                       Сбросить фильтры
