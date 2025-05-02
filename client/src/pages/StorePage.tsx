@@ -236,7 +236,7 @@ export default function StorePage() {
           ...addTelegramInitDataToRequest()
         },
         body: JSON.stringify(orderData)
-      });
+      } as RequestInit);
       
       if (response.ok) {
         showNotification("Заказ успешно оформлен! Мы свяжемся с вами для уточнения деталей доставки.");
@@ -510,7 +510,7 @@ export default function StorePage() {
                               : 'text-gray-700 hover:text-black'
                           }`}
                         >
-                          {getCategoryDisplayName(category)}
+                          {category}
                         </button>
                       ))}
                     </div>
@@ -613,7 +613,7 @@ export default function StorePage() {
                 <div className="mt-6 flex flex-wrap gap-2">
                   {selectedCategory && (
                     <div className="bg-gray-100 py-1 px-3 rounded-full text-sm flex items-center">
-                      <span>Категория: {getCategoryDisplayName(selectedCategory)}</span>
+                      <span>Категория: {selectedCategory}</span>
                       <button 
                         onClick={() => handleCategoryChange(null)}
                         className="ml-2 text-black hover:text-gray-800"

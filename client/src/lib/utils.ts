@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { format } from "date-fns";
 
 // Utility function for conditional class names
 export function cn(...inputs: ClassValue[]) {
@@ -96,4 +97,14 @@ export function getCategoryDisplayName(category: string): string {
   };
   
   return categoryMap[category.toLowerCase()] || category;
+}
+
+// Utility function to format dates
+export function formatDate(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    return format(date, 'dd.MM.yyyy HH:mm');
+  } catch (e) {
+    return dateString;
+  }
 }
