@@ -13,8 +13,13 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
   const [isTelegram, setIsTelegram] = useState(false);
   
   // Стили для кнопок меню
-  const activeStyle = "text-[#0088CC] scale-110 font-bold";
-  const inactiveStyle = "text-gray-500";
+  const activeStyle = "text-[#0088CC] scale-110 font-bold transition-transform";
+  const inactiveStyle = "text-gray-500 hover:text-gray-700";
+  
+  // Вспомогательный компонент для индикатора активной вкладки
+  const ActiveIndicator = () => (
+    <div className="absolute -top-0.5 left-1/2 transform -translate-x-1/2 w-4 h-1 bg-[#0088CC] rounded-b-lg"></div>
+  );
   
   // Detect if running in Telegram on mount
   useEffect(() => {
@@ -55,24 +60,24 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
         <div className="flex justify-between items-center">
           <button 
             onClick={() => handleTabClick("home")}
-            className={`flex flex-col items-center justify-center transition-all duration-200 ${
+            className={`flex flex-col items-center justify-center transition-all duration-200 relative ${
               activeTab === "home" ? activeStyle : inactiveStyle
             }`}
             aria-label="Home"
           >
+            {activeTab === "home" && <ActiveIndicator />}
             <Home className="h-6 w-6" />
             <span className="text-xs font-medium mt-1">Главная</span>
           </button>
 
           <button 
             onClick={() => handleTabClick("cart")}
-            className={`flex flex-col items-center justify-center relative transition-colors duration-200 ${
-              activeTab === "cart" 
-                ? "text-[#0088CC] scale-110 font-bold" 
-                : "text-gray-500"
+            className={`flex flex-col items-center justify-center relative transition-all duration-200 ${
+              activeTab === "cart" ? activeStyle : inactiveStyle
             }`}
             aria-label="Cart"
           >
+            {activeTab === "cart" && <ActiveIndicator />}
             <ShoppingBag className="h-6 w-6" />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold">
@@ -84,13 +89,12 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
           
           <button 
             onClick={() => handleTabClick("favorites")}
-            className={`flex flex-col items-center justify-center transition-colors duration-200 ${
-              activeTab === "favorites" 
-                ? "text-[#0088CC] scale-110 font-bold" 
-                : "text-gray-500"
+            className={`flex flex-col items-center justify-center transition-all duration-200 relative ${
+              activeTab === "favorites" ? activeStyle : inactiveStyle
             }`}
             aria-label="Favorites"
           >
+            {activeTab === "favorites" && <ActiveIndicator />}
             <Heart className="h-6 w-6" />
             <span className="text-xs font-medium mt-1">Избранное</span>
           </button>
@@ -99,10 +103,8 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
           {isTelegram && (
             <button 
               onClick={() => handleTabClick("contact")}
-              className={`flex flex-col items-center justify-center transition-colors duration-200 ${
-                activeTab === "contact" 
-                  ? "text-[#0088CC] scale-110 font-bold" 
-                  : "text-gray-500"
+              className={`flex flex-col items-center justify-center transition-all duration-200 ${
+                activeTab === "contact" ? activeStyle : inactiveStyle
               }`}
               aria-label="Contact us"
             >
@@ -115,10 +117,8 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
           {!isTelegram && (
             <button 
               onClick={() => handleTabClick("profile")}
-              className={`flex flex-col items-center justify-center transition-colors duration-200 ${
-                activeTab === "profile" 
-                  ? "text-[#0088CC] scale-110 font-bold" 
-                  : "text-gray-500"
+              className={`flex flex-col items-center justify-center transition-all duration-200 ${
+                activeTab === "profile" ? activeStyle : inactiveStyle
               }`}
               aria-label="Profile"
             >
