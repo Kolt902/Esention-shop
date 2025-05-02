@@ -1,5 +1,6 @@
 import { storage } from "./storage";
 import { User } from "@shared/schema";
+import { setTimeout } from "node:timers/promises";
 
 interface TelegramUser {
   id: number;
@@ -47,9 +48,9 @@ export class TelegramBot {
       return process.env.WEB_APP_URL;
     }
     
-    // Use replit.dev domain when available
+    // Use repl.co domain when available (more reliable)
     if (process.env.REPL_SLUG && process.env.REPL_OWNER) {
-      return `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.replit.dev`;
+      return `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`;
     }
     
     // Fallback for local development
@@ -153,6 +154,106 @@ export class TelegramBot {
     } catch (error) {
       console.error('Error getting webhook info:', error);
       return { ok: false, error: 'Failed to get webhook info' };
+    }
+  }
+  
+  // Delete webhook and use polling instead
+  public async deleteWebhook(): Promise<boolean> {
+    try {
+      const url = `${this.apiBaseUrl}/deleteWebhook`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          drop_pending_updates: true,
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Failed to delete webhook: ${JSON.stringify(errorData)}`);
+      }
+      
+      const data = await response.json();
+      console.log('Webhook deleted response:', data);
+      
+      return data.ok;
+    } catch (error) {
+      console.error('Error deleting webhook:', error);
+      return false;
+    }
+  }
+  
+  // Start long polling for updates
+  public async startPolling(): Promise<void> {
+    try {
+      // First, delete any existing webhook
+      await this.deleteWebhook();
+      
+      console.log('Starting Telegram updates polling...');
+      
+      let offset = 0;
+      
+      // Continuous polling loop
+      while (true) {
+        try {
+          const url = `${this.apiBaseUrl}/getUpdates?offset=${offset}&timeout=30`;
+          const response = await fetch(url);
+          
+          if (!response.ok) {
+            const errorData = await response.json();
+            console.error(`Telegram getUpdates error: ${JSON.stringify(errorData)}`);
+            
+            // Wait before retrying on error
+            await setTimeout(5000);
+            continue;
+          }
+          
+          const data = await response.json();
+          
+          if (data.ok && data.result.length > 0) {
+            console.log(`Received ${data.result.length} Telegram updates`);
+            
+            // Process each update
+            for (const update of data.result) {
+              // Update offset to acknowledge this update
+              offset = Math.max(offset, update.update_id + 1);
+              
+              // Process update
+              await this.handleUpdate(update);
+            }
+          } else {
+            // Wait a bit before next poll if no updates
+            await setTimeout(1000);
+          }
+        } catch (error) {
+          console.error('Error in polling loop:', error);
+          // Wait before retrying on error
+          await setTimeout(5000);
+        }
+      }
+    } catch (error) {
+      console.error('Error in startPolling:', error);
+    }
+  }
+  
+  // Handle a single update
+  private async handleUpdate(update: any): Promise<void> {
+    try {
+      // Log update for debugging
+      console.log('Processing update:', JSON.stringify(update, null, 2));
+      
+      // Handle /start command
+      if (update.message && update.message.text && update.message.text.startsWith('/start')) {
+        const chatId = update.message.chat.id;
+        console.log(`Received /start command from chat ID: ${chatId}`);
+        
+        await this.sendWelcomeMessage(chatId);
+      }
+    } catch (error) {
+      console.error('Error handling update:', error);
     }
   }
 

@@ -75,7 +75,7 @@ app.use((req, res, next) => {
       try {
         // Get the current Replit URL
         const replitHostname = process.env.REPL_SLUG ? 
-          `${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.replit.dev` : 
+          `${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co` : 
           null;
           
         // If we're on Replit, set up webhook
