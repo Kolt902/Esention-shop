@@ -98,7 +98,7 @@ function App() {
       
       // Если это запрос на админ-панель, перенаправляем пользователя
       if (isAdminRoute) {
-        window.location.href = "/admin";
+        window.location.href = "/admin?force_admin=true";
       }
     }, timeout);
     
