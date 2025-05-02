@@ -3,6 +3,7 @@ import { openTelegramChat, isRunningInTelegram, getCurrentUser } from "@/lib/tel
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { useTranslation } from "@/lib/translations";
+import { useLocation } from "wouter";
 
 interface FooterProps {
   cartCount: number;
@@ -15,6 +16,7 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
   const [isTelegram, setIsTelegram] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const { t } = useTranslation();
+  const [location, setLocation] = useLocation();
   
   // Стили для кнопок меню
   const activeStyle = "text-[#0088CC] scale-110 font-bold transition-transform";
@@ -25,9 +27,20 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
     <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-6 h-1.5 bg-[#0088CC] rounded-b-lg shadow-sm animate-pulse"></div>
   );
   
-  // Detect if running in Telegram on mount
+  // Detect if running in Telegram on mount and set active tab based on current location
   useEffect(() => {
     setIsTelegram(isRunningInTelegram());
+    
+    // Устанавливаем активный таб в зависимости от текущего местоположения
+    if (location === "/") {
+      setActiveTab("home");
+    } else if (location === "/profile") {
+      setActiveTab("profile");
+    } else if (location === "/favorites") {
+      setActiveTab("favorites");
+    } else if (location === "/admin") {
+      setActiveTab("admin");
+    }
     
     // Проверка прав администратора
     const checkAdminStatus = async () => {
@@ -49,14 +62,14 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
     };
     
     checkAdminStatus();
-  }, []);
+  }, [location]);
   
   const handleContactClick = () => {
     openTelegramChat();
   };
   
   const handleAdminClick = () => {
-    window.location.href = "/admin";
+    setLocation("/admin");
   };
   
   const handleTabClick = (tab: string) => {
@@ -73,10 +86,12 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
         handleContactClick();
         break;
       case "profile":
-        // In a real app, would implement profile page
+        // Переход на страницу профиля с использованием wouter
+        setLocation("/profile");
         break;
       case "favorites":
-        // In a real app, would implement favorites page
+        // Переход на страницу избранного с использованием wouter
+        setLocation("/favorites");
         break;
       case "admin":
         handleAdminClick();
