@@ -170,7 +170,7 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
             >
               {activeTab === "admin" && <ActiveIndicator />}
               <ShieldCheck className="h-6 w-6" />
-              <span className="text-xs font-medium mt-1">Админ</span>
+              <span className="text-xs font-medium mt-1">{t.settings?.admin || "Админ"}</span>
             </button>
           )}
         </div>
