@@ -229,10 +229,288 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Delivery Address API
+  apiRouter.get('/delivery-addresses', validateTelegramWebApp, async (req, res) => {
+    try {
+      const telegramUser = (req as any).telegramUser;
+      const user = await telegramBot.getUserFromTelegramData(telegramUser);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const addresses = await storage.getDeliveryAddresses(user.id);
+      res.json(addresses);
+    } catch (error) {
+      console.error('Error fetching delivery addresses:', error);
+      res.status(500).json({ message: 'Failed to fetch delivery addresses' });
+    }
+  });
+  
+  apiRouter.post('/delivery-addresses', validateTelegramWebApp, async (req, res) => {
+    try {
+      const telegramUser = (req as any).telegramUser;
+      const user = await telegramBot.getUserFromTelegramData(telegramUser);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const addressData = insertDeliveryAddressSchema.parse({
+        ...req.body,
+        userId: user.id,
+      });
+      
+      const address = await storage.createDeliveryAddress(addressData);
+      res.status(201).json(address);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: 'Invalid address data', errors: error.errors });
+      }
+      console.error('Error creating delivery address:', error);
+      res.status(500).json({ message: 'Failed to create delivery address' });
+    }
+  });
+  
+  apiRouter.put('/delivery-addresses/:id', validateTelegramWebApp, async (req, res) => {
+    try {
+      const addressId = parseInt(req.params.id);
+      const telegramUser = (req as any).telegramUser;
+      const user = await telegramBot.getUserFromTelegramData(telegramUser);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      // Verify address belongs to user
+      const existingAddress = await storage.getDeliveryAddress(addressId);
+      if (!existingAddress || existingAddress.userId !== user.id) {
+        return res.status(404).json({ message: 'Delivery address not found' });
+      }
+      
+      const updatedAddress = await storage.updateDeliveryAddress(addressId, req.body);
+      res.json(updatedAddress);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: 'Invalid address data', errors: error.errors });
+      }
+      console.error('Error updating delivery address:', error);
+      res.status(500).json({ message: 'Failed to update delivery address' });
+    }
+  });
+  
+  apiRouter.delete('/delivery-addresses/:id', validateTelegramWebApp, async (req, res) => {
+    try {
+      const addressId = parseInt(req.params.id);
+      const telegramUser = (req as any).telegramUser;
+      const user = await telegramBot.getUserFromTelegramData(telegramUser);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      // Verify address belongs to user
+      const existingAddress = await storage.getDeliveryAddress(addressId);
+      if (!existingAddress || existingAddress.userId !== user.id) {
+        return res.status(404).json({ message: 'Delivery address not found' });
+      }
+      
+      const success = await storage.deleteDeliveryAddress(addressId);
+      if (success) {
+        res.status(200).json({ message: 'Delivery address deleted' });
+      } else {
+        res.status(404).json({ message: 'Delivery address not found' });
+      }
+    } catch (error) {
+      console.error('Error deleting delivery address:', error);
+      res.status(500).json({ message: 'Failed to delete delivery address' });
+    }
+  });
+  
+  // Order API
+  apiRouter.post('/orders', validateTelegramWebApp, async (req, res) => {
+    try {
+      const telegramUser = (req as any).telegramUser;
+      const user = await telegramBot.getUserFromTelegramData(telegramUser);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      // Get items from cart
+      const cartItems = await storage.getCartItems(user.id);
+      if (cartItems.length === 0) {
+        return res.status(400).json({ message: 'Cart is empty' });
+      }
+      
+      // Calculate total price
+      let totalPrice = 0;
+      const itemsWithDetails = await Promise.all(
+        cartItems.map(async (item) => {
+          const product = await storage.getProduct(item.productId);
+          if (!product) {
+            throw new Error(`Product with ID ${item.productId} not found`);
+          }
+          totalPrice += product.price * item.quantity;
+          return {
+            productId: item.productId,
+            quantity: item.quantity,
+            size: item.size,
+            product: {
+              name: product.name,
+              price: product.price,
+              imageUrl: product.imageUrl
+            }
+          };
+        })
+      );
+      
+      // Create order with delivery information
+      const orderData = insertOrderSchema.parse({
+        ...req.body,
+        userId: user.id,
+        totalPrice,
+        items: itemsWithDetails,
+        createdAt: new Date().toISOString(),
+        status: 'pending',
+      });
+      
+      const order = await storage.createOrder(orderData);
+      
+      // Clear the cart after successful order
+      await storage.clearCart(user.id);
+      
+      // Return the created order
+      res.status(201).json(order);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: 'Invalid order data', errors: error.errors });
+      }
+      console.error('Error creating order:', error);
+      res.status(500).json({ message: 'Failed to create order' });
+    }
+  });
+  
+  apiRouter.get('/orders', validateTelegramWebApp, async (req, res) => {
+    try {
+      const telegramUser = (req as any).telegramUser;
+      const user = await telegramBot.getUserFromTelegramData(telegramUser);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      const orders = await storage.getUserOrders(user.id);
+      res.json(orders);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      res.status(500).json({ message: 'Failed to fetch orders' });
+    }
+  });
+  
+  // Admin API (only for @illia2323)
+  apiRouter.get('/admin/orders', validateTelegramWebApp, checkAdmin, async (req, res) => {
+    try {
+      const orders = await storage.getOrders();
+      res.json(orders);
+    } catch (error) {
+      console.error('Error fetching all orders:', error);
+      res.status(500).json({ message: 'Failed to fetch orders' });
+    }
+  });
+  
+  apiRouter.put('/admin/orders/:id', validateTelegramWebApp, checkAdmin, async (req, res) => {
+    try {
+      const orderId = parseInt(req.params.id);
+      const { status } = req.body;
+      
+      if (!status) {
+        return res.status(400).json({ message: 'Status is required' });
+      }
+      
+      const updatedOrder = await storage.updateOrderStatus(orderId, status);
+      if (!updatedOrder) {
+        return res.status(404).json({ message: 'Order not found' });
+      }
+      
+      res.json(updatedOrder);
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      res.status(500).json({ message: 'Failed to update order status' });
+    }
+  });
+  
+  apiRouter.get('/admin/online-users', validateTelegramWebApp, checkAdmin, async (req, res) => {
+    try {
+      const onlineUsers = await storage.getOnlineUsers();
+      res.json(onlineUsers);
+    } catch (error) {
+      console.error('Error fetching online users:', error);
+      res.status(500).json({ message: 'Failed to fetch online users' });
+    }
+  });
+  
+  // User activity tracking
+  apiRouter.post('/user-activity', validateTelegramWebApp, async (req, res) => {
+    try {
+      const telegramUser = (req as any).telegramUser;
+      const user = await telegramBot.getUserFromTelegramData(telegramUser);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      // Update or add online user
+      await storage.addOnlineUser({
+        userId: user.id,
+        telegramId: user.telegramId,
+        username: user.username,
+        lastActive: new Date()
+      });
+      
+      res.status(200).json({ message: 'Activity tracked' });
+    } catch (error) {
+      console.error('Error tracking user activity:', error);
+      res.status(500).json({ message: 'Failed to track activity' });
+    }
+  });
+  
   // Mount API router
   app.use('/api', apiRouter);
 
   const httpServer = createServer(app);
+  
+  // Create WebSocket server for real-time updates
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  wss.on('connection', (ws) => {
+    console.log('WebSocket client connected');
+    
+    // Send initial data
+    const sendOnlineUsers = async () => {
+      try {
+        if (ws.readyState === WebSocket.OPEN) {
+          const onlineUsers = await storage.getOnlineUsers();
+          ws.send(JSON.stringify({
+            type: 'ONLINE_USERS',
+            data: onlineUsers
+          }));
+        }
+      } catch (error) {
+        console.error('Error sending online users over WebSocket:', error);
+      }
+    };
+    
+    // Send online users every 10 seconds
+    const interval = setInterval(sendOnlineUsers, 10000);
+    sendOnlineUsers();
+    
+    // Handle disconnect
+    ws.on('close', () => {
+      clearInterval(interval);
+      console.log('WebSocket client disconnected');
+    });
+  });
 
   return httpServer;
 }
