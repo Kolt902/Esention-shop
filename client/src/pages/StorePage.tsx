@@ -7,6 +7,7 @@ import CartModal from "@/components/CartModal";
 import { showNotification } from "@/lib/utils";
 import { addTelegramInitDataToRequest, getTelegramWebApp } from "@/lib/telegram";
 import { Product } from "@shared/schema";
+import { Filter, ChevronDown, X } from "lucide-react";
 
 interface CartItem {
   product: Product;
@@ -17,6 +18,17 @@ interface CartItem {
 export default function StorePage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  
+  // Состояние для фильтрации
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  
+  // Получение списка категорий и брендов
+  const { data: filterData } = useQuery<{categories: string[], brands: string[]}>({
+    queryKey: ['/api/categories'],
+    staleTime: 300000, // 5 minutes
+  });
 
   // Инициализация компонента и восстановление корзины
   useEffect(() => {
@@ -71,9 +83,33 @@ export default function StorePage() {
     }
   }, [cartItems]);
 
-  // Fetch products
+  // Построение URL с параметрами фильтров
+  const buildProductsUrl = () => {
+    const baseUrl = '/api/products';
+    const params = new URLSearchParams();
+    
+    if (selectedCategory) {
+      params.append('category', selectedCategory);
+    }
+    
+    if (selectedBrand) {
+      params.append('brand', selectedBrand);
+    }
+    
+    const queryString = params.toString();
+    return queryString ? `${baseUrl}?${queryString}` : baseUrl;
+  };
+  
+  // Fetch products with filters
   const { data: products = [], isLoading, error } = useQuery<Product[]>({
-    queryKey: ['/api/products'],
+    queryKey: ['/api/products', selectedCategory, selectedBrand],
+    queryFn: async () => {
+      const response = await fetch(buildProductsUrl());
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      return response.json();
+    },
     staleTime: 60000, // 1 minute
     retry: 3, // Retry failed requests up to 3 times
     retryDelay: 1000, // Wait 1 second between retries
@@ -148,6 +184,34 @@ export default function StorePage() {
       showNotification("Не удалось обновить количество товара в корзине");
     }
   };
+  
+  // Обработчики для фильтрации
+  const handleCategoryChange = (category: string | null) => {
+    setSelectedCategory(category);
+    // Если категория изменилась, включаем фильтр
+    setIsFilterOpen(true);
+  };
+  
+  const handleBrandChange = (brand: string | null) => {
+    setSelectedBrand(brand);
+    // Если бренд изменился, включаем фильтр
+    setIsFilterOpen(true);
+  };
+  
+  const handleResetFilters = () => {
+    setSelectedCategory(null);
+    setSelectedBrand(null);
+  };
+  
+  // Преобразование категорий и брендов для отображения
+  const getCategoryDisplayName = (category: string): string => {
+    const categoryMap: Record<string, string> = {
+      'lifestyle': 'Повседневная обувь',
+      'running': 'Беговая обувь',
+      'basketball': 'Баскетбольная обувь',
+    };
+    return categoryMap[category] || category;
+  };
 
   // Checkout handler with Telegram integration
   const handleCheckout = () => {
@@ -212,16 +276,107 @@ export default function StorePage() {
           </p>
         </div>
 
-        {/* Products */}
+        {/* Products with filter controls */}
         <div className="mt-8">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-gray-800 bg-white px-4 py-2 rounded-lg shadow-sm">
-              New Arrivals
+              Каталог товаров
             </h3>
-            <div className="text-sm font-medium text-gray-600 bg-white px-4 py-2 rounded-lg shadow-sm">
-              {products?.length || 0} Products
-            </div>
+            
+            <button 
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="flex items-center gap-2 text-sm font-medium text-gray-600 bg-white px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+            >
+              <Filter className="h-4 w-4" />
+              Фильтры {isFilterOpen ? <ChevronDown className="h-4 w-4 transform rotate-180" /> : <ChevronDown className="h-4 w-4" />}
+            </button>
           </div>
+          
+          {/* Filter panels */}
+          {isFilterOpen && (
+            <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex flex-col sm:flex-row gap-4">
+                {/* Categories filter */}
+                <div className="flex-1">
+                  <h4 className="font-medium mb-2 text-gray-700">Категории</h4>
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => handleCategoryChange(null)}
+                      className={`w-full text-left px-3 py-2 rounded-md text-sm ${
+                        selectedCategory === null 
+                          ? 'bg-[#0088CC] text-white font-medium' 
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      Все категории
+                    </button>
+                    
+                    {filterData?.categories?.map((category) => (
+                      <button
+                        key={category}
+                        onClick={() => handleCategoryChange(category)}
+                        className={`w-full text-left px-3 py-2 rounded-md text-sm ${
+                          selectedCategory === category 
+                            ? 'bg-[#0088CC] text-white font-medium' 
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {getCategoryDisplayName(category)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Brands filter */}
+                <div className="flex-1">
+                  <h4 className="font-medium mb-2 text-gray-700">Бренды</h4>
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => handleBrandChange(null)}
+                      className={`w-full text-left px-3 py-2 rounded-md text-sm ${
+                        selectedBrand === null 
+                          ? 'bg-[#0088CC] text-white font-medium' 
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      Все бренды
+                    </button>
+                    
+                    {filterData?.brands?.map((brand) => (
+                      <button
+                        key={brand}
+                        onClick={() => handleBrandChange(brand)}
+                        className={`w-full text-left px-3 py-2 rounded-md text-sm ${
+                          selectedBrand === brand 
+                            ? 'bg-[#0088CC] text-white font-medium' 
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {brand}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Filter controls */}
+              <div className="mt-4 flex justify-between">
+                <div className="text-sm font-medium text-gray-600">
+                  {products?.length || 0} товаров
+                </div>
+                
+                {(selectedCategory || selectedBrand) && (
+                  <button 
+                    onClick={handleResetFilters}
+                    className="flex items-center gap-1 text-sm font-medium text-[#0088CC] hover:text-[#006699] transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                    Сбросить фильтры
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
 
           {isLoading ? (
             <div className="text-center py-12 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm">

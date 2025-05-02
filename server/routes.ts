@@ -214,7 +214,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const products = await storage.getProducts();
       
       // Extract unique categories
-      const categories = [...new Set(products.map(p => p.category))];
+      const categoriesSet = new Set<string>();
+      products.forEach(p => categoriesSet.add(p.category));
+      const categories = Array.from(categoriesSet);
       
       // Extract brands from product names (assuming first word is brand name)
       const brandSet = new Set<string>();
@@ -222,7 +224,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const brandName = p.name.split(' ')[0]; // Extract first word as brand
         if (brandName) brandSet.add(brandName);
       });
-      const brands = [...brandSet];
+      const brands = Array.from(brandSet);
       
       res.json({ categories, brands });
     } catch (error) {
