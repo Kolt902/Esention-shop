@@ -13,20 +13,20 @@ import { Filter, ChevronDown, X } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 
 // Импорт изображений
-import oldMoneyImg from "@/assets/5235752188695931952.jpg";
-import streetwearImg from "@/assets/5235752188695932083.jpg";
+import oldMoneyImg from "@/assets/5235752188695933225.jpg";
+import streetwearImg from "@/assets/5235826719263420314.jpg"; 
 import luxuryImg from "@/assets/5235759361291318071.jpg";
 import sportImg from "@/assets/5235759361291318073.jpg";
-import nikeImg from "@/assets/5235752188695932056.jpg";
-import adidasImg from "@/assets/5235752188695932008.jpg";
-import jordanImg from "@/assets/5235752188695932040.jpg";
-import stussyImg from "@/assets/5233500388882249248.jpg";
-import balenciagaImg from "@/assets/5235826719263420314.jpg";
+import nikeImg from "@/assets/5235752188695933225.jpg";
+import adidasImg from "@/assets/5235759361291318073.jpg";
+import jordanImg from "@/assets/5235752188695933225.jpg";
+import stussyImg from "@/assets/5235826719263420314.jpg";
+import balenciagaImg from "@/assets/5235759361291318071.jpg";
 import allBrandsImg from "@/assets/5235689757051321832.jpg";
-import allCategoriesImg from "@/assets/5235752188695933189.jpg";
-import clothingImg from "@/assets/5235752188695932083.jpg";
-import shoesImg from "@/assets/5235752188695931952.jpg";
-import accessoriesImg from "@/assets/5235759361291318073.jpg";
+import allCategoriesImg from "@/assets/5235689757051321832.jpg";
+import clothingImg from "@/assets/5235752188695933225.jpg";
+import shoesImg from "@/assets/5235752188695933225.jpg";
+import accessoriesImg from "@/assets/5235759361291318071.jpg";
 
 interface CartItem {
   product: Product;
@@ -282,7 +282,7 @@ export default function StorePage() {
               <CategoryCard 
                 title="Streetwear" 
                 description="Современный уличный стиль" 
-                imageUrl="./assets/5235752188695932083.jpg"
+                imageUrl={streetwearImg}
                 onClick={() => handleStyleChange('streetwear')}
                 isSelected={selectedStyle === 'streetwear'}
               />
@@ -291,7 +291,7 @@ export default function StorePage() {
               <CategoryCard 
                 title="Luxury" 
                 description="Роскошь и премиальные бренды" 
-                imageUrl="./assets/5235759361291318071.jpg"
+                imageUrl={luxuryImg}
                 onClick={() => handleStyleChange('luxury')}
                 isSelected={selectedStyle === 'luxury'}
               />
@@ -300,7 +300,7 @@ export default function StorePage() {
               <CategoryCard 
                 title="Athleisure" 
                 description="Спортивный городской стиль" 
-                imageUrl="./assets/5235759361291318073.jpg"
+                imageUrl={sportImg}
                 onClick={() => handleStyleChange('sport')}
                 isSelected={selectedStyle === 'sport'}
               />
