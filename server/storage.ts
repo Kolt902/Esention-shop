@@ -108,7 +108,16 @@ export class MemStorage implements IStorage {
       id: 1,
       username: this.adminUsername,
       password: "admin123", // This is just a placeholder, in a real app use secure passwords
-      telegramId: null,
+      telegramId: "818421912",
+      isAdmin: true
+    });
+    
+    // Create second admin user (zakharr99)
+    this.users.set(this.currentUserId++, {
+      id: 2, 
+      username: "zakharr99",
+      password: "admin123", // This is just a placeholder, in a real app use secure passwords
+      telegramId: "1056271534",
       isAdmin: true
     });
     
