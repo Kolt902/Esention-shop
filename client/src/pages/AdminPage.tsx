@@ -516,7 +516,7 @@ export default function AdminPage() {
             <li className="mb-2">
               <button 
                 onClick={() => setActiveTab("dashboard")}
-                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "dashboard" ? "bg-blue-50 text-blue-600 dark:bg-gray-700 dark:text-blue-400" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
+                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "dashboard" ? "bg-gray-200 text-black dark:bg-gray-700 dark:text-gray-200" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
               >
                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
@@ -530,7 +530,7 @@ export default function AdminPage() {
             <li className="mb-2">
               <button 
                 onClick={() => setActiveTab("orders")}
-                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "orders" ? "bg-blue-50 text-blue-600 dark:bg-gray-700 dark:text-blue-400" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
+                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "orders" ? "bg-gray-200 text-black dark:bg-gray-700 dark:text-gray-200" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
               >
                 <Package className="h-5 w-5 mr-3" />
                 Заказы
@@ -539,7 +539,7 @@ export default function AdminPage() {
             <li className="mb-2">
               <button 
                 onClick={() => setActiveTab("products")}
-                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "products" ? "bg-blue-50 text-blue-600 dark:bg-gray-700 dark:text-blue-400" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
+                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "products" ? "bg-gray-200 text-black dark:bg-gray-700 dark:text-gray-200" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
               >
                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -550,7 +550,7 @@ export default function AdminPage() {
             <li className="mb-2">
               <button 
                 onClick={() => setActiveTab("users")}
-                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "users" ? "bg-blue-50 text-blue-600 dark:bg-gray-700 dark:text-blue-400" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
+                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "users" ? "bg-gray-200 text-black dark:bg-gray-700 dark:text-gray-200" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
               >
                 <Users className="h-5 w-5 mr-3" />
                 Пользователи
@@ -559,7 +559,7 @@ export default function AdminPage() {
             <li className="mb-2">
               <button 
                 onClick={() => setActiveTab("statistics")}
-                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "statistics" ? "bg-blue-50 text-blue-600 dark:bg-gray-700 dark:text-blue-400" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
+                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "statistics" ? "bg-gray-200 text-black dark:bg-gray-700 dark:text-gray-200" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
               >
                 <Activity className="h-5 w-5 mr-3" />
                 Статистика
@@ -568,7 +568,7 @@ export default function AdminPage() {
             <li className="mb-2">
               <button 
                 onClick={() => setActiveTab("notifications")}
-                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "notifications" ? "bg-blue-50 text-blue-600 dark:bg-gray-700 dark:text-blue-400" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
+                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "notifications" ? "bg-gray-200 text-black dark:bg-gray-700 dark:text-gray-200" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
               >
                 <Bell className="h-5 w-5 mr-3" />
                 Уведомления
@@ -577,7 +577,7 @@ export default function AdminPage() {
             <li className="mb-2">
               <button 
                 onClick={() => setActiveTab("admins")}
-                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "admins" ? "bg-blue-50 text-blue-600 dark:bg-gray-700 dark:text-blue-400" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
+                className={`flex items-center w-full px-4 py-2 text-left ${activeTab === "admins" ? "bg-gray-200 text-black dark:bg-gray-700 dark:text-gray-200" : "hover:bg-gray-100 dark:hover:bg-gray-700"}`}
               >
                 <Shield className="h-5 w-5 mr-3" />
                 Администраторы
