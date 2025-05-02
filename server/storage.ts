@@ -509,4 +509,11 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Импортируем DatabaseStorage и создаем инстанс
+import { DatabaseStorage } from "./dbStorage";
+
+// Раскомментируйте следующую строку для использования базы данных PostgreSQL:
+export const storage = new DatabaseStorage();
+
+// Закомментируйте следующую строку при переходе на PostgreSQL:
+// export const storage = new MemStorage();

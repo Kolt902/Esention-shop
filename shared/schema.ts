@@ -128,3 +128,22 @@ export type CartItem = typeof cartItems.$inferSelect;
 
 export type InsertOrder = z.infer<typeof insertOrderSchema>;
 export type Order = typeof orders.$inferSelect;
+
+// Online Users Schema
+export const onlineUsers = pgTable("online_users", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().unique(),
+  telegramId: text("telegram_id").notNull(),
+  username: text("username").notNull(),
+  lastActive: text("last_active").notNull(),
+});
+
+export const insertOnlineUserSchema = createInsertSchema(onlineUsers).pick({
+  userId: true,
+  telegramId: true,
+  username: true,
+  lastActive: true,
+});
+
+export type InsertOnlineUser = z.infer<typeof insertOnlineUserSchema>;
+export type OnlineUser = typeof onlineUsers.$inferSelect;
