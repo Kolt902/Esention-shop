@@ -446,30 +446,30 @@ export function generateAdidasProducts(startId: number): Product[] {
   const adidasHoodies = [
     {
       name: "Adidas Originals Trefoil Hoodie",
-      price: 6990,
+      price: 69.90,
       category: "hoodies",
       description: "Классическая толстовка Adidas Originals с капюшоном и большим логотипом Trefoil на груди.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesAdidas[33],
-      additionalImages: officialProductImagesAdidas.slice(33, 36)
+      imageUrl: getOfficialProductImages("Adidas Trefoil Hoodie", "hoodies")[0],
+      additionalImages: getOfficialProductImages("Adidas Trefoil Hoodie", "hoodies")
     },
     {
       name: "Adidas Essentials 3-Stripes",
-      price: 5990,
+      price: 59.90,
       category: "hoodies",
       description: "Спортивная толстовка Adidas Essentials с тремя полосками на рукавах и карманом-кенгуру.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesAdidas[36],
-      additionalImages: officialProductImagesAdidas.slice(36, 39)
+      imageUrl: getOfficialProductImages("Adidas Essentials Hoodie", "hoodies")[0],
+      additionalImages: getOfficialProductImages("Adidas Essentials Hoodie", "hoodies")
     },
     {
       name: "Adidas Z.N.E.",
-      price: 8990,
+      price: 89.90,
       category: "hoodies",
       description: "Премиальная толстовка Adidas Z.N.E., разработанная для атлетов, которые хотят сохранять концентрацию перед соревнованиями.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesAdidas[39],
-      additionalImages: officialProductImagesAdidas.slice(39, 42)
+      imageUrl: getOfficialProductImages("Adidas ZNE Hoodie", "hoodies")[0],
+      additionalImages: getOfficialProductImages("Adidas ZNE Hoodie", "hoodies")
     }
   ];
   
@@ -477,30 +477,30 @@ export function generateAdidasProducts(startId: number): Product[] {
   const adidasPants = [
     {
       name: "Adidas Tiro",
-      price: 5490,
+      price: 54.90,
       category: "pants",
       description: "Футбольные тренировочные брюки Adidas Tiro с зауженным кроем и боковыми карманами на молнии.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesAdidas[42],
-      additionalImages: officialProductImagesAdidas.slice(42, 45)
+      imageUrl: getOfficialProductImages("Adidas Tiro", "pants")[0],
+      additionalImages: getOfficialProductImages("Adidas Tiro", "pants")
     },
     {
       name: "Adidas Originals Adicolor",
-      price: 6990,
+      price: 69.90,
       category: "pants",
       description: "Спортивные брюки Adicolor из хлопкового трикотажа с тремя культовыми полосками вдоль штанин.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesAdidas[45],
-      additionalImages: officialProductImagesAdidas.slice(45, 48)
+      imageUrl: getOfficialProductImages("Adidas Adicolor Pants", "pants")[0],
+      additionalImages: getOfficialProductImages("Adidas Adicolor Pants", "pants")
     },
     {
       name: "Adidas Sportswear Future Icons",
-      price: 5990,
+      price: 59.90,
       category: "pants",
       description: "Удобные брюки Adidas Sportswear с эластичным поясом и мягкой внутренней отделкой для повседневной носки.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesAdidas[48],
-      additionalImages: officialProductImagesAdidas.slice(48, 51)
+      imageUrl: getOfficialProductImages("Adidas Future Icons", "pants")[0],
+      additionalImages: getOfficialProductImages("Adidas Future Icons", "pants")
     }
   ];
   
@@ -508,30 +508,30 @@ export function generateAdidasProducts(startId: number): Product[] {
   const adidasJackets = [
     {
       name: "Adidas Originals Superstar Track Top",
-      price: 7990,
+      price: 79.90,
       category: "jackets",
       description: "Культовая олимпийка Adidas Superstar с тремя полосками на рукавах и высоким воротником.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesAdidas[51],
-      additionalImages: officialProductImagesAdidas.slice(51, 54)
+      imageUrl: getOfficialProductImages("Adidas Superstar Track Top", "jackets")[0],
+      additionalImages: getOfficialProductImages("Adidas Superstar Track Top", "jackets")
     },
     {
       name: "Adidas Terrex MYSHELTER",
-      price: 14990,
+      price: 149.90,
       category: "jackets",
       description: "Технологичная куртка Adidas Terrex, защищающая от ветра и дождя благодаря мембране RAIN.RDY.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesAdidas[54],
-      additionalImages: officialProductImagesAdidas.slice(54, 57)
+      imageUrl: getOfficialProductImages("Adidas Terrex MYSHELTER", "jackets")[0],
+      additionalImages: getOfficialProductImages("Adidas Terrex MYSHELTER", "jackets")
     },
     {
       name: "Adidas BSC 3-Stripes RAIN.RDY",
-      price: 9990,
+      price: 99.90,
       category: "jackets",
       description: "Водонепроницаемая куртка Adidas с капюшоном и технологией RAIN.RDY для защиты от непогоды.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesAdidas[57],
-      additionalImages: officialProductImagesAdidas.slice(57, 60)
+      imageUrl: getOfficialProductImages("Adidas BSC Jacket", "jackets")[0],
+      additionalImages: getOfficialProductImages("Adidas BSC Jacket", "jackets")
     }
   ];
 
@@ -579,12 +579,12 @@ export function generateJordanProducts(startId: number): Product[] {
   const jordanShoes = [
     {
       name: "Air Jordan 1 Retro High OG",
-      price: 15990,
+      price: 159.90,
       category: "sneakers",
       description: "Легендарные баскетбольные кроссовки Air Jordan 1, впервые выпущенные в 1985 году, с высоким силуэтом и классическими цветовыми решениями.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesJordan[0],
-      additionalImages: officialProductImagesJordan.slice(0, 3)
+      imageUrl: getOfficialProductImages("Air Jordan 1", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Air Jordan 1", "sneakers")
     },
     {
       name: "Air Jordan 4 Retro",
