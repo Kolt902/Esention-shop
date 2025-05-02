@@ -200,7 +200,8 @@ export default function StorePage() {
     <div className="min-h-screen flex flex-col store-background">
       <Header />
       
-      <main className="flex-grow container mx-auto px-4 py-6">
+      <main className="flex-grow container mx-auto px-4 py-6 pb-20">
+        {/* Добавлен нижний отступ pb-20 для области футера */}
         {/* Welcome Banner */}
         <div className="welcome-banner p-6 mb-8">
           <h2 className="text-2xl font-bold text-center text-white drop-shadow-md">
