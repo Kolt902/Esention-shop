@@ -165,3 +165,28 @@ export function getTelegramTheme() {
   }
   return null;
 }
+
+/**
+ * Converts technical category names to user-friendly names
+ */
+export function getCategoryDisplayName(category: string): string {
+  const categoryNames: Record<string, string> = {
+    'tshirts': 'Футболки',
+    'hoodies': 'Толстовки',
+    'sneakers': 'Кроссовки',
+    'pants': 'Брюки',
+    'accessories': 'Аксессуары',
+    'basketball': 'Баскетбол',
+    'running': 'Бег',
+    'lifestyle': 'Повседневная одежда',
+    'training': 'Спортивная одежда',
+    'shoes': 'Обувь',
+    'bags': 'Сумки',
+    'jewelry': 'Украшения',
+    'dresses': 'Платья',
+    'coats': 'Верхняя одежда',
+    'shirts': 'Рубашки',
+  };
+  
+  return categoryNames[category] || category;
+}
