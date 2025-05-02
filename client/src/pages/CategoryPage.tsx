@@ -129,16 +129,19 @@ export default function CategoryPage() {
         {/* Фильтр по брендам - горизонтальный скролл */}
         <div className="mb-8 overflow-x-auto pb-2">
           <div className="flex space-x-2 min-w-max">
-            <a
-              href={getResetPath()}
-              className={`px-4 py-2 border rounded-full transition-colors whitespace-nowrap inline-block ${
+            <button
+              onClick={() => {
+                setSelectedBrand(null);
+                setLocation(getResetPath());
+              }}
+              className={`px-4 py-2 border rounded-full transition-colors whitespace-nowrap ${
                 selectedBrand === null 
                   ? 'bg-black text-white border-black' 
                   : 'border-gray-300 text-gray-700 hover:border-gray-500'
               }`}
             >
               Все бренды
-            </a>
+            </button>
             
             {filterData?.brands?.map(brand => (
               <button

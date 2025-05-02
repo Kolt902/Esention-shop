@@ -164,30 +164,35 @@ export default function StylePage() {
         {/* Фильтр по брендам - горизонтальный скролл */}
         <div className="mb-8 overflow-x-auto pb-2">
           <div className="flex space-x-2 min-w-max">
-            <a
-              href={getResetPath()}
-              className={`px-4 py-2 border rounded-full transition-colors whitespace-nowrap inline-block ${
+            <button
+              onClick={() => {
+                setSelectedBrand(null);
+                setLocation(getResetPath());
+              }}
+              className={`px-4 py-2 border rounded-full transition-colors whitespace-nowrap ${
                 selectedBrand === null 
                   ? 'bg-black text-white border-black' 
                   : 'border-gray-300 text-gray-700 hover:border-gray-500'
               }`}
             >
               Все бренды
-            </a>
+            </button>
             
             {styleBrands.map(brand => (
-              <a
+              <button
                 key={brand}
-                href={`/brand/${brand}`}
-                className={`px-4 py-2 border rounded-full transition-colors whitespace-nowrap inline-block ${
+                onClick={() => {
+                  handleBrandChange(brand);
+                  setLocation(`/brand/${brand}`);
+                }}
+                className={`px-4 py-2 border rounded-full transition-colors whitespace-nowrap ${
                   selectedBrand === brand 
                     ? 'bg-black text-white border-black' 
                     : 'border-gray-300 text-gray-700 hover:border-gray-500'
                 }`}
-                onClick={() => handleBrandChange(brand)}
               >
                 {brand}
-              </a>
+              </button>
             ))}
           </div>
         </div>
