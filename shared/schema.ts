@@ -13,6 +13,9 @@ export const users = pgTable("users", {
   fullName: text("full_name"),
   phone: text("phone"),
   avatarUrl: text("avatar_url"),
+  // Additional user fields
+  lastLogin: text("last_login"),
+  registrationDate: text("registration_date"),
   // Referral program fields
   referralCode: text("referral_code"),
   referredBy: text("referred_by"),
@@ -25,6 +28,12 @@ export const users = pgTable("users", {
     newArrivals: true,
     priceDrops: false
   }).notNull(),
+  // User preferences
+  preferences: jsonb("preferences").default({
+    language: "en",
+    theme: "auto",
+    currency: "EUR"
+  }),
   createdAt: text("created_at"),
 });
 
@@ -37,11 +46,14 @@ export const insertUserSchema = createInsertSchema(users).pick({
   fullName: true,
   phone: true,
   avatarUrl: true,
+  lastLogin: true,
+  registrationDate: true,
   referralCode: true,
   referredBy: true,
   referralCount: true,
   referralDiscount: true,
   notificationSettings: true,
+  preferences: true,
   createdAt: true,
 });
 
@@ -274,12 +286,14 @@ export const userFavorites = pgTable("user_favorites", {
   userId: integer("user_id").notNull(),
   productId: integer("product_id").notNull(),
   dateAdded: text("date_added").notNull(),
+  notes: text("notes"),
 });
 
 export const insertUserFavoriteSchema = createInsertSchema(userFavorites).pick({
   userId: true,
   productId: true,
   dateAdded: true,
+  notes: true,
 });
 
 export type InsertUserFavorite = z.infer<typeof insertUserFavoriteSchema>;
@@ -291,12 +305,14 @@ export const styles = pgTable("styles", {
   name: text("name").notNull().unique(),
   description: text("description").notNull(),
   imageUrl: text("image_url").notNull(),
+  featured: boolean("featured").default(false).notNull(),
 });
 
 export const insertStyleSchema = createInsertSchema(styles).pick({
   name: true,
   description: true,
   imageUrl: true,
+  featured: true,
 });
 
 export type InsertStyle = z.infer<typeof insertStyleSchema>;
@@ -309,6 +325,7 @@ export const brands = pgTable("brands", {
   description: text("description"),
   logoUrl: text("logo_url").notNull(),
   websiteUrl: text("website_url"),
+  featured: boolean("featured").default(false).notNull(),
 });
 
 export const insertBrandSchema = createInsertSchema(brands).pick({
@@ -316,6 +333,7 @@ export const insertBrandSchema = createInsertSchema(brands).pick({
   description: true,
   logoUrl: true,
   websiteUrl: true,
+  featured: true,
 });
 
 export type InsertBrand = z.infer<typeof insertBrandSchema>;
@@ -326,6 +344,8 @@ export const referralCodes = pgTable("referral_codes", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().unique(),
   code: text("code").notNull().unique(),
+  discountPercentage: integer("discount_percentage").default(10).notNull(),
+  active: boolean("active").default(true).notNull(),
   usageCount: integer("usage_count").default(0).notNull(),
   createdAt: text("created_at").notNull(),
   expiresAt: text("expires_at"),
@@ -334,6 +354,8 @@ export const referralCodes = pgTable("referral_codes", {
 export const insertReferralCodeSchema = createInsertSchema(referralCodes).pick({
   userId: true,
   code: true,
+  discountPercentage: true,
+  active: true,
   usageCount: true,
   createdAt: true,
   expiresAt: true,
@@ -346,7 +368,8 @@ export type ReferralCode = typeof referralCodes.$inferSelect;
 export const referralUsage = pgTable("referral_usage", {
   id: serial("id").primaryKey(),
   referralCodeId: integer("referral_code_id").notNull(),
-  usedByUserId: integer("used_by_user_id").notNull(),
+  referrerId: integer("referrer_id").notNull(),
+  referredUserId: integer("referred_user_id").notNull(),
   orderId: integer("order_id").notNull(),
   discountAmount: integer("discount_amount").notNull(), // сумма скидки
   usedAt: text("used_at").notNull(),
@@ -354,7 +377,8 @@ export const referralUsage = pgTable("referral_usage", {
 
 export const insertReferralUsageSchema = createInsertSchema(referralUsage).pick({
   referralCodeId: true,
-  usedByUserId: true,
+  referrerId: true,
+  referredUserId: true,
   orderId: true,
   discountAmount: true,
   usedAt: true,
