@@ -24,6 +24,7 @@ export default function StorePage() {
   // Состояние для фильтрации
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+  const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   
   // Получение списка категорий и брендов
@@ -104,7 +105,7 @@ export default function StorePage() {
 
   // Запрос списка продуктов с применением фильтров
   const { data: products = [], isLoading, error, refetch } = useQuery<Product[]>({
-    queryKey: ['/api/products', selectedCategory, selectedBrand], 
+    queryKey: ['/api/products', selectedCategory, selectedBrand, selectedStyle], 
     queryFn: async () => {
       const baseUrl = '/api/products';
       
@@ -112,6 +113,7 @@ export default function StorePage() {
       const params = new URLSearchParams();
       if (selectedCategory) params.append('category', selectedCategory);
       if (selectedBrand) params.append('brand', selectedBrand);
+      if (selectedStyle) params.append('style', selectedStyle);
       
       const url = `${baseUrl}${params.toString() ? `?${params.toString()}` : ''}`;
       const response = await fetch(url, { method: 'GET' });
@@ -133,6 +135,11 @@ export default function StorePage() {
   const handleBrandChange = (brand: string | null) => {
     if (brand === selectedBrand) return;
     setSelectedBrand(brand);
+  };
+  
+  const handleStyleChange = (style: string | null) => {
+    if (style === selectedStyle) return;
+    setSelectedStyle(style);
   };
 
   // Дополнительные функции для отображения
@@ -394,8 +401,186 @@ export default function StorePage() {
             </div>
           </section>
           
+          {/* Featured Brands Showcase */}
+          <section className="mb-12">
+            <h2 className="text-xl font-normal text-black mb-6 uppercase">Популярные бренды</h2>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Nike */}
+              <button 
+                onClick={() => handleBrandChange('Nike')}
+                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+              >
+                <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" alt="Nike" className="h-5 md:h-6" />
+                </div>
+              </button>
+              
+              {/* Adidas */}
+              <button 
+                onClick={() => handleBrandChange('Adidas')}
+                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+              >
+                <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg" alt="Adidas" className="h-7 md:h-9" />
+                </div>
+              </button>
+              
+              {/* Jordan */}
+              <button 
+                onClick={() => handleBrandChange('Jordan')}
+                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+              >
+                <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
+                  <img src="https://upload.wikimedia.org/wikipedia/en/3/37/Jumpman_logo.svg" alt="Jordan" className="h-10 md:h-12" />
+                </div>
+              </button>
+              
+              {/* Gucci */}
+              <button 
+                onClick={() => handleBrandChange('Gucci')}
+                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+              >
+                <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
+                  <span className="font-serif text-xl md:text-2xl font-bold tracking-wider">GUCCI</span>
+                </div>
+              </button>
+              
+              {/* Balenciaga */}
+              <button 
+                onClick={() => handleBrandChange('Balenciaga')}
+                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+              >
+                <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
+                  <span className="font-sans text-sm md:text-base uppercase tracking-[0.3em] font-medium">BALENCIAGA</span>
+                </div>
+              </button>
+              
+              {/* Stussy */}
+              <button 
+                onClick={() => handleBrandChange('Stussy')}
+                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+              >
+                <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
+                  <span className="font-serif italic text-xl md:text-2xl font-bold">Stüssy</span>
+                </div>
+              </button>
+              
+              {/* Supreme */}
+              <button 
+                onClick={() => handleBrandChange('Supreme')}
+                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white bg-red-600 transition-all duration-300"
+              >
+                <div className="opacity-90 group-hover:opacity-100 transform group-hover:scale-110 transition-all duration-300">
+                  <span className="font-['Futura'] text-lg md:text-xl font-bold text-white">SUPREME</span>
+                </div>
+              </button>
+              
+              {/* All brands */}
+              <button 
+                onClick={() => handleBrandChange(null)}
+                className="group relative h-20 md:h-24 flex items-center justify-center border border-gray-200 hover:border-gray-400 bg-white transition-all duration-300"
+              >
+                <div className="text-center">
+                  <div className="opacity-75 group-hover:opacity-100 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                    </svg>
+                  </div>
+                  <span className="text-xs font-medium text-gray-600 group-hover:text-black">Все бренды</span>
+                </div>
+              </button>
+            </div>
+          </section>
+          
+          {/* Style Categories */}
+          <section className="mb-8">
+            <h2 className="text-xl font-normal text-black mb-6 uppercase flex items-center">
+              <span className="mr-2">Стили</span>
+              <span className="text-sm bg-black text-white px-2 py-0.5">NEW</span>
+            </h2>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Old Money Style */}
+              <div 
+                className="relative aspect-square overflow-hidden cursor-pointer group"
+                onClick={() => {
+                  handleStyleChange('oldmoney');
+                  handleBrandChange(null);
+                }}
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                  alt="Old Money Style" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
+                  <h3 className="text-white text-lg font-light">Old Money</h3>
+                  <p className="text-white/80 text-xs mt-1">Элегантный и сдержанный стиль</p>
+                </div>
+              </div>
+              
+              {/* Streetwear Style */}
+              <div 
+                className="relative aspect-square overflow-hidden cursor-pointer group"
+                onClick={() => {
+                  handleStyleChange('streetwear');
+                  handleBrandChange(null);
+                }}
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                  alt="Streetwear Style" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
+                  <h3 className="text-white text-lg font-light">Streetwear</h3>
+                  <p className="text-white/80 text-xs mt-1">Городской уличный стиль</p>
+                </div>
+              </div>
+              
+              {/* Athleisure Style */}
+              <div 
+                className="relative aspect-square overflow-hidden cursor-pointer group"
+                onClick={() => {
+                  handleStyleChange('athleisure');
+                  handleBrandChange(null);
+                }}
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1567013127542-490d757e51fc?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                  alt="Athleisure Style" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
+                  <h3 className="text-white text-lg font-light">Athleisure</h3>
+                  <p className="text-white/80 text-xs mt-1">Спортивная эстетика для повседневности</p>
+                </div>
+              </div>
+              
+              {/* Luxury Style */}
+              <div 
+                className="relative aspect-square overflow-hidden cursor-pointer group"
+                onClick={() => {
+                  handleStyleChange('luxury');
+                  handleBrandChange(null);
+                }}
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                  alt="Luxury Style" 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
+                  <h3 className="text-white text-lg font-light">Luxury</h3>
+                  <p className="text-white/80 text-xs mt-1">Премиальные бренды и эксклюзивность</p>
+                </div>
+              </div>
+            </div>
+          </section>
+          
           {/* Category Menu - Horizontal Scrolling */}
-          <section className="mb-8 bg-gray-100 rounded-md overflow-hidden">
+          <section className="mb-8 bg-gray-100 rounded-none overflow-hidden">
             <div className="py-4 px-4">
               <div className="flex justify-between items-center mb-3">
                 <h4 className="text-base font-semibold text-black uppercase">Все категории</h4>
@@ -456,6 +641,13 @@ export default function StorePage() {
                       icon = (
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l-4-4m0 0l-8 8V4h8l4 4m-4-4v16" />
+                        </svg>
+                      );
+                      break;
+                    case 'streetwear':
+                      icon = (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                       );
                       break;
@@ -565,6 +757,120 @@ export default function StorePage() {
                           {brand}
                         </button>
                       ))}
+                      
+                      {/* Добавляем популярные бренды, если их нет в основном списке */}
+                      {!filterData?.brands?.includes('Stussy') && (
+                        <button
+                          onClick={() => handleBrandChange('Stussy')}
+                          className={`w-full text-left px-3 py-2 text-sm ${
+                            selectedBrand === 'Stussy' 
+                              ? 'text-black font-medium underline' 
+                              : 'text-gray-700 hover:text-black'
+                          }`}
+                        >
+                          Stussy
+                        </button>
+                      )}
+                      
+                      {!filterData?.brands?.includes('Supreme') && (
+                        <button
+                          onClick={() => handleBrandChange('Supreme')}
+                          className={`w-full text-left px-3 py-2 text-sm ${
+                            selectedBrand === 'Supreme' 
+                              ? 'text-black font-medium underline' 
+                              : 'text-gray-700 hover:text-black'
+                          }`}
+                        >
+                          Supreme
+                        </button>
+                      )}
+                      
+                      {!filterData?.brands?.includes('Gucci') && (
+                        <button
+                          onClick={() => handleBrandChange('Gucci')}
+                          className={`w-full text-left px-3 py-2 text-sm ${
+                            selectedBrand === 'Gucci' 
+                              ? 'text-black font-medium underline' 
+                              : 'text-gray-700 hover:text-black'
+                          }`}
+                        >
+                          Gucci
+                        </button>
+                      )}
+                      
+                      {!filterData?.brands?.includes('Balenciaga') && (
+                        <button
+                          onClick={() => handleBrandChange('Balenciaga')}
+                          className={`w-full text-left px-3 py-2 text-sm ${
+                            selectedBrand === 'Balenciaga' 
+                              ? 'text-black font-medium underline' 
+                              : 'text-gray-700 hover:text-black'
+                          }`}
+                        >
+                          Balenciaga
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Styles filter */}
+                  <div className="flex-1">
+                    <h4 className="font-medium mb-2 text-gray-700">Стили</h4>
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => handleStyleChange(null)}
+                        className={`w-full text-left px-3 py-2 text-sm ${
+                          selectedStyle === null 
+                            ? 'text-black font-medium underline' 
+                            : 'text-gray-700 hover:text-black'
+                        }`}
+                      >
+                        Все стили
+                      </button>
+                      
+                      <button
+                        onClick={() => handleStyleChange('oldmoney')}
+                        className={`w-full text-left px-3 py-2 text-sm ${
+                          selectedStyle === 'oldmoney' 
+                            ? 'text-black font-medium underline' 
+                            : 'text-gray-700 hover:text-black'
+                        }`}
+                      >
+                        Old Money
+                      </button>
+                      
+                      <button
+                        onClick={() => handleStyleChange('streetwear')}
+                        className={`w-full text-left px-3 py-2 text-sm ${
+                          selectedStyle === 'streetwear' 
+                            ? 'text-black font-medium underline' 
+                            : 'text-gray-700 hover:text-black'
+                        }`}
+                      >
+                        Streetwear
+                      </button>
+                      
+                      <button
+                        onClick={() => handleStyleChange('athleisure')}
+                        className={`w-full text-left px-3 py-2 text-sm ${
+                          selectedStyle === 'athleisure' 
+                            ? 'text-black font-medium underline' 
+                            : 'text-gray-700 hover:text-black'
+                        }`}
+                      >
+                        Athleisure
+                      </button>
+                      
+                      <button
+                        onClick={() => handleStyleChange('luxury')}
+                        className={`w-full text-left px-3 py-2 text-sm ${
+                          selectedStyle === 'luxury' 
+                            ? 'text-black font-medium underline' 
+                            : 'text-gray-700 hover:text-black'
+                        }`}
+                      >
+                        Luxury
+                      </button>
                     </div>
                   </div>
                 </div>
