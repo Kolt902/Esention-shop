@@ -450,6 +450,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Check admin access
+  apiRouter.get('/admin/check', validateTelegramWebApp, async (req, res) => {
+    try {
+      const telegramUser = (req as any).telegramUser;
+      const user = await telegramBot.getUserFromTelegramData(telegramUser);
+      
+      if (!user) {
+        return res.status(200).json({ isAdmin: false });
+      }
+      
+      const isAdmin = await storage.isAdmin(user.id);
+      return res.status(200).json({ isAdmin });
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      res.status(200).json({ isAdmin: false });
+    }
+  });
+  
   // User activity tracking
   apiRouter.post('/user-activity', validateTelegramWebApp, async (req, res) => {
     try {
@@ -463,7 +481,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update or add online user
       await storage.addOnlineUser({
         userId: user.id,
-        telegramId: user.telegramId,
+        telegramId: user.telegramId || "",
         username: user.username,
         lastActive: new Date()
       });
