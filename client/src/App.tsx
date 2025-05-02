@@ -7,6 +7,7 @@ import StorePage from "@/pages/StorePage";
 import AdminPage from "@/pages/AdminPage";
 import ProfilePage from "@/pages/ProfilePage";
 import VirtualFittingPage from "@/pages/VirtualFittingPage";
+import ProductDetailPage from "@/pages/ProductDetailPage";
 import NotFound from "@/pages/not-found";
 import { useEffect, useState } from "react";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/admin" component={AdminPage}/>
       <Route path="/profile" component={ProfilePage}/>
       <Route path="/virtual-fitting" component={VirtualFittingPage}/>
+      <Route path="/product" component={ProductDetailPage}/>
       <Route component={NotFound} />
     </Switch>
   );

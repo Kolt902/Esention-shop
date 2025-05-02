@@ -157,20 +157,7 @@ export default function Footer({ cartCount, onCartClick, onHomeClick }: FooterPr
             <span className="text-xs font-medium mt-1">{t.profile.favorites}</span>
           </button>
           
-          {/* Only show contact button if running in Telegram */}
-          {isTelegram && (
-            <button 
-              onClick={() => handleTabClick("contact")}
-              className={`flex flex-col items-center justify-center transition-all duration-200 relative ${
-                activeTab === "contact" ? activeStyle : inactiveStyle
-              }`}
-              aria-label="Contact us"
-            >
-              {activeTab === "contact" && <ActiveIndicator />}
-              <MessageCircle className="h-6 w-6" />
-              <span className="text-xs font-medium mt-1">{t.common.contact || "Связаться"}</span>
-            </button>
-          )}
+          {/* Кнопка связи удалена по запросу пользователя */}
 
           {/* Показываем профиль всегда, даже в Telegram */}
           <button 

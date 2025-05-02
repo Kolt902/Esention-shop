@@ -256,23 +256,45 @@ export default function StorePage() {
           </div>
         </div>
         
-        {/* Hero Banner - Farfetch Style */}
-        <section className="relative mb-8">
-          <div className="bg-gray-50 py-12 md:py-20">
-            <div className="container mx-auto px-4">
-              <div className="max-w-3xl">
-                <h1 className="text-4xl md:text-5xl font-light text-black mb-6 uppercase">
-                  Новая коллекция дизайнерской одежды
-                </h1>
-                <p className="text-lg md:text-xl text-gray-700 mb-8 font-light">
-                  Эксклюзивные модели от ведущих мировых брендов специально для вас
-                </p>
-                <button 
-                  onClick={() => handleCategoryChange('sneakers')}
-                  className="bg-black text-white px-6 py-3 font-medium hover:bg-gray-900 transition-colors"
-                >
-                  СМОТРЕТЬ КОЛЛЕКЦИЮ
-                </button>
+        {/* Hero Banner - Full Width with Background Image */}
+        <section className="relative mb-12 overflow-hidden">
+          <div className="relative h-[70vh] min-h-[500px] w-full">
+            {/* Background image with overlay */}
+            <div className="absolute inset-0">
+              <img 
+                src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                alt="Fashion collection hero" 
+                className="w-full h-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+            </div>
+            
+            {/* Content */}
+            <div className="absolute inset-0 flex items-center">
+              <div className="container mx-auto px-4">
+                <div className="max-w-2xl text-white">
+                  <h1 className="text-4xl md:text-6xl font-light mb-6 leading-tight">
+                    ESENTION
+                    <span className="block">КОЛЛЕКЦИЯ 2025</span>
+                  </h1>
+                  <p className="text-lg md:text-xl mb-8 text-white/90 max-w-lg">
+                    Изысканные модели от ведущих европейских дизайнеров. Доставка по всей Европе.
+                  </p>
+                  <div className="flex flex-wrap gap-4">
+                    <button 
+                      onClick={() => handleCategoryChange('tshirts')}
+                      className="bg-white text-black px-10 py-4 font-medium hover:bg-gray-100 transition-colors"
+                    >
+                      ЖЕНСКАЯ КОЛЛЕКЦИЯ
+                    </button>
+                    <button 
+                      onClick={() => handleCategoryChange('hoodies')}
+                      className="border border-white text-white px-10 py-4 font-medium hover:bg-white/10 transition-colors"
+                    >
+                      МУЖСКАЯ КОЛЛЕКЦИЯ
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -280,53 +302,92 @@ export default function StorePage() {
         
         {/* Container for the rest of content */}
         <div className="container mx-auto px-4">
-          {/* Designer Brands */}
+          {/* Featured Categories - Modern Grid */}
           <section className="mb-12">
             <h2 className="text-xl font-normal text-black mb-6 uppercase">Популярные категории</h2>
             
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {/* Карточка категории: Одежда */}
-              <CategoryCard
-                name="Одежда"
-                icon="👔"
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Women's Category - Large */}
+              <div 
+                className="relative aspect-[4/3] overflow-hidden cursor-pointer group"
                 onClick={() => handleCategoryChange('tshirts')}
-              />
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                  alt="Women's Collection" 
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-6">
+                  <h3 className="text-white text-2xl font-light mb-2">Женская коллекция</h3>
+                  <p className="text-white/80 font-light">Изысканные новинки сезона</p>
+                </div>
+              </div>
               
-              {/* Карточка категории: Обувь */}
-              <CategoryCard
-                name="Обувь"
-                icon="👞"
-                onClick={() => handleCategoryChange('sneakers')}
-              />
+              {/* Men's & Shoes - 2-row grid */}
+              <div className="grid grid-rows-2 gap-4">
+                {/* Men's Category */}
+                <div 
+                  className="relative aspect-[4/3] overflow-hidden cursor-pointer group"
+                  onClick={() => handleCategoryChange('hoodies')}
+                >
+                  <img 
+                    src="https://images.unsplash.com/photo-1505022610485-0249ba5b3675?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                    alt="Men's Collection" 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
+                    <h3 className="text-white text-xl font-light">Мужская коллекция</h3>
+                  </div>
+                </div>
+                
+                {/* Shoes Category */}
+                <div 
+                  className="relative aspect-[4/3] overflow-hidden cursor-pointer group"
+                  onClick={() => handleCategoryChange('sneakers')}
+                >
+                  <img 
+                    src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                    alt="Shoes Collection" 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
+                    <h3 className="text-white text-xl font-light">Обувь</h3>
+                  </div>
+                </div>
+              </div>
               
-              {/* Карточка категории: Сумки */}
-              <CategoryCard
-                name="Сумки"
-                icon="👜"
-                onClick={() => handleCategoryChange('accessories')}
-              />
-              
-              {/* Карточка категории: Верхняя одежда */}
-              <CategoryCard
-                name="Верхняя одежда"
-                icon="🧥"
-                onClick={() => handleCategoryChange('hoodies')}
-              />
-              
-              {/* Карточка категории: Аксессуары */}
-              <CategoryCard
-                name="Украшения"
-                icon="💍"
-                onClick={() => handleCategoryChange('accessories')}
-              />
-              
-              {/* Карточка категории: Новинки */}
-              <CategoryCard
-                name="Новинки"
-                icon="⭐"
-                onClick={() => handleCategoryChange(null)}
-                isNew={true}
-              />
+              {/* Kids & Accessories - 2-row grid */}
+              <div className="grid grid-rows-2 gap-4">
+                {/* Kids Category */}
+                <div 
+                  className="relative aspect-[4/3] overflow-hidden cursor-pointer group"
+                  onClick={() => handleCategoryChange('tshirts')}
+                >
+                  <img 
+                    src="https://images.unsplash.com/photo-1514090458221-65bb69cf63e6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                    alt="Kids Collection" 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
+                    <h3 className="text-white text-xl font-light">Детская коллекция</h3>
+                  </div>
+                </div>
+                
+                {/* Accessories Category */}
+                <div 
+                  className="relative aspect-[4/3] overflow-hidden cursor-pointer group"
+                  onClick={() => handleCategoryChange('accessories')}
+                >
+                  <img 
+                    src="https://images.unsplash.com/photo-1509319117193-57bab727e09d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3" 
+                    alt="Accessories Collection" 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
+                    <h3 className="text-white text-xl font-light">Аксессуары</h3>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
           
