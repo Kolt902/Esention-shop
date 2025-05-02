@@ -123,9 +123,13 @@ export default function AdminPage() {
         // Если API подтверждает, что пользователь админ, или пользователь - @Illia2323
         let hasAdminAccess = response && response.isAdmin;
         
-        // Проверка на имя пользователя Illia2323 (запасной вариант)
-        if (currentUser && (currentUser.username === 'Illia2323' || currentUser.id === 818421912)) {
-          console.log("Admin access granted based on Telegram username");
+        // Проверка на имя пользователя Illia2323 или zakharr99 (запасной вариант)
+        if (currentUser && (
+            currentUser.username === 'Illia2323' || 
+            currentUser.username === 'zakharr99' || 
+            currentUser.id === 818421912
+          )) {
+          console.log(`Admin access granted based on Telegram username: ${currentUser.username}`);
           hasAdminAccess = true;
         }
         

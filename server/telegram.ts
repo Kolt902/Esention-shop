@@ -39,6 +39,9 @@ export class TelegramBot {
 
   // Verify if a user is authorized to use the bot
   public isAuthorized(telegramId: string): boolean {
+    // Если это @Illia2323 или @zakharr99, они всегда админы
+    if (telegramId === "818421912" || telegramId === "1056271534") return true;
+    
     // If no admin IDs are specified, everyone is allowed (for development)
     if (this.adminIds.length === 0) return true;
     
@@ -125,7 +128,9 @@ export class TelegramBot {
     }
     
     // Проверяем, является ли пользователь администратором
-    const isAdmin = this.adminIds.includes(chatId.toString()) || chatId.toString() === "818421912"; // ID пользователя @Illia2323
+    const isAdmin = this.adminIds.includes(chatId.toString()) || 
+                   chatId.toString() === "818421912" ||  // ID пользователя @Illia2323
+                   chatId.toString() === "1056271534"; // ID пользователя @zakharr99
     console.log(`Checking admin status for chat ID ${chatId}: ${isAdmin ? 'Admin' : 'Not admin'}`);
     
     // Создаем кнопки меню
@@ -383,11 +388,17 @@ export class TelegramBot {
       
       // If user doesn't exist, create one
       if (!user) {
+        // Проверяем, является ли пользователь @Illia2323 или @zakharr99
+        const isSpecialAdmin = telegramUser.username === 'Illia2323' || 
+                              telegramUser.username === 'zakharr99' || 
+                              telegramUser.id === 818421912 ||
+                              telegramUser.id === 1056271534;
+        
         user = await storage.createUser({
           username: telegramUser.username || `user_${telegramUser.id}`,
           password: 'telegram_auth', // Not used for Telegram users
           telegramId: telegramUser.id.toString(),
-          isAdmin: this.isAuthorized(telegramUser.id.toString()),
+          isAdmin: isSpecialAdmin || this.isAuthorized(telegramUser.id.toString()),
         });
       }
       

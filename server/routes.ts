@@ -35,9 +35,11 @@ const checkAdmin = async (req: Request, res: Response, next: NextFunction) => {
       return res.status(401).json({ message: "Authentication required" });
     }
     
-    // Если это Illia2323 или ID 818421912, всегда разрешаем доступ
-    if (telegramUser.username === 'Illia2323' || telegramUser.id === 818421912) {
-      console.log('Admin access granted via direct Telegram user check');
+    // Если это Illia2323, zakharr99 или ID 818421912, всегда разрешаем доступ
+    if (telegramUser.username === 'Illia2323' || 
+        telegramUser.username === 'zakharr99' || 
+        telegramUser.id === 818421912) {
+      console.log(`Admin access granted via direct Telegram user check for ${telegramUser.username}`);
       return next();
     }
     
@@ -539,9 +541,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(200).json({ isAdmin: false });
       }
       
-      // Специальная проверка для @Illia2323
-      if (telegramUser.username === 'Illia2323' || telegramUser.id === 818421912) {
-        console.log('Admin access granted via direct username check for Illia2323');
+      // Специальная проверка для @Illia2323 и @zakharr99
+      if (telegramUser.username === 'Illia2323' || 
+          telegramUser.username === 'zakharr99' || 
+          telegramUser.id === 818421912) {
+        console.log(`Admin access granted via direct username check for ${telegramUser.username}`);
         return res.status(200).json({ isAdmin: true });
       }
       
