@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Product } from "@shared/schema";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
-import { getImagesByCategory, DEFAULT_IMAGE } from '@/lib/placeholder-images';
+import { getReliableImage, DEFAULT_IMAGE } from '@/lib/embedded-images';
 
 // Функция для проверки валидности URL изображения
 const isValidImageUrl = (url?: string | null): boolean => {
@@ -44,18 +44,27 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
       ...(validMainImage ? [validMainImage] : []),
       ...validAdditionalImages
     ];
-  } else {
-    // Если валидных изображений нет, генерируем резервные изображения
     
-    // Сначала проверяем по имени продукта конкретную модель
+    // Добавляем подстраховку - добавляем хотя бы одно надежное изображение для разнообразия
+    const productName = product.name || "";
+    const reliableImage = getReliableImage(productName, product.category, product.id);
+    allImages.push(reliableImage);
+  } else {
+    // Если валидных изображений нет, генерируем резервные изображения из нового, более надежного источника
+    
     const productName = product.name || "";
     
-    // Создаем несколько вариаций изображений для разнообразия
+    // Создаем несколько вариаций изображений для разнообразия с разными индексами
     allImages = [
-      getImagesByCategory(product.category, product.id, productName),
-      getImagesByCategory(product.category, product.id + 1, productName),
-      getImagesByCategory(product.category, product.id + 2, productName)
+      getReliableImage(productName, product.category, product.id),
+      getReliableImage(productName, product.category, product.id + 1),
+      getReliableImage(productName, product.category, product.id + 2)
     ];
+  }
+  
+  // Убеждаемся, что у нас есть хотя бы одно изображение
+  if (allImages.length === 0) {
+    allImages = [DEFAULT_IMAGE];
   }
   
   // Дефолтное изображение, если все варианты не сработают
@@ -127,14 +136,16 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
           </div>
         ) : (
           <img
-            src={allImages[currentImageIndex]}
+            src={allImages[currentImageIndex] || defaultImage}
             alt={`${product.name} - изображение ${currentImageIndex + 1}`}
             className="w-full h-full object-cover transition-opacity duration-300"
             loading="lazy"
             onError={(e) => {
               console.error(`Ошибка загрузки изображения: ${allImages[currentImageIndex]}`);
-              // Если ошибка в основном изображении продукта - показываем запасное
-              if (allImages[currentImageIndex] === product.imageUrl) {
+              
+              // Пробуем показать дефолтное изображение вместо ошибки
+              if (e.currentTarget.src !== defaultImage) {
+                console.log('Пробуем использовать резервное изображение');
                 e.currentTarget.src = defaultImage;
               } else {
                 setImageError(true);
