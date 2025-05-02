@@ -63,10 +63,29 @@ export function getTelegramWebApp(): TelegramWebApp | null {
   return null;
 }
 
-// Initialize Telegram WebApp with enhanced error handling
+// Initialize Telegram WebApp with enhanced error handling and retries
 export function initTelegramWebApp(): boolean {
   try {
     console.log("Initializing Telegram Web App...");
+    
+    // Проверка наличия Telegram WebApp - более надежная проверка
+    if (typeof window === 'undefined') {
+      console.error("Window object is not available");
+      return false;
+    }
+    
+    // Дополнительная проверка, чтобы видеть, что доступно
+    if ('Telegram' in window) {
+      console.log("Telegram object is available in window");
+      if ('WebApp' in (window as any).Telegram) {
+        console.log("WebApp object is available in Telegram");
+      } else {
+        console.warn("WebApp object is NOT available in Telegram");
+      }
+    } else {
+      console.warn("Telegram object is NOT available in window");
+    }
+    
     const webApp = getTelegramWebApp();
     
     if (webApp) {
@@ -91,30 +110,47 @@ export function initTelegramWebApp(): boolean {
         // Continue anyway, as this is not critical
       }
       
-      // Apply theme colors if available
-      if (webApp.themeParams) {
-        console.log("Applying Telegram theme parameters:", webApp.themeParams);
-        
-        // Set CSS variables for theming
-        const themeMapping = {
-          bg_color: '--tg-theme-bg-color',
-          text_color: '--tg-theme-text-color',
-          button_color: '--tg-theme-button-color',
-          button_text_color: '--tg-theme-button-text-color',
-          hint_color: '--tg-theme-hint-color',
-          link_color: '--tg-theme-link-color'
-        };
-        
-        // Apply all available theme parameters
-        Object.entries(themeMapping).forEach(([key, cssVar]) => {
-          const value = webApp.themeParams[key as keyof typeof webApp.themeParams];
-          if (value) {
-            document.documentElement.style.setProperty(cssVar, value);
-          }
-        });
-      } else {
-        console.log("No Telegram theme parameters found, using defaults");
+      // Настройка цветов темы
+      try {
+        if (webApp.themeParams) {
+          console.log("Applying Telegram theme parameters:", webApp.themeParams);
+          
+          // Set CSS variables for theming
+          const themeMapping = {
+            bg_color: '--tg-theme-bg-color',
+            text_color: '--tg-theme-text-color',
+            button_color: '--tg-theme-button-color',
+            button_text_color: '--tg-theme-button-text-color',
+            hint_color: '--tg-theme-hint-color',
+            link_color: '--tg-theme-link-color'
+          };
+          
+          // Apply all available theme parameters
+          Object.entries(themeMapping).forEach(([key, cssVar]) => {
+            const value = webApp.themeParams[key as keyof typeof webApp.themeParams];
+            if (value) {
+              document.documentElement.style.setProperty(cssVar, value);
+            }
+          });
+          
+          // Устанавливаем дополнительные свойства для дизайна в Telegram
+          document.documentElement.classList.add('telegram-webapp');
+        } else {
+          console.log("No Telegram theme parameters found, using defaults");
+          setFallbackColors();
+        }
+      } catch (themeError) {
+        console.error("Error applying theme:", themeError);
         setFallbackColors();
+      }
+      
+      // Настройка кнопки возврата (Back Button)
+      try {
+        if (webApp.BackButton) {
+          webApp.BackButton.hide();
+        }
+      } catch (backError) {
+        console.error("Error with back button:", backError);
       }
       
       console.log("Telegram Web App initialization complete");

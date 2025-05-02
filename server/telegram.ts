@@ -94,7 +94,21 @@ export class TelegramBot {
 
   // Send welcome message with web app button
   public async sendWelcomeMessage(chatId: number): Promise<any> {
-    const webAppUrl = this.generateWebAppUrl();
+    // Используем прямой URL для Replit, чтобы обеспечить надежное соединение
+    let webAppUrl = this.generateWebAppUrl();
+    
+    // Логируем URL для отладки
+    console.log(`Generating welcome message with WebApp URL: ${webAppUrl}`);
+    
+    // Проверим наличие REPLIT_DEV_DOMAIN или REPLIT_DOMAINS (высокий приоритет)
+    if (process.env.REPLIT_DEV_DOMAIN) {
+      webAppUrl = `https://${process.env.REPLIT_DEV_DOMAIN}`;
+      console.log(`Using REPLIT_DEV_DOMAIN for WebApp URL: ${webAppUrl}`);
+    } else if (process.env.REPLIT_DOMAINS) {
+      webAppUrl = `https://${process.env.REPLIT_DOMAINS}`;
+      console.log(`Using REPLIT_DOMAINS for WebApp URL: ${webAppUrl}`);
+    }
+    
     const replyMarkup = {
       inline_keyboard: [
         [
@@ -103,12 +117,20 @@ export class TelegramBot {
             web_app: { url: webAppUrl },
           },
         ],
+        [
+          {
+            text: 'Помощь',
+            callback_data: 'help'
+          }
+        ]
       ],
+      resize_keyboard: true,
+      one_time_keyboard: false
     };
 
     return this.sendMessage(
       chatId,
-      'Добро пожаловать в магазин одежды! Нажмите кнопку ниже, чтобы открыть каталог.',
+      'Добро пожаловать в магазин одежды! Нажмите кнопку ниже, чтобы открыть каталог или воспользуйтесь кнопкой меню.',
       replyMarkup
     );
   }
@@ -252,11 +274,48 @@ export class TelegramBot {
       console.log('Processing update:', JSON.stringify(update, null, 2));
       
       // Handle /start command
-      if (update.message && update.message.text && update.message.text.startsWith('/start')) {
+      if (update.message && update.message.text) {
         const chatId = update.message.chat.id;
-        console.log(`Received /start command from chat ID: ${chatId}`);
+        const text = update.message.text;
         
-        await this.sendWelcomeMessage(chatId);
+        if (text.startsWith('/start')) {
+          console.log(`Received /start command from chat ID: ${chatId}`);
+          await this.sendWelcomeMessage(chatId);
+        } else if (text.startsWith('/help')) {
+          console.log(`Received /help command from chat ID: ${chatId}`);
+          await this.sendMessage(
+            chatId, 
+            'Этот бот предоставляет доступ к магазину одежды. Используйте кнопку меню или напишите /start, чтобы открыть магазин.');
+        }
+      }
+      
+      // Handle callback queries (inline keyboard buttons)
+      if (update.callback_query) {
+        const callbackData = update.callback_query.data;
+        const chatId = update.callback_query.message.chat.id;
+        
+        console.log(`Received callback query with data: ${callbackData} from chat ID: ${chatId}`);
+        
+        if (callbackData === 'help') {
+          await this.sendMessage(
+            chatId, 
+            'Этот бот предоставляет доступ к магазину одежды. Используйте кнопку "Открыть магазин" или кнопку в меню, чтобы перейти в каталог.');
+          
+          // Answer callback query to remove the loading state
+          try {
+            await fetch(`${this.apiBaseUrl}/answerCallbackQuery`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                callback_query_id: update.callback_query.id,
+              }),
+            });
+          } catch (error) {
+            console.error('Error answering callback query:', error);
+          }
+        }
       }
     } catch (error) {
       console.error('Error handling update:', error);

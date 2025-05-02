@@ -2,6 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Telegram WebApp specific styles */
+.telegram-webapp {
+  background-color: var(--tg-theme-bg-color, #ffffff);
+  color: var(--tg-theme-text-color, #000000);
+}
+
+.telegram-webapp button {
+  background-color: var(--tg-theme-button-color, #0088CC);
+  color: var(--tg-theme-button-text-color, #ffffff);
+}
+
+.telegram-webapp a {
+  color: var(--tg-theme-link-color, #0088CC);
+}
+
+/* Make sure content is visible in Telegram Mini App */
+html, body, #root {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Ensure loading screen looks good in Telegram */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--tg-theme-bg-color, #ffffff);
+  color: var(--tg-theme-text-color, #000000);
+  z-index: 9999;
+}
+
 :root {
       --background: 0 0% 100%;
 --foreground: 20 14.3% 4.1%;

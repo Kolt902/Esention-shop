@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import StorePage from "@/pages/StorePage";
 import NotFound from "@/pages/not-found";
 import { useEffect, useState } from "react";
+import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
 
 function Router() {
   return (
@@ -19,13 +20,45 @@ function Router() {
 function App() {
   // Состояние для отображения загрузки
   const [isAppReady, setIsAppReady] = useState(false);
+  const [telegramInitialized, setTelegramInitialized] = useState(false);
   
   // Эффект для инициализации приложения
   useEffect(() => {
-    // Имитация короткой загрузки для предотвращения мигания контента
+    // Проверяем запуск в Telegram
+    const inTelegram = isRunningInTelegram();
+    console.log(`App running in Telegram: ${inTelegram}`);
+    
+    if (inTelegram) {
+      // В среде Telegram даем больше времени на инициализацию
+      const webApp = getTelegramWebApp();
+      
+      if (webApp) {
+        setTelegramInitialized(true);
+        console.log("Telegram WebApp object found, ready to proceed");
+        
+        // При наличии Telegram UI элементов используем их
+        if (webApp.MainButton) {
+          webApp.MainButton.hide();
+        }
+        
+        // Устанавливаем цвета заголовка для Telegram
+        try {
+          webApp.setHeaderColor('#FFFFFF');
+          webApp.setBackgroundColor('#FFFFFF');
+        } catch (e) {
+          console.error("Error setting Telegram colors:", e);
+        }
+      } else {
+        console.warn("Telegram WebApp object not found, but isRunningInTelegram returned true");
+      }
+    }
+    
+    // Задержка перед отображением контента
+    const timeout = inTelegram ? 800 : 300;
     const timer = setTimeout(() => {
       setIsAppReady(true);
-    }, 300);
+      console.log("App marked as ready after timeout:", timeout);
+    }, timeout);
     
     return () => clearTimeout(timer);
   }, []);
@@ -33,11 +66,14 @@ function App() {
   // Если приложение не готово, показываем загрузчик
   if (!isAppReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent"></div>
-          <p className="mt-4 text-gray-600">Загрузка...</p>
-        </div>
+      <div className="loading-screen">
+        <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-[#0088CC] border-r-transparent"></div>
+        <p className="mt-4 text-[#0088CC] font-medium">Загрузка приложения...</p>
+        {isRunningInTelegram() && (
+          <p className="mt-2 text-sm text-gray-500">
+            {telegramInitialized ? "Telegram WebApp инициализирован" : "Инициализация Telegram..."}
+          </p>
+        )}
       </div>
     );
   }

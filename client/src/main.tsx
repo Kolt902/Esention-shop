@@ -35,17 +35,35 @@ window.addEventListener('error', (event) => {
   }
 });
 
-// Инициализируем Telegram WebApp до монтирования React приложения
-document.addEventListener('DOMContentLoaded', () => {
+// Улучшенная инициализация Telegram WebApp с повторными попытками
+const initTelegramApp = () => {
   console.log("DOM loaded, initializing Telegram WebApp...");
   
   // Пытаемся инициализировать Telegram WebApp
-  const success = initTelegramWebApp();
-  
-  if (success) {
+  if (initTelegramWebApp()) {
     console.log("Telegram WebApp successfully initialized");
+    return true;
   } else {
-    console.log("Telegram WebApp not available or initialization failed, running in standalone mode");
+    console.log("First Telegram WebApp initialization attempt failed, will retry...");
+    return false;
+  }
+};
+
+// Инициализируем при загрузке
+document.addEventListener('DOMContentLoaded', () => {
+  // Первая попытка инициализации
+  const success = initTelegramApp();
+  
+  // Если первая попытка не удалась, делаем вторую через небольшую задержку
+  if (!success) {
+    setTimeout(() => {
+      console.log("Retrying Telegram WebApp initialization...");
+      const retrySuccess = initTelegramApp();
+      
+      if (!retrySuccess) {
+        console.log("Telegram WebApp initialization failed after retry, running in standalone mode");
+      }
+    }, 1000);
   }
 });
 
