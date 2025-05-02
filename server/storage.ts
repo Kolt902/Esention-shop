@@ -103,6 +103,15 @@ export class MemStorage implements IStorage {
     this.currentDeliveryAddressId = 1;
     this.currentOrderId = 1;
     
+    // Create main admin user (illia2323)
+    this.users.set(this.currentUserId++, {
+      id: 1,
+      username: this.adminUsername,
+      password: "admin123", // This is just a placeholder, in a real app use secure passwords
+      telegramId: null,
+      isAdmin: true
+    });
+    
     // Initialize with Nike shoe products - all €80
     const price = 8000; // 80 euros in cents
     

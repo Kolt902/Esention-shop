@@ -282,12 +282,60 @@ export default function AdminPage() {
   };
   
   // Load data when tab changes
+  // WebSocket connection for real-time updates
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+  
+  // Initialize WebSocket connection
+  useEffect(() => {
+    if (!isAdmin) return;
+    
+    // Create WebSocket connection
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    const newSocket = new WebSocket(wsUrl);
+    
+    newSocket.onopen = () => {
+      console.log("WebSocket connected");
+    };
+    
+    newSocket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        
+        if (data.type === "ONLINE_USERS") {
+          setOnlineUsers(data.data);
+        }
+      } catch (error) {
+        console.error("Error parsing WebSocket message:", error);
+      }
+    };
+    
+    newSocket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+    
+    newSocket.onclose = () => {
+      console.log("WebSocket disconnected");
+    };
+    
+    setSocket(newSocket);
+    
+    // Clean up on unmount
+    return () => {
+      if (newSocket.readyState === WebSocket.OPEN) {
+        newSocket.close();
+      }
+    };
+  }, [isAdmin]);
+  
+  // Load data when tab changes
   useEffect(() => {
     if (!isAdmin) return;
 
     if (activeTab === "orders") {
       fetchOrders();
     } else if (activeTab === "users") {
+      // We'll still fetch initially, but real-time updates come via WebSocket
       fetchOnlineUsers();
     } else if (activeTab === "admins") {
       fetchAdminUsers();
