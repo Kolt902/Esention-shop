@@ -18,7 +18,22 @@ import {
   virtualClothingItems,
   type InsertVirtualClothingItem,
   userVirtualWardrobe,
-  type InsertUserVirtualWardrobe
+  type InsertUserVirtualWardrobe,
+  userFavorites,
+  type UserFavorite,
+  type InsertUserFavorite,
+  styles,
+  type Style,
+  type InsertStyle,
+  brands,
+  type Brand,
+  type InsertBrand,
+  referralCodes,
+  type ReferralCode,
+  type InsertReferralCode,
+  referralUsage,
+  type ReferralUsage,
+  type InsertReferralUsage
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -47,11 +62,20 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   getAllUsers(): Promise<User[]>;
   updateUserAdminStatus(userId: number, isAdmin: boolean): Promise<User | undefined>;
+  updateUserProfile(userId: number, updates: Partial<InsertUser>): Promise<User | undefined>;
   
   // Product Operations
   getProducts(): Promise<Product[]>;
   getProduct(id: number): Promise<Product | undefined>;
   createProduct(product: InsertProduct): Promise<Product>;
+  getProductsByFilter(filters: { 
+    category?: string; 
+    brand?: string; 
+    style?: string; 
+    gender?: string; 
+    minPrice?: number; 
+    maxPrice?: number;
+  }): Promise<Product[]>;
   
   // Cart Operations
   getCartItems(userId: number): Promise<CartItem[]>;
@@ -100,6 +124,34 @@ export interface IStorage {
   addToVirtualWardrobe(item: InsertUserVirtualWardrobe): Promise<UserVirtualWardrobe>;
   updateVirtualWardrobeItem(id: number, updates: Partial<InsertUserVirtualWardrobe>): Promise<UserVirtualWardrobe | undefined>;
   removeFromVirtualWardrobe(id: number): Promise<boolean>;
+  
+  // User Favorites Operations
+  getUserFavorites(userId: number): Promise<UserFavorite[]>;
+  getUserFavoriteProducts(userId: number): Promise<Product[]>;
+  addToFavorites(favorite: InsertUserFavorite): Promise<UserFavorite>;
+  removeFromFavorites(userId: number, productId: number): Promise<boolean>;
+  isFavorite(userId: number, productId: number): Promise<boolean>;
+  
+  // Styles Operations
+  getAllStyles(): Promise<Style[]>;
+  getStyle(id: number): Promise<Style | undefined>;
+  getStyleByName(name: string): Promise<Style | undefined>;
+  createStyle(style: InsertStyle): Promise<Style>;
+  updateStyle(id: number, updates: Partial<InsertStyle>): Promise<Style | undefined>;
+  
+  // Brands Operations
+  getAllBrands(): Promise<Brand[]>;
+  getBrand(id: number): Promise<Brand | undefined>;
+  getBrandByName(name: string): Promise<Brand | undefined>;
+  createBrand(brand: InsertBrand): Promise<Brand>;
+  updateBrand(id: number, updates: Partial<InsertBrand>): Promise<Brand | undefined>;
+  
+  // Referral Program Operations
+  getUserReferralCode(userId: number): Promise<ReferralCode | undefined>;
+  createReferralCode(code: InsertReferralCode): Promise<ReferralCode>;
+  applyReferralCode(code: string, userId: number): Promise<boolean>;
+  getReferralsByUser(userId: number): Promise<ReferralUsage[]>;
+  trackReferralUsage(usage: InsertReferralUsage): Promise<ReferralUsage>;
 }
 
 export class MemStorage implements IStorage {
@@ -112,6 +164,12 @@ export class MemStorage implements IStorage {
   private avatarParams: Map<number, AvatarParams>;
   private virtualClothingItems: Map<number, VirtualClothingItem>;
   private userVirtualWardrobe: Map<number, UserVirtualWardrobe>;
+  private userFavorites: Map<number, UserFavorite>;
+  private styles: Map<number, Style>;
+  private brands: Map<number, Brand>;
+  private referralCodes: Map<number, ReferralCode>;
+  private referralUsages: Map<number, ReferralUsage>;
+  
   private currentUserId: number;
   private currentProductId: number;
   private currentCartItemId: number;
@@ -120,6 +178,11 @@ export class MemStorage implements IStorage {
   private currentAvatarParamsId: number;
   private currentVirtualClothingId: number;
   private currentWardrobeItemId: number;
+  private currentUserFavoriteId: number;
+  private currentStyleId: number;
+  private currentBrandId: number;
+  private currentReferralCodeId: number;
+  private currentReferralUsageId: number;
   
   // Add admin user for @illia2323
   private adminUsernames = ["illia2323", "zakharr99"];
@@ -317,6 +380,12 @@ export class MemStorage implements IStorage {
     this.avatarParams = new Map();
     this.virtualClothingItems = new Map();
     this.userVirtualWardrobe = new Map();
+    this.userFavorites = new Map();
+    this.styles = new Map();
+    this.brands = new Map();
+    this.referralCodes = new Map();
+    this.referralUsages = new Map();
+    
     this.currentUserId = 1;
     this.currentProductId = 1;
     this.currentCartItemId = 1;
@@ -325,6 +394,11 @@ export class MemStorage implements IStorage {
     this.currentAvatarParamsId = 1;
     this.currentVirtualClothingId = 1;
     this.currentWardrobeItemId = 1;
+    this.currentUserFavoriteId = 1;
+    this.currentStyleId = 1;
+    this.currentBrandId = 1;
+    this.currentReferralCodeId = 1;
+    this.currentReferralUsageId = 1;
     
     // Create main admin user (illia2323)
     this.users.set(this.currentUserId++, {
@@ -332,7 +406,16 @@ export class MemStorage implements IStorage {
       username: this.adminUsernames[0],
       password: "admin123", // This is just a placeholder, in a real app use secure passwords
       telegramId: "818421912",
-      isAdmin: true
+      isAdmin: true,
+      fullName: null,
+      email: null,
+      phone: null,
+      avatarUrl: null,
+      lastLogin: null,
+      registrationDate: new Date().toISOString(),
+      referralCode: null,
+      preferences: null,
+      createdAt: null
     });
     
     // Create second admin user (zakharr99)
@@ -341,7 +424,16 @@ export class MemStorage implements IStorage {
       username: this.adminUsernames[1],
       password: "admin123", // This is just a placeholder, in a real app use secure passwords
       telegramId: "7633144414",
-      isAdmin: true
+      isAdmin: true,
+      fullName: null,
+      email: null,
+      phone: null,
+      avatarUrl: null,
+      lastLogin: null,
+      registrationDate: new Date().toISOString(),
+      referralCode: null,
+      preferences: null,
+      createdAt: null
     });
     
     // Initialize virtual clothing items for 3D fitting
@@ -682,7 +774,16 @@ export class MemStorage implements IStorage {
       username: insertUser.username,
       password: insertUser.password,
       telegramId: insertUser.telegramId || null,
-      isAdmin: insertUser.isAdmin !== undefined ? insertUser.isAdmin : false
+      isAdmin: insertUser.isAdmin !== undefined ? insertUser.isAdmin : false,
+      fullName: insertUser.fullName || null,
+      email: insertUser.email || null,
+      phone: insertUser.phone || null,
+      avatarUrl: insertUser.avatarUrl || null,
+      registrationDate: insertUser.registrationDate || new Date().toISOString(),
+      lastLogin: insertUser.lastLogin || null,
+      referralCode: insertUser.referralCode || null,
+      preferences: insertUser.preferences || null,
+      createdAt: insertUser.createdAt || null
     };
     this.users.set(id, user);
     return user;
@@ -710,10 +811,38 @@ export class MemStorage implements IStorage {
       brand: insertProduct.brand || "",
       additionalImages: Array.isArray(insertProduct.additionalImages) ? insertProduct.additionalImages : [],
       sizes: insertProduct.sizes,
-      description: insertProduct.description || ""
+      description: insertProduct.description || "",
+      gender: insertProduct.gender || "unisex",
+      style: insertProduct.style || null,
+      isNew: insertProduct.isNew !== undefined ? insertProduct.isNew : false,
+      discount: insertProduct.discount || 0,
+      rating: insertProduct.rating || 0,
+      inStock: insertProduct.inStock !== undefined ? insertProduct.inStock : true,
+      originalUrl: insertProduct.originalUrl || null,
+      colors: Array.isArray(insertProduct.colors) ? insertProduct.colors : []
     };
     this.products.set(id, product);
     return product;
+  }
+  
+  // Метод для фильтрации товаров
+  async getProductsByFilter(filters: { 
+    category?: string; 
+    brand?: string; 
+    style?: string; 
+    gender?: string; 
+    minPrice?: number; 
+    maxPrice?: number;
+  }): Promise<Product[]> {
+    return Array.from(this.products.values()).filter(product => {
+      if (filters.category && product.category !== filters.category) return false;
+      if (filters.brand && product.brand !== filters.brand) return false;
+      if (filters.style && product.style !== filters.style) return false;
+      if (filters.gender && product.gender !== filters.gender) return false;
+      if (filters.minPrice !== undefined && product.price < filters.minPrice) return false;
+      if (filters.maxPrice !== undefined && product.price > filters.maxPrice) return false;
+      return true;
+    });
   }
 
   // Cart Methods
@@ -1062,6 +1191,220 @@ export class MemStorage implements IStorage {
   
   async removeFromVirtualWardrobe(id: number): Promise<boolean> {
     return this.userVirtualWardrobe.delete(id);
+  }
+  
+  // User Favorites Operations
+  async getUserFavorites(userId: number): Promise<UserFavorite[]> {
+    return Array.from(this.userFavorites.values())
+      .filter(favorite => favorite.userId === userId);
+  }
+  
+  async getUserFavoriteProducts(userId: number): Promise<Product[]> {
+    const favorites = await this.getUserFavorites(userId);
+    const favoriteProductIds = favorites.map(fav => fav.productId);
+    
+    return Array.from(this.products.values())
+      .filter(product => favoriteProductIds.includes(product.id));
+  }
+  
+  async addToFavorites(favorite: InsertUserFavorite): Promise<UserFavorite> {
+    // Check if already exists
+    const existingFavorite = Array.from(this.userFavorites.values())
+      .find(f => f.userId === favorite.userId && f.productId === favorite.productId);
+    
+    if (existingFavorite) {
+      return existingFavorite; // Already favorited
+    }
+    
+    const id = this.currentUserFavoriteId++;
+    const userFavorite: UserFavorite = {
+      id,
+      userId: favorite.userId,
+      productId: favorite.productId,
+      createdAt: favorite.createdAt || new Date().toISOString()
+    };
+    
+    this.userFavorites.set(id, userFavorite);
+    return userFavorite;
+  }
+  
+  async removeFromFavorites(userId: number, productId: number): Promise<boolean> {
+    const favorite = Array.from(this.userFavorites.values())
+      .find(f => f.userId === userId && f.productId === productId);
+      
+    if (!favorite) return false;
+    
+    return this.userFavorites.delete(favorite.id);
+  }
+  
+  async isFavorite(userId: number, productId: number): Promise<boolean> {
+    return Array.from(this.userFavorites.values())
+      .some(f => f.userId === userId && f.productId === productId);
+  }
+  
+  // Styles Operations
+  async getAllStyles(): Promise<Style[]> {
+    return Array.from(this.styles.values());
+  }
+  
+  async getStyle(id: number): Promise<Style | undefined> {
+    return this.styles.get(id);
+  }
+  
+  async getStyleByName(name: string): Promise<Style | undefined> {
+    return Array.from(this.styles.values())
+      .find(style => style.name.toLowerCase() === name.toLowerCase());
+  }
+  
+  async createStyle(style: InsertStyle): Promise<Style> {
+    const id = this.currentStyleId++;
+    const newStyle: Style = {
+      id,
+      name: style.name,
+      description: style.description || null,
+      imageUrl: style.imageUrl || null,
+      featured: style.featured !== undefined ? style.featured : false
+    };
+    
+    this.styles.set(id, newStyle);
+    return newStyle;
+  }
+  
+  async updateStyle(id: number, updates: Partial<InsertStyle>): Promise<Style | undefined> {
+    const style = this.styles.get(id);
+    if (!style) return undefined;
+    
+    const updatedStyle = { ...style, ...updates };
+    this.styles.set(id, updatedStyle);
+    return updatedStyle;
+  }
+  
+  // Brands Operations
+  async getAllBrands(): Promise<Brand[]> {
+    return Array.from(this.brands.values());
+  }
+  
+  async getBrand(id: number): Promise<Brand | undefined> {
+    return this.brands.get(id);
+  }
+  
+  async getBrandByName(name: string): Promise<Brand | undefined> {
+    return Array.from(this.brands.values())
+      .find(brand => brand.name.toLowerCase() === name.toLowerCase());
+  }
+  
+  async createBrand(brand: InsertBrand): Promise<Brand> {
+    const id = this.currentBrandId++;
+    const newBrand: Brand = {
+      id,
+      name: brand.name,
+      description: brand.description || null,
+      logoUrl: brand.logoUrl || null,
+      website: brand.website || null,
+      featured: brand.featured !== undefined ? brand.featured : false
+    };
+    
+    this.brands.set(id, newBrand);
+    return newBrand;
+  }
+  
+  async updateBrand(id: number, updates: Partial<InsertBrand>): Promise<Brand | undefined> {
+    const brand = this.brands.get(id);
+    if (!brand) return undefined;
+    
+    const updatedBrand = { ...brand, ...updates };
+    this.brands.set(id, updatedBrand);
+    return updatedBrand;
+  }
+  
+  // Referral Program Operations
+  async getUserReferralCode(userId: number): Promise<ReferralCode | undefined> {
+    return Array.from(this.referralCodes.values())
+      .find(code => code.userId === userId);
+  }
+  
+  async createReferralCode(code: InsertReferralCode): Promise<ReferralCode> {
+    // Check if user already has a referral code
+    const existingCode = await this.getUserReferralCode(code.userId);
+    if (existingCode) {
+      return existingCode;
+    }
+    
+    const id = this.currentReferralCodeId++;
+    const referralCode: ReferralCode = {
+      id,
+      userId: code.userId,
+      code: code.code,
+      discountPercentage: code.discountPercentage || 10,
+      active: code.active !== undefined ? code.active : true,
+      createdAt: code.createdAt || new Date().toISOString(),
+      expiresAt: code.expiresAt || null
+    };
+    
+    this.referralCodes.set(id, referralCode);
+    return referralCode;
+  }
+  
+  async applyReferralCode(code: string, userId: number): Promise<boolean> {
+    // Find the referral code
+    const referralCode = Array.from(this.referralCodes.values())
+      .find(rc => rc.code === code && rc.active);
+      
+    if (!referralCode) return false;
+    
+    // Make sure user isn't using their own code
+    if (referralCode.userId === userId) return false;
+    
+    // Check if code is expired
+    if (referralCode.expiresAt && new Date(referralCode.expiresAt) < new Date()) {
+      return false;
+    }
+    
+    // Record usage
+    const referralUsage: ReferralUsage = {
+      id: this.currentReferralUsageId++,
+      referralCodeId: referralCode.id,
+      referrerId: referralCode.userId,
+      referredUserId: userId,
+      usedAt: new Date().toISOString()
+    };
+    
+    this.referralUsages.set(referralUsage.id, referralUsage);
+    return true;
+  }
+  
+  async getReferralsByUser(userId: number): Promise<ReferralUsage[]> {
+    // Get the user's referral code
+    const userReferralCode = await this.getUserReferralCode(userId);
+    if (!userReferralCode) return [];
+    
+    // Find all usages of this code
+    return Array.from(this.referralUsages.values())
+      .filter(usage => usage.referralCodeId === userReferralCode.id);
+  }
+  
+  async trackReferralUsage(usage: InsertReferralUsage): Promise<ReferralUsage> {
+    const id = this.currentReferralUsageId++;
+    const referralUsage: ReferralUsage = {
+      id,
+      referralCodeId: usage.referralCodeId,
+      referrerId: usage.referrerId,
+      referredUserId: usage.referredUserId,
+      usedAt: usage.usedAt || new Date().toISOString()
+    };
+    
+    this.referralUsages.set(id, referralUsage);
+    return referralUsage;
+  }
+  
+  // User Profile Updates
+  async updateUserProfile(userId: number, updates: Partial<InsertUser>): Promise<User | undefined> {
+    const user = await this.getUser(userId);
+    if (!user) return undefined;
+    
+    const updatedUser = { ...user, ...updates };
+    this.users.set(userId, updatedUser);
+    return updatedUser;
   }
 }
 
