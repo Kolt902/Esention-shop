@@ -125,6 +125,9 @@ export default function ProductCard({ product, onAddToCart, onClick, asLink = tr
     
     if (onClick) {
       onClick(product.id);
+    } else {
+      // Перенаправление на страницу продукта с использованием программной навигации
+      window.location.href = `/product/${product.id}`;
     }
   };
 
@@ -171,11 +174,14 @@ export default function ProductCard({ product, onAddToCart, onClick, asLink = tr
     </>
   );
   
-  // Если включен режим ссылки, рендерим как <a>, иначе как Card с обработчиком onClick
+  // Если включен режим ссылки, рендерим как div с обработчиком onClick для программной навигации
   if (asLink) {
     return (
-      <a 
-        href={`/product/${product.id}`}
+      <div 
+        onClick={(e) => {
+          // Используем программную навигацию вместо традиционной ссылки
+          window.location.href = `/product/${product.id}`;
+        }}
         className="product-card block relative overflow-hidden mb-4 transition-all duration-300 active:scale-[0.98] shadow-md rounded-xl border-0 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
       >
         <Card className="border-0">
@@ -360,7 +366,7 @@ export default function ProductCard({ product, onAddToCart, onClick, asLink = tr
             </span>
           </CardContent>
         </Card>
-      </a>
+      </div>
     );
   }
   

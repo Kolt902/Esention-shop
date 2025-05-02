@@ -887,8 +887,8 @@ export default function StorePage() {
       <CartModal 
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        onRemove={handleRemoveFromCart}
+        items={cartItems}
+        onRemoveItem={handleRemoveFromCart}
         onUpdateQuantity={handleUpdateQuantity}
         onCheckout={handleCheckout}
       />
