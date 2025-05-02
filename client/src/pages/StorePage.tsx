@@ -139,25 +139,31 @@ export default function StorePage() {
   const getCategoryDisplayName = (category: string): string => {
     // Перевод технических названий категорий в понятные для пользователя
     const categoryNames: Record<string, string> = {
-      'tshirts': 'Футболки',
-      'hoodies': 'Кофты',
-      'sneakers': 'Кроссовки',
-      'pants': 'Штаны',
+      'tshirts': 'Одежда',
+      'hoodies': 'Верхняя одежда',
+      'sneakers': 'Обувь',
+      'pants': 'Брюки',
       'accessories': 'Аксессуары',
-      'basketball': 'Баскетбол',
-      'running': 'Бег',
-      'lifestyle': 'Лайфстайл',
-      'training': 'Тренировки',
+      'basketball': 'Спортивная одежда',
+      'running': 'Спортивная обувь',
+      'lifestyle': 'Повседневная одежда',
+      'training': 'Тренировочная одежда',
+      'shoes': 'Обувь',
+      'bags': 'Сумки',
+      'jewelry': 'Украшения',
+      'dresses': 'Платья',
+      'coats': 'Пальто и куртки',
+      'shirts': 'Рубашки',
     };
     
     return categoryNames[category] || category;
   };
 
   const getPriceBracket = (price: number): string => {
-    if (price < 5000) return "До 5000₽";
-    if (price < 10000) return "5000₽ - 10000₽";
-    if (price < 15000) return "10000₽ - 15000₽";
-    return "От 15000₽";
+    if (price < 100) return "До €100";
+    if (price < 200) return "€100 - €200";
+    if (price < 300) return "€200 - €300";
+    return "От €300";
   };
 
   // Обработчики корзины
@@ -267,48 +273,48 @@ export default function StorePage() {
         <div className="container mx-auto px-4">
           {/* Designer Brands */}
           <section className="mb-12">
-            <h2 className="text-xl font-normal text-black mb-6 uppercase">Популярные бренды</h2>
+            <h2 className="text-xl font-normal text-black mb-6 uppercase">Популярные категории</h2>
             
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {/* Карточка категории: Кофты */}
+              {/* Карточка категории: Одежда */}
               <CategoryCard
-                name="Кофты"
+                name="Одежда"
+                icon="👔"
+                onClick={() => handleCategoryChange('tshirts')}
+              />
+              
+              {/* Карточка категории: Обувь */}
+              <CategoryCard
+                name="Обувь"
+                icon="👞"
+                onClick={() => handleCategoryChange('sneakers')}
+              />
+              
+              {/* Карточка категории: Сумки */}
+              <CategoryCard
+                name="Сумки"
+                icon="👜"
+                onClick={() => handleCategoryChange('accessories')}
+              />
+              
+              {/* Карточка категории: Верхняя одежда */}
+              <CategoryCard
+                name="Верхняя одежда"
                 icon="🧥"
                 onClick={() => handleCategoryChange('hoodies')}
               />
               
-              {/* Карточка категории: Кроссовки */}
-              <CategoryCard
-                name="Кроссовки"
-                icon="👟"
-                onClick={() => handleCategoryChange('sneakers')}
-              />
-              
-              {/* Карточка категории: Футболки */}
-              <CategoryCard
-                name="Футболки"
-                icon="👕"
-                onClick={() => handleCategoryChange('tshirts')}
-              />
-              
-              {/* Карточка категории: Штаны */}
-              <CategoryCard
-                name="Штаны"
-                icon="👖"
-                onClick={() => handleCategoryChange('pants')}
-              />
-              
               {/* Карточка категории: Аксессуары */}
               <CategoryCard
-                name="Аксессуары"
-                icon="🎒"
+                name="Украшения"
+                icon="💍"
                 onClick={() => handleCategoryChange('accessories')}
               />
               
               {/* Карточка категории: Новинки */}
               <CategoryCard
                 name="Новинки"
-                icon="✨"
+                icon="⭐"
                 onClick={() => handleCategoryChange(null)}
                 isNew={true}
               />

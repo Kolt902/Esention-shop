@@ -27,7 +27,7 @@ export default function Header({ title = "FASHION HUB" }: HeaderProps) {
     <>
       {/* Top notification bar - Farfetch style */}
       <div className="bg-gray-100 py-1.5 px-4 text-center text-xs font-medium text-gray-700">
-        <span>Бесплатная доставка от 5000₽ • Бесплатный возврат</span>
+        <span>Доставка по всей Европе • Бесплатный возврат в течение 28 дней • Официальная гарантия</span>
       </div>
 
       {/* Main header */}
