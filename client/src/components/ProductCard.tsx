@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Product } from "@shared/schema";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
-import { getImageByCategory } from '@/lib/constant-images';
+import { getOfficialProductImages } from '@/lib/official-product-images';
 
 // Функция для проверки валидности URL изображения
 const isValidImageUrl = (url?: string | null): boolean => {
@@ -35,16 +35,23 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
     ? product.additionalImages.filter(url => isValidImageUrl(url)) 
     : [];
   
-  // Используем надежное локальное SVG изображение, которое не зависит от внешних ресурсов
-  // Теперь мы не полагаемся на внешние URL, а используем встроенные SVG
-  const brandName = product.brand || "";
-  const defaultImage = getImageByCategory(product.category, brandName);
+  // Получаем официальные изображения с сайтов Nike и Adidas по имени продукта
+  const officialImages = getOfficialProductImages(product.name);
   
-  // Создаем только один элемент в массиве - это гарантированно работающее SVG-изображение
-  let allImages: string[] = [defaultImage];
+  // Создаем массив изображений, сначала добавляя официальные, затем добавляя валидные если они есть
+  let allImages: string[] = [...officialImages];
   
-  // В этой реализации мы полностью отказываемся от внешних URL изображений и используем
-  // только встроенные SVG, которые гарантированно будут отображаться
+  // Если уже есть валидные URL из базы, тоже их используем
+  if (validMainImage) {
+    allImages.push(validMainImage);
+  }
+  
+  if (validAdditionalImages.length > 0) {
+    allImages = [...allImages, ...validAdditionalImages];
+  }
+  
+  // Дефолтное изображение для запасного случая
+  const defaultImage = officialImages[0];
   
   console.log("Validated images array:", allImages);
   
