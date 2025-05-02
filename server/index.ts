@@ -73,6 +73,58 @@ app.use((req, res, next) => {
       console.log("Bot will be accessible to everyone as requested");
       
       try {
+        // Get replit domains for the web app
+        const webAppUrl = process.env.REPLIT_DEV_DOMAIN ? 
+          `https://${process.env.REPLIT_DEV_DOMAIN}` : 
+          process.env.REPLIT_DOMAINS ? 
+            `https://${process.env.REPLIT_DOMAINS}` : 
+            null;
+            
+        if (webAppUrl) {
+          console.log(`Using Web App URL: ${webAppUrl}`);
+          
+          // Set bot commands and menu button
+          fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/setMyCommands`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              commands: [
+                {
+                  command: 'start',
+                  description: 'Открыть магазин'
+                },
+                {
+                  command: 'help',
+                  description: 'Показать справку'
+                }
+              ]
+            })
+          }).then(res => res.json())
+            .then(data => console.log('Set bot commands result:', data))
+            .catch(err => console.error('Error setting bot commands:', err));
+          
+          // Set the web app as a menu button for the bot
+          fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/setChatMenuButton`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              menu_button: {
+                type: 'web_app',
+                text: 'Открыть магазин',
+                web_app: {
+                  url: webAppUrl
+                }
+              }
+            })
+          }).then(res => res.json())
+            .then(data => console.log('Set menu button result:', data))
+            .catch(err => console.error('Error setting menu button:', err));
+        }
+        
         // Start polling for updates instead of using webhook
         console.log("Starting Telegram polling (long-polling mode)");
         

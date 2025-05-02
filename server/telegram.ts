@@ -48,6 +48,12 @@ export class TelegramBot {
       return process.env.WEB_APP_URL;
     }
     
+    // Use replit.dev domain when available (more reliable for preview)
+    if (process.env.REPL_ID && process.env.REPL_SLUG) {
+      // New format: https://{REPL_SLUG}.{REPL_OWNER}.repl.co or .id
+      return `https://${process.env.REPL_ID}.id.repl.co`;
+    }
+    
     // Use repl.co domain when available (more reliable)
     if (process.env.REPL_SLUG && process.env.REPL_OWNER) {
       return `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`;
