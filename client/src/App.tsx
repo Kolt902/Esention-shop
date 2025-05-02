@@ -8,6 +8,9 @@ import AdminPage from "@/pages/AdminPage";
 import ProfilePage from "@/pages/ProfilePage";
 import VirtualFittingPage from "@/pages/VirtualFittingPage";
 import ProductDetailPage from "@/pages/ProductDetailPage";
+import CategoryPage from "@/pages/CategoryPage";
+import BrandPage from "@/pages/BrandPage";
+import StylePage from "@/pages/StylePage";
 import NotFound from "@/pages/not-found";
 import { useEffect, useState } from "react";
 import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
@@ -23,9 +26,9 @@ function Router() {
       <Route path="/product/:id" component={ProductDetailPage}/>
       
       {/* Новые маршруты для категорий, брендов и стилей */}
-      <Route path="/category/:category" component={StorePage}/>
-      <Route path="/brand/:brand" component={StorePage}/>
-      <Route path="/style/:style" component={StorePage}/>
+      <Route path="/category/:category" component={CategoryPage}/>
+      <Route path="/brand/:brand" component={BrandPage}/>
+      <Route path="/style/:style" component={StylePage}/>
       
       {/* Обработка всех остальных маршрутов */}
       <Route component={NotFound} />
