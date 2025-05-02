@@ -357,48 +357,48 @@ export function generateAdidasProducts(startId: number): Product[] {
     },
     {
       name: "Adidas Ultraboost",
-      price: 14990,
+      price: 149.90,
       category: "sneakers",
       description: "Инновационные беговые кроссовки с технологией Boost для максимальной амортизации и возврата энергии.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesAdidas[6],
-      additionalImages: officialProductImagesAdidas.slice(6, 9)
+      imageUrl: getOfficialProductImages("Adidas Ultraboost", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Adidas Ultraboost", "sneakers")
     },
     {
       name: "Adidas NMD R1",
-      price: 12990,
+      price: 129.90,
       category: "sneakers",
       description: "Городские кроссовки Adidas NMD с технологией Boost и характерными вставками на промежуточной подошве.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesAdidas[9],
-      additionalImages: officialProductImagesAdidas.slice(9, 12)
+      imageUrl: getOfficialProductImages("Adidas NMD", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Adidas NMD", "sneakers")
     },
     {
       name: "Adidas Forum Low",
-      price: 9990,
+      price: 99.90,
       category: "sneakers",
       description: "Баскетбольные кроссовки Adidas Forum с ремешком на щиколотке, которые стали иконой уличной моды.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesAdidas[12],
-      additionalImages: officialProductImagesAdidas.slice(12, 15)
+      imageUrl: getOfficialProductImages("Adidas Forum", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Adidas Forum", "sneakers")
     },
     {
       name: "Adidas Ozelia",
-      price: 10990,
+      price: 109.90,
       category: "sneakers",
       description: "Массивные кроссовки Adidas Ozelia в духе 90-х с многослойным верхом и футуристическим дизайном.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesAdidas[15],
-      additionalImages: officialProductImagesAdidas.slice(15, 18)
+      imageUrl: getOfficialProductImages("Adidas Ozelia", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Adidas Ozelia", "sneakers")
     },
     {
       name: "Adidas 4DFWD",
-      price: 18990,
+      price: 189.90,
       category: "sneakers",
       description: "Революционные кроссовки с 3D-печатной подошвой 4D, трансформирующей вертикальное давление в горизонтальное движение вперед.",
       sizes: shoeSizes,
-      imageUrl: officialProductImagesAdidas[18],
-      additionalImages: officialProductImagesAdidas.slice(18, 21)
+      imageUrl: getOfficialProductImages("Adidas 4DFWD", "sneakers")[0],
+      additionalImages: getOfficialProductImages("Adidas 4DFWD", "sneakers")
     }
   ];
   
@@ -406,39 +406,39 @@ export function generateAdidasProducts(startId: number): Product[] {
   const adidasTshirts = [
     {
       name: "Adidas Originals Trefoil",
-      price: 2990,
+      price: 29.90,
       category: "tshirts",
       description: "Классическая футболка Adidas Originals с культовым логотипом Trefoil на груди.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesAdidas[21],
-      additionalImages: officialProductImagesAdidas.slice(21, 24)
+      imageUrl: getOfficialProductImages("Adidas Trefoil", "tshirts")[0],
+      additionalImages: getOfficialProductImages("Adidas Trefoil", "tshirts")
     },
     {
       name: "Adidas Essentials 3-Stripes",
-      price: 2490,
+      price: 24.90,
       category: "tshirts",
       description: "Спортивная футболка Adidas Essentials с фирменными тремя полосками на рукавах.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesAdidas[24],
-      additionalImages: officialProductImagesAdidas.slice(24, 27)
+      imageUrl: getOfficialProductImages("Adidas Essentials", "tshirts")[0],
+      additionalImages: getOfficialProductImages("Adidas Essentials", "tshirts")
     },
     {
       name: "Adidas Adicolor Classics",
-      price: 3490,
+      price: 34.90,
       category: "tshirts",
       description: "Яркая футболка из линейки Adicolor с контрастными цветовыми блоками в ретро-стиле.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesAdidas[27],
-      additionalImages: officialProductImagesAdidas.slice(27, 30)
+      imageUrl: getOfficialProductImages("Adidas Adicolor", "tshirts")[0],
+      additionalImages: getOfficialProductImages("Adidas Adicolor", "tshirts")
     },
     {
       name: "Adidas AEROREADY",
-      price: 3290,
+      price: 32.90,
       category: "tshirts",
       description: "Тренировочная футболка с технологией AEROREADY, которая отводит влагу и сохраняет ощущение сухости во время интенсивных тренировок.",
       sizes: clothingSizes,
-      imageUrl: officialProductImagesAdidas[30],
-      additionalImages: officialProductImagesAdidas.slice(30, 33)
+      imageUrl: getOfficialProductImages("Adidas AEROREADY", "tshirts")[0],
+      additionalImages: getOfficialProductImages("Adidas AEROREADY", "tshirts")
     }
   ];
   
