@@ -1,45 +1,54 @@
 import { Request, Response, NextFunction } from 'express';
 import { telegramBot } from './telegram';
 
-// Middleware to validate Telegram WebApp data
+// Middleware для валидации данных Telegram WebApp
 export function validateTelegramWebApp(req: Request, res: Response, next: NextFunction) {
-  // Get the init data from header
-  const initData = req.headers['x-telegram-init-data'] as string;
-  
-  // For development/testing mode, we'll allow access without initData
-  if (!initData) {
-    console.warn('Missing Telegram initialization data, but allowing request in development mode');
+  try {
+    // Получаем данные инициализации из заголовка
+    const initData = req.headers['x-telegram-init-data'] as string;
     
-    // Create a mock Telegram user for development
-    (req as any).telegramUser = {
-      id: 123456789,
-      first_name: 'Test',
-      username: 'testuser'
-    };
+    // В режиме разработки разрешаем доступ без данных инициализации
+    if (process.env.NODE_ENV === 'development' && !initData) {
+      console.log('Режим разработки: пропускаем проверку данных инициализации');
+      
+      // Создаем тестового пользователя
+      (req as any).telegramUser = {
+        id: 123456789,
+        first_name: 'Test',
+        username: 'testuser'
+      };
+      
+      return next();
+    }
     
-    return next();
+    // Проверяем наличие данных инициализации
+    if (!initData) {
+      console.warn('Отсутствуют данные инициализации Telegram');
+      return res.status(403).json({
+        error: 'Отсутствуют данные инициализации Telegram'
+      });
+    }
+    
+    // Валидируем данные
+    const telegramUser = telegramBot.validateInitData(initData);
+    
+    if (!telegramUser) {
+      console.warn('Недействительные данные инициализации Telegram');
+      return res.status(403).json({
+        error: 'Недействительные данные инициализации Telegram'
+      });
+    }
+    
+    // Сохраняем информацию о пользователе в запросе
+    (req as any).telegramUser = telegramUser;
+    
+    next();
+  } catch (error) {
+    console.error('Ошибка при валидации данных Telegram:', error);
+    res.status(500).json({
+      error: 'Внутренняя ошибка сервера при валидации данных Telegram'
+    });
   }
-  
-  // If we have initData, validate it
-  const telegramUser = telegramBot.validateInitData(initData);
-  
-  if (!telegramUser) {
-    console.warn('Invalid Telegram initialization data, but allowing request in development mode');
-    
-    // Create a mock Telegram user for development
-    (req as any).telegramUser = {
-      id: 123456789,
-      first_name: 'Test',
-      username: 'testuser'
-    };
-    
-    return next();
-  }
-  
-  // Store the user info in the request object
-  (req as any).telegramUser = telegramUser;
-  
-  next();
 }
 
 // Middleware to ensure user is authenticated

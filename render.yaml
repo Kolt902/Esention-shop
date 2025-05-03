@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: fashion-store-bot
+    env: node
+    buildCommand: npm install
+    startCommand: node src/index.js
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: MONGODB_URI
+        sync: false 

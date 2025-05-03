@@ -1,277 +1,254 @@
-import { useState, useEffect } from "react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Slider } from "@/components/ui/slider";
-import { useQuery } from "@tanstack/react-query";
-import { XCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface FilterPanelProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onFilterChange: (filters: {
-    categories: string[];
-    brands: string[];
-    styles: string[];
-    priceRange: [number, number];
-    genders: string[];
-  }) => void;
-  initialFilters?: {
-    categories?: string[];
-    brands?: string[];
-    styles?: string[];
-    priceRange?: [number, number];
-    genders?: string[];
-  };
+  onFilterChange: (filters: FilterState) => void;
+  brands: string[];
+  sizes: string[];
+  maxPrice: number;
 }
 
-export default function FilterPanel({ 
-  isOpen, 
-  onClose, 
-  onFilterChange,
-  initialFilters = {} 
-}: FilterPanelProps) {
-  // Состояние для всех фильтров
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(initialFilters.categories || []);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>(initialFilters.brands || []);
-  const [selectedStyles, setSelectedStyles] = useState<string[]>(initialFilters.styles || []);
-  const [priceRange, setPriceRange] = useState<[number, number]>(initialFilters.priceRange || [0, 50000]);
-  const [selectedGenders, setSelectedGenders] = useState<string[]>(initialFilters.genders || []);
+interface FilterState {
+  brands: string[];
+  sizes: string[];
+  priceRange: [number, number];
+  condition: string[];
+  sortBy: string;
+}
 
-  // Загрузка данных для фильтров с сервера
-  const { data } = useQuery({
-    queryKey: ['/api/categories'],
-    staleTime: 60000, // 1 минута кэширования
+export default function FilterPanel({ onFilterChange, brands, sizes, maxPrice }: FilterPanelProps) {
+  const [filters, setFilters] = useState<FilterState>({
+    brands: [],
+    sizes: [],
+    priceRange: [0, maxPrice],
+    condition: [],
+    sortBy: 'popular'
   });
 
-  const categories = data?.categories || [];
-  const brands = data?.brands || [];
-  const styles = data?.styleDetails || [];
+  const [expandedSections, setExpandedSections] = useState({
+    sizes: true,
+    brands: true,
+    price: true,
+    condition: true,
+    sort: true
+  });
 
-  // Применение фильтров при изменении
-  useEffect(() => {
-    onFilterChange({
-      categories: selectedCategories,
-      brands: selectedBrands,
-      styles: selectedStyles,
-      priceRange,
-      genders: selectedGenders,
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  const handleBrandChange = (brand: string) => {
+    setFilters(prev => {
+      const newBrands = prev.brands.includes(brand)
+        ? prev.brands.filter(b => b !== brand)
+        : [...prev.brands, brand];
+      
+      const newFilters = { ...prev, brands: newBrands };
+      onFilterChange(newFilters);
+      return newFilters;
     });
-  }, [selectedCategories, selectedBrands, selectedStyles, priceRange, selectedGenders]);
-
-  // Обработчики изменения фильтров
-  const handleCategoryChange = (category: string, checked: boolean) => {
-    if (checked) {
-      setSelectedCategories([...selectedCategories, category]);
-    } else {
-      setSelectedCategories(selectedCategories.filter(c => c !== category));
-    }
   };
 
-  const handleBrandChange = (brand: string, checked: boolean) => {
-    if (checked) {
-      setSelectedBrands([...selectedBrands, brand]);
-    } else {
-      setSelectedBrands(selectedBrands.filter(b => b !== brand));
-    }
+  const handleSizeChange = (size: string) => {
+    setFilters(prev => {
+      const newSizes = prev.sizes.includes(size)
+        ? prev.sizes.filter(s => s !== size)
+        : [...prev.sizes, size];
+      
+      const newFilters = { ...prev, sizes: newSizes };
+      onFilterChange(newFilters);
+      return newFilters;
+    });
   };
 
-  const handleStyleChange = (style: string, checked: boolean) => {
-    if (checked) {
-      setSelectedStyles([...selectedStyles, style]);
-    } else {
-      setSelectedStyles(selectedStyles.filter(s => s !== style));
-    }
+  const handlePriceChange = (value: [number, number]) => {
+    setFilters(prev => {
+      const newFilters = { 
+        ...prev, 
+        priceRange: value
+      };
+      onFilterChange(newFilters);
+      return newFilters;
+    });
   };
 
-  const handlePriceChange = (value: number[]) => {
-    setPriceRange([value[0], value[1]]);
+  const handleConditionChange = (condition: string) => {
+    setFilters(prev => {
+      const newCondition = prev.condition.includes(condition)
+        ? prev.condition.filter(c => c !== condition)
+        : [...prev.condition, condition];
+      
+      const newFilters = { ...prev, condition: newCondition };
+      onFilterChange(newFilters);
+      return newFilters;
+    });
   };
 
-  const handleGenderChange = (gender: string, checked: boolean) => {
-    if (checked) {
-      setSelectedGenders([...selectedGenders, gender]);
-    } else {
-      setSelectedGenders(selectedGenders.filter(g => g !== gender));
-    }
+  const handleSortChange = (sortBy: string) => {
+    setFilters(prev => {
+      const newFilters = { ...prev, sortBy };
+      onFilterChange(newFilters);
+      return newFilters;
+    });
   };
 
-  // Сброс всех фильтров
-  const handleResetFilters = () => {
-    setSelectedCategories([]);
-    setSelectedBrands([]);
-    setSelectedStyles([]);
-    setPriceRange([0, 50000]);
-    setSelectedGenders([]);
-  };
-
-  // Если панель не открыта, не рендерим содержимое
-  if (!isOpen) return null;
-
-  // Форматирование цены для отображения
-  const formatPrice = (price: number) => {
-    return `€${(price / 100).toFixed(0)}`;
-  };
+  const FilterSection = ({ 
+    title, 
+    isExpanded, 
+    onToggle, 
+    children 
+  }: { 
+    title: string; 
+    isExpanded: boolean; 
+    onToggle: () => void; 
+    children: React.ReactNode;
+  }) => (
+    <div className="border-b border-gray-200 py-4">
+      <button
+        className="flex items-center justify-between w-full text-left"
+        onClick={onToggle}
+      >
+        <span className="font-medium text-gray-900">{title}</span>
+        {isExpanded ? (
+          <ChevronUp className="h-4 w-4 text-gray-500" />
+        ) : (
+          <ChevronDown className="h-4 w-4 text-gray-500" />
+        )}
+      </button>
+      {isExpanded && <div className="mt-4">{children}</div>}
+    </div>
+  );
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-end">
-      <div className="w-full max-w-md h-full bg-white overflow-y-auto p-4 animate-in slide-in-from-right">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Фильтры</h2>
-          <button 
-            onClick={onClose} 
-            className="text-gray-500 hover:text-gray-700"
-            aria-label="Закрыть"
-          >
-            <XCircle size={24} />
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          {/* Категории */}
-          <Accordion type="single" collapsible defaultValue="categories">
-            <AccordionItem value="categories">
-              <AccordionTrigger>Категории</AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-2">
-                  {categories.map((category: string) => (
-                    <div key={category} className="flex items-center space-x-2">
-                      <Checkbox 
-                        id={`category-${category}`}
-                        checked={selectedCategories.includes(category)}
-                        onCheckedChange={(checked) => 
-                          handleCategoryChange(category, checked as boolean)
-                        }
-                      />
-                      <Label htmlFor={`category-${category}`} className="capitalize">
-                        {category}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
-          {/* Бренды */}
-          <Accordion type="single" collapsible defaultValue="brands">
-            <AccordionItem value="brands">
-              <AccordionTrigger>Бренды</AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {brands.map((brand: string) => (
-                    <div key={brand} className="flex items-center space-x-2">
-                      <Checkbox 
-                        id={`brand-${brand}`}
-                        checked={selectedBrands.includes(brand)}
-                        onCheckedChange={(checked) => 
-                          handleBrandChange(brand, checked as boolean)
-                        }
-                      />
-                      <Label htmlFor={`brand-${brand}`}>
-                        {brand}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
-          {/* Стили */}
-          <Accordion type="single" collapsible defaultValue="styles">
-            <AccordionItem value="styles">
-              <AccordionTrigger>Стили</AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-2">
-                  {styles.map((style: any) => (
-                    <div key={style.name} className="flex items-center space-x-2">
-                      <Checkbox 
-                        id={`style-${style.name}`}
-                        checked={selectedStyles.includes(style.name)}
-                        onCheckedChange={(checked) => 
-                          handleStyleChange(style.name, checked as boolean)
-                        }
-                      />
-                      <Label htmlFor={`style-${style.name}`}>
-                        {style.name}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
-          {/* Диапазон цен */}
-          <Accordion type="single" collapsible defaultValue="price">
-            <AccordionItem value="price">
-              <AccordionTrigger>Цена</AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span>{formatPrice(priceRange[0])}</span>
-                    <span>{formatPrice(priceRange[1])}</span>
-                  </div>
-                  <Slider
-                    min={0}
-                    max={50000}
-                    step={500}
-                    value={[priceRange[0], priceRange[1]]}
-                    onValueChange={handlePriceChange}
-                    className="my-4"
-                  />
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
-          {/* Пол */}
-          <Accordion type="single" collapsible defaultValue="gender">
-            <AccordionItem value="gender">
-              <AccordionTrigger>Пол</AccordionTrigger>
-              <AccordionContent>
-                <RadioGroup className="flex flex-col space-y-2">
-                  {["men", "women", "unisex"].map((gender) => (
-                    <div key={gender} className="flex items-center space-x-2">
-                      <Checkbox 
-                        id={`gender-${gender}`}
-                        checked={selectedGenders.includes(gender)}
-                        onCheckedChange={(checked) => 
-                          handleGenderChange(gender, checked as boolean)
-                        }
-                      />
-                      <Label htmlFor={`gender-${gender}`} className="capitalize">
-                        {gender === "men" ? "Мужской" : 
-                         gender === "women" ? "Женский" : "Унисекс"}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
-          {/* Кнопки действий */}
-          <div className="flex justify-between mt-6">
-            <Button 
-              variant="outline" 
-              onClick={handleResetFilters}
-              className="w-1/2 mr-2"
-            >
-              Сбросить
-            </Button>
-            <Button 
-              onClick={onClose}
-              className="w-1/2 ml-2"
-            >
-              Применить
-            </Button>
+    <Card className="w-64 flex-shrink-0">
+      <CardContent className="p-4">
+        <FilterSection
+          title="Размеры"
+          isExpanded={expandedSections.sizes}
+          onToggle={() => toggleSection('sizes')}
+        >
+          <div className="grid grid-cols-3 gap-2">
+            {sizes.map(size => (
+              <Button
+                key={size}
+                variant={filters.sizes.includes(size) ? "default" : "outline"}
+                className={cn(
+                  "w-full text-sm",
+                  filters.sizes.includes(size) && "bg-black text-white"
+                )}
+                onClick={() => handleSizeChange(size)}
+              >
+                {size}
+              </Button>
+            ))}
           </div>
-        </div>
-      </div>
-    </div>
+        </FilterSection>
+
+        <FilterSection
+          title="Бренды"
+          isExpanded={expandedSections.brands}
+          onToggle={() => toggleSection('brands')}
+        >
+          <div className="space-y-2">
+            {brands.map(brand => (
+              <div key={brand} className="flex items-center">
+                <Checkbox
+                  id={`brand-${brand}`}
+                  checked={filters.brands.includes(brand)}
+                  onCheckedChange={() => handleBrandChange(brand)}
+                />
+                <label
+                  htmlFor={`brand-${brand}`}
+                  className="ml-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {brand}
+                </label>
+              </div>
+            ))}
+          </div>
+        </FilterSection>
+
+        <FilterSection
+          title="Цена"
+          isExpanded={expandedSections.price}
+          onToggle={() => toggleSection('price')}
+        >
+          <div className="space-y-4">
+            <Slider
+              defaultValue={[0, maxPrice] as [number, number]}
+              max={maxPrice}
+              step={100}
+              value={[filters.priceRange[0], filters.priceRange[1]] as [number, number]}
+              onValueChange={handlePriceChange}
+              className="mt-2"
+            />
+            <div className="flex justify-between text-sm">
+              <span>€{filters.priceRange[0]}</span>
+              <span>€{filters.priceRange[1]}</span>
+            </div>
+          </div>
+        </FilterSection>
+
+        <FilterSection
+          title="Состояние"
+          isExpanded={expandedSections.condition}
+          onToggle={() => toggleSection('condition')}
+        >
+          <div className="space-y-2">
+            {['Новое', 'Б/У'].map(condition => (
+              <div key={condition} className="flex items-center">
+                <Checkbox
+                  id={`condition-${condition}`}
+                  checked={filters.condition.includes(condition)}
+                  onCheckedChange={() => handleConditionChange(condition)}
+                />
+                <label
+                  htmlFor={`condition-${condition}`}
+                  className="ml-2 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {condition}
+                </label>
+              </div>
+            ))}
+          </div>
+        </FilterSection>
+
+        <FilterSection
+          title="Сортировка"
+          isExpanded={expandedSections.sort}
+          onToggle={() => toggleSection('sort')}
+        >
+          <div className="space-y-2">
+            {[
+              { id: 'popular', label: 'По популярности' },
+              { id: 'price_asc', label: 'По возрастанию цены' },
+              { id: 'price_desc', label: 'По убыванию цены' },
+              { id: 'newest', label: 'Сначала новые' }
+            ].map(sort => (
+              <div
+                key={sort.id}
+                className={cn(
+                  'py-1.5 px-2 rounded cursor-pointer text-sm',
+                  filters.sortBy === sort.id
+                    ? 'bg-black text-white'
+                    : 'hover:bg-gray-100'
+                )}
+                onClick={() => handleSortChange(sort.id)}
+              >
+                {sort.label}
+              </div>
+            ))}
+          </div>
+        </FilterSection>
+      </CardContent>
+    </Card>
   );
 }

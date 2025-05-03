@@ -17,6 +17,14 @@ interface CartItem {
   size?: string;
 }
 
+interface FilterState {
+  brands: string[];
+  sizes: string[];
+  priceRange: [number, number];
+  condition: string[];
+  sortBy: string;
+}
+
 export default function StylePage() {
   const { styleName } = useParams();
   const [_, navigate] = useLocation();
@@ -221,25 +229,25 @@ export default function StylePage() {
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
       
-      <main className="flex-1 px-4 py-6 max-w-7xl mx-auto w-full">
+      <main className="flex-1 px-2 sm:px-4 py-4 w-full overflow-x-hidden">
         {/* Заголовок стиля с описанием */}
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">{formatStyleName(styleName || "")}</h1>
+        <div className="mb-4 sm:mb-8 text-center">
+          <h1 className="text-xl sm:text-3xl font-bold">{formatStyleName(styleName || "")}</h1>
           {styleData && styleData.description && (
-            <p className="mt-2 text-gray-600">{styleData.description}</p>
+            <p className="mt-2 text-sm sm:text-base text-gray-600">{styleData.description}</p>
           )}
         </div>
         
         {/* Кнопка фильтра */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="text-lg font-medium">
+        <div className="flex justify-between items-center mb-4 sticky top-0 bg-white z-10 py-2">
+          <div className="text-sm sm:text-lg font-medium">
             {products.length} товаров
           </div>
           <button 
             onClick={() => setIsFilterOpen(true)}
-            className="flex items-center px-4 py-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+            className="flex items-center px-3 py-1.5 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors text-sm"
           >
-            <Filter size={18} className="mr-2" />
+            <Filter size={16} className="mr-1.5" />
             Фильтры
           </button>
         </div>
@@ -247,18 +255,18 @@ export default function StylePage() {
         {/* Список товаров */}
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
-            <p>Загрузка товаров...</p>
+            <p className="text-sm text-gray-500">Загрузка товаров...</p>
           </div>
         ) : error ? (
-          <div className="text-center text-red-500">
+          <div className="text-center text-red-500 text-sm">
             <p>Произошла ошибка при загрузке товаров</p>
           </div>
         ) : products.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-lg text-gray-500">Товары не найдены</p>
+          <div className="text-center py-8">
+            <p className="text-sm sm:text-base text-gray-500">Товары не найдены</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4">
             {products.map((product: Product) => (
               <ProductCard
                 key={product.id}
@@ -276,7 +284,7 @@ export default function StylePage() {
         onHomeClick={() => navigate("/")}
       />
       
-      {/* Модальное окно корзины */}
+      {/* Модальные окна */}
       <CartModal 
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -286,7 +294,6 @@ export default function StylePage() {
         onCheckout={handleCheckout}
       />
       
-      {/* Панель фильтров */}
       <FilterPanel 
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}

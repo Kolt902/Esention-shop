@@ -1,169 +1,104 @@
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
-import { telegramBot } from "./telegram";
+import express, { Request, Response, NextFunction } from 'express';
+import { Server } from 'http';
+import { registerRoutes } from './routes';
+import { setupVite } from './vite';
+import { telegramBot } from './telegram';
+import cors from 'cors';
+import path from 'path';
 
 const app = express();
+
+// Включаем CORS
+app.use(cors({
+  origin: '*', // В продакшене нужно указать конкретный домен
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'X-Telegram-Init-Data', 'Authorization']
+}));
+
+// Парсинг JSON
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
-app.use((req, res, next) => {
-  const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
-
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      log(logLine);
-    }
-  });
-
+// Middleware для логирования запросов
+app.use((req: Request, _res: Response, next: NextFunction) => {
+  console.log(`${req.method} ${req.url}`);
   next();
 });
+
+// Функция для раздачи статических файлов
+function serveStatic(app: express.Application) {
+  const clientDistPath = path.join(__dirname, '../client/dist');
+  app.use(express.static(clientDistPath));
+  
+  // Всегда возвращаем index.html для всех маршрутов (кроме API)
+  app.get('*', (req: Request, res: Response) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(clientDistPath, 'index.html'));
+    }
+  });
+}
 
 (async () => {
   const server = await registerRoutes(app);
 
+  // Обработка ошибок
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+    console.error('Ошибка:', err);
     const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
+    const message = err.message || "Внутренняя ошибка сервера";
     res.status(status).json({ message });
-    throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
+  if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, async () => {
-    log(`serving on port ${port}`);
+  const port = parseInt(process.env.PORT || '5000', 10);
+  const host = process.env.HOST || '0.0.0.0';
+  
+  server.listen(port, host, async () => {
+    console.log(`Сервер запущен на http://${host}:${port}`);
     
-    // Check if bot token is available
     if (process.env.TELEGRAM_BOT_TOKEN) {
-      console.log("Bot will be accessible to everyone as requested");
-      
       try {
-        // Используем метод из класса TelegramBot для получения URL
-        const webAppUrl = telegramBot.generateWebAppUrl();
-        console.log(`Using Web App URL: ${webAppUrl}`);
+        // Получаем URL для WebApp
+        const webAppUrl = process.env.WEB_APP_URL || `http://${host}:${port}`;
+        console.log(`Используется URL для WebApp: ${webAppUrl}`);
         
-        // Проверяем доступность URL перед использованием
-        try {
-          const response = await fetch(webAppUrl, { method: 'HEAD' });
-          if (response.ok) {
-            console.log(`Web App URL is accessible: ${response.status} ${response.statusText}`);
-          } else {
-            console.warn(`Web App URL responded with status: ${response.status} ${response.statusText}`);
-          }
-        } catch (error) {
-          console.warn(`Error checking Web App URL accessibility: ${error instanceof Error ? error.message : String(error)}`);
+        // Настраиваем вебхук или поллинг
+        if (process.env.WEBHOOK_URL) {
+          const webhookUrl = process.env.WEBHOOK_URL;
+          console.log(`Настройка вебхука: ${webhookUrl}`);
+          const success = await telegramBot.setWebhook(webhookUrl);
+          console.log(`Настройка вебхука ${success ? 'успешна' : 'не удалась'}`);
+        } else {
+          console.log('Запуск бота в режиме поллинга');
+          await telegramBot.deleteWebhook();
+          telegramBot.startPolling();
         }
         
-        // Настраиваем команды бота с повторными попытками
-        const setCommands = async (retries = 3) => {
-          for (let i = 0; i < retries; i++) {
-            try {
-              const response = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/setMyCommands`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  commands: [
-                    { command: 'start', description: 'Открыть магазин' },
-                    { command: 'help', description: 'Показать справку' }
-                  ]
-                })
-              });
-              const data = await response.json();
-              console.log('Set bot commands result:', data);
-              return data;
-            } catch (err) {
-              console.error(`Error setting bot commands (attempt ${i+1}/${retries}):`, err);
-              if (i === retries - 1) throw err;
-              await new Promise(r => setTimeout(r, 1000)); // Ждем секунду перед повторной попыткой
-            }
-          }
-        };
-        
-        // Настраиваем кнопку меню с повторными попытками
-        const setMenuButton = async (retries = 3) => {
-          for (let i = 0; i < retries; i++) {
-            try {
-              const response = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/setChatMenuButton`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  menu_button: {
-                    type: 'web_app',
-                    text: 'Открыть магазин',
-                    web_app: { url: webAppUrl }
-                  }
-                })
-              });
-              const data = await response.json();
-              console.log('Set menu button result:', data);
-              return data;
-            } catch (err) {
-              console.error(`Error setting menu button (attempt ${i+1}/${retries}):`, err);
-              if (i === retries - 1) throw err;
-              await new Promise(r => setTimeout(r, 1000)); // Ждем секунду перед повторной попыткой
-            }
-          }
-        };
-        
-        // Выполняем настройку параллельно для ускорения
-        await Promise.all([
-          setCommands().catch(e => console.error('Failed to set commands:', e)),
-          setMenuButton().catch(e => console.error('Failed to set menu button:', e))
+        // Настраиваем команды бота
+        await telegramBot.setCommands([
+          { command: 'start', description: 'Открыть магазин' },
+          { command: 'help', description: 'Показать помощь' }
         ]);
         
-        // Запускаем поллинг после настройки команд и меню
-        console.log("Starting Telegram polling (long-polling mode)");
-        
-        // Удаляем webhook перед началом поллинга
-        const webhookResponse = await telegramBot.deleteWebhook();
-        console.log("Webhook deleted response:", webhookResponse);
-        
-        // Запускаем поллинг в фоне
-        telegramBot.startPolling().catch(error => {
-          console.error("Error in polling main loop:", error);
+        // Настраиваем кнопку меню
+        await telegramBot.setMenuButton({
+          type: 'web_app',
+          text: 'Открыть магазин',
+          web_app: { url: webAppUrl }
         });
         
-        console.log("Telegram bot initialized in polling mode");
       } catch (error) {
-        console.error("Error setting up Telegram bot:", error);
+        console.error('Ошибка при настройке бота:', error);
       }
     } else {
-      console.warn("TELEGRAM_BOT_TOKEN not provided, bot functionality will be limited");
+      console.log('TELEGRAM_BOT_TOKEN не указан, пропускаем инициализацию бота');
     }
   });
-})();
+})().catch((err) => {
+  console.error('Не удалось запустить сервер:', err);
+  process.exit(1);
+});

@@ -14,7 +14,7 @@ import BrandPage from "@/pages/BrandPage";
 import StylePage from "@/pages/StylePage";
 import NotFound from "@/pages/not-found";
 import { useEffect, useState } from "react";
-import { getTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
+import { getTelegramWebApp, initTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
 import { StoreProvider } from "@/lib/StoreContext";
 
 function Router() {
@@ -39,98 +39,68 @@ function Router() {
 }
 
 function App() {
-  // Состояние для отображения загрузки
   const [isAppReady, setIsAppReady] = useState(false);
   const [telegramInitialized, setTelegramInitialized] = useState(false);
+  const [initError, setInitError] = useState<string | null>(null);
   
-  // Эффект для инициализации приложения
   useEffect(() => {
-    // Проверяем запуск в Telegram
-    const inTelegram = isRunningInTelegram();
-    console.log(`App running in Telegram: ${inTelegram}`);
-    
-    // Проверяем наличие query параметра admin=true, чтобы направить на админ-панель
-    const urlParams = new URLSearchParams(window.location.search);
-    const isAdminRoute = urlParams.get('admin') === 'true';
-    
-    if (isAdminRoute) {
-      console.log("Admin mode detected in URL parameters, will redirect to admin page");
-      // Редирект на админ-панель будет выполнен после инициализации
-    }
-    
-    if (inTelegram) {
-      // В среде Telegram даем больше времени на инициализацию
-      const webApp = getTelegramWebApp();
-      
-      if (webApp) {
-        setTelegramInitialized(true);
-        console.log("Telegram WebApp object found, ready to proceed");
+    const initApp = async () => {
+      try {
+        const inTelegram = isRunningInTelegram();
+        console.log(`Приложение запущено в Telegram: ${inTelegram}`);
         
-        // При наличии Telegram UI элементов используем их
-        if (webApp.MainButton) {
-          webApp.MainButton.hide();
-        }
-        
-        // Настраиваем взаимодействие с Telegram WebApp
-        // В версии 6.0 Telegram WebApp некоторые методы устарели, 
-        // поэтому добавляем проверки перед вызовом
-        
-        // Проверяем поддержку функций перед вызовом
-        if (typeof webApp.setHeaderColor === 'function') {
-          try {
-            webApp.setHeaderColor('#FFFFFF');
-          } catch (e) {
-            console.log("setHeaderColor not supported in this version");
+        if (inTelegram) {
+          // Проверяем текущее состояние WebApp
+          const webApp = getTelegramWebApp();
+          if (webApp) {
+            console.log('WebApp уже инициализирован');
+            setTelegramInitialized(true);
+            setIsAppReady(true);
+            return;
+          }
+          
+          // Ждем событие готовности WebApp
+          const waitForWebApp = new Promise<boolean>((resolve) => {
+            const timeout = setTimeout(() => {
+              console.log('Таймаут инициализации WebApp');
+              resolve(false);
+            }, 5000);
+            
+            const handleReady = () => {
+              console.log('Получено событие готовности WebApp');
+              clearTimeout(timeout);
+              setTelegramInitialized(true);
+              resolve(true);
+            };
+            
+            window.addEventListener('tgWebAppReady', handleReady, { once: true });
+          });
+          
+          const initialized = await waitForWebApp;
+          if (!initialized) {
+            console.error('Не удалось инициализировать WebApp');
+            setInitError('Не удалось инициализировать Telegram WebApp. Пожалуйста, убедитесь, что вы открыли приложение через Telegram.');
           }
         }
         
-        if (typeof webApp.setBackgroundColor === 'function') {
-          try {
-            webApp.setBackgroundColor('#FFFFFF');
-          } catch (e) {
-            console.log("setBackgroundColor not supported in this version");
-          }
-        }
-        
-        // Если это админ-маршрут, включаем соответствующие UI элементы
-        if (isAdminRoute) {
-          try {
-            // Скрываем кнопку "назад", чтобы пользователь не мог случайно закрыть панель
-            if (webApp.BackButton) {
-              webApp.BackButton.hide();
-            }
-          } catch (e) {
-            console.log("BackButton operations not supported in this version");
-          }
-        }
-      } else {
-        console.warn("Telegram WebApp object not found, but isRunningInTelegram returned true");
+        setIsAppReady(true);
+      } catch (error) {
+        console.error('Ошибка при инициализации:', error);
+        setInitError(error instanceof Error ? error.message : 'Произошла неизвестная ошибка');
+        setIsAppReady(true);
       }
-    }
+    };
     
-    // Задержка перед отображением контента
-    const timeout = inTelegram ? 800 : 300;
-    const timer = setTimeout(() => {
-      setIsAppReady(true);
-      console.log("App marked as ready after timeout:", timeout);
-      
-      // Если это запрос на админ-панель, перенаправляем пользователя
-      if (isAdminRoute) {
-        window.location.href = "/admin?force_admin=true";
-      }
-    }, timeout);
-    
-    return () => clearTimeout(timer);
+    initApp();
   }, []);
   
-  // Если приложение не готово, показываем загрузчик
   if (!isAppReady) {
     return (
-      <div className="loading-screen">
-        <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-[#0088CC] border-r-transparent"></div>
-        <p className="mt-4 text-[#0088CC] font-medium">Загрузка приложения...</p>
+      <div className="fixed inset-0 flex flex-col items-center justify-center bg-[var(--tg-theme-bg-color,#ffffff)]">
+        <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-[var(--tg-theme-button-color,#111111)] border-r-transparent"></div>
+        <p className="mt-4 text-[var(--tg-theme-text-color,#111111)] font-medium">Загрузка приложения...</p>
         {isRunningInTelegram() && (
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-[var(--tg-theme-hint-color,#999999)]">
             {telegramInitialized ? "Telegram WebApp инициализирован" : "Инициализация Telegram..."}
           </p>
         )}
@@ -138,13 +108,31 @@ function App() {
     );
   }
   
-  // Полное приложение
+  if (initError) {
+    return (
+      <div className="fixed inset-0 flex flex-col items-center justify-center p-4 bg-[var(--tg-theme-bg-color,#ffffff)]">
+        <div className="max-w-md text-center">
+          <h1 className="text-xl font-bold text-[var(--tg-theme-text-color,#111111)] mb-4">Ошибка инициализации</h1>
+          <p className="text-[var(--tg-theme-hint-color,#999999)] mb-6">{initError}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-2 bg-[var(--tg-theme-button-color,#111111)] text-[var(--tg-theme-button-text-color,#ffffff)] rounded-lg"
+          >
+            Повторить
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <StoreProvider>
-          <Toaster />
-          <Router />
+          <div className="min-h-screen bg-[var(--tg-theme-bg-color,#ffffff)] text-[var(--tg-theme-text-color,#000000)]">
+            <Toaster />
+            <Router />
+          </div>
         </StoreProvider>
       </TooltipProvider>
     </QueryClientProvider>

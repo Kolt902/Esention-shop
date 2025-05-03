@@ -31,17 +31,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import DeliveryForm, { DeliveryFormData } from "./DeliveryForm";
-// Используем тот же тип CartItem что и в CartModal
-interface CartItem {
-  product: {
-    id: number;
-    name: string;
-    price: number;
-    imageUrl: string;
-  };
-  quantity: number;
-  size?: string;
-}
+import { X } from 'lucide-react';
+import { formatPrice } from '@/lib/utils';
+import { CartItem } from '@/lib/types';
 
 // Схема валидации для формы заказа
 const orderFormSchema = z.object({
@@ -70,6 +62,12 @@ export default function CheckoutModal({
   const [activeTab, setActiveTab] = useState("delivery");
   const [deliveryData, setDeliveryData] = useState<DeliveryFormData | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    address: ''
+  });
 
   // Initialize form with react-hook-form
   const form = useForm<OrderFormData>({
@@ -137,150 +135,128 @@ export default function CheckoutModal({
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Здесь будет логика отправки заказа
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{t.cart.checkout}</DialogTitle>
-          <DialogDescription>
-            Заполните информацию для доставки и оплаты
-          </DialogDescription>
-        </DialogHeader>
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-30">
+      <div className="fixed inset-x-0 bottom-0 bg-white rounded-t-xl shadow-xl max-h-[90vh] overflow-y-auto">
+        <div className="p-4 border-b border-gray-200">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium text-gray-900">Оформление заказа</h3>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-500"
+            >
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+        </div>
 
-        <Tabs defaultValue="delivery" value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-2 mb-4">
-            <TabsTrigger value="delivery">Доставка</TabsTrigger>
-            <TabsTrigger value="payment" disabled={!deliveryData}>
-              Оплата
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Delivery Tab */}
-          <TabsContent value="delivery" className="space-y-4 py-2">
-            <DeliveryForm onSubmit={handleDeliverySubmit} />
-          </TabsContent>
-
-          {/* Payment Tab */}
-          <TabsContent value="payment" className="space-y-4 py-2">
-            <div className="mb-6">
-              <h3 className="font-semibold text-lg mb-2">Детали заказа</h3>
-              <div className="border rounded-md p-4 mb-4">
-                <div className="space-y-2">
-                  {cartItems.map((item) => (
-                    <div key={item.product.id} className="flex justify-between">
-                      <div>
-                        <span className="font-medium">{item.product.name}</span>
-                        {item.size && <span className="text-sm ml-2">({item.size})</span>}
-                        <span className="text-sm ml-2">x{item.quantity}</span>
-                      </div>
-                      <div>€{(item.product.price / 100) * item.quantity}</div>
-                    </div>
-                  ))}
-                  <div className="border-t pt-2 mt-2 flex justify-between font-semibold">
-                    <div>{t.cart.total}:</div>
-                    <div>€{totalPrice / 100}</div>
-                  </div>
-                </div>
-              </div>
-
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleOrderSubmit)} className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="paymentMethod"
-                    render={({ field }) => (
-                      <FormItem className="space-y-3">
-                        <FormLabel>Способ оплаты</FormLabel>
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className="flex flex-col space-y-1"
-                          >
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="cash" />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                Наличными при получении
-                              </FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="card" />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                Картой при получении
-                              </FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="online" />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                Онлайн оплата (скоро)
-                              </FormLabel>
-                            </FormItem>
-                          </RadioGroup>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="deliveryNotes"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Комментарий к заказу</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Дополнительная информация для курьера"
-                            className="resize-none"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="referralCode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Реферальный код</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Введите реферальный код если есть"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="flex justify-between pt-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setActiveTab("delivery")}
-                    >
-                      Назад
-                    </Button>
-                    <Button type="submit" disabled={isSubmitting}>
-                      {isSubmitting ? t.cart.processing : t.cart.checkout}
-                    </Button>
-                  </div>
-                </form>
-              </Form>
+        <form onSubmit={handleSubmit} className="p-4 space-y-6">
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                Имя
+              </label>
+              <Input
+                id="name"
+                type="text"
+                required
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="mt-1"
+                placeholder="Введите ваше имя"
+              />
             </div>
-          </TabsContent>
-        </Tabs>
-      </DialogContent>
-    </Dialog>
+
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                Телефон
+              </label>
+              <Input
+                id="phone"
+                type="tel"
+                required
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="mt-1"
+                placeholder="+7 (___) ___-__-__"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <Input
+                id="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="mt-1"
+                placeholder="example@email.com"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                Адрес доставки
+              </label>
+              <Input
+                id="address"
+                type="text"
+                required
+                value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                className="mt-1"
+                placeholder="Введите адрес доставки"
+              />
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-4">
+            <h4 className="font-medium text-gray-900 mb-3">Ваш заказ</h4>
+            <div className="space-y-3">
+              {cartItems.map((item) => (
+                <div
+                  key={`${item.product.id}-${item.size}`}
+                  className="flex justify-between text-sm"
+                >
+                  <span className="text-gray-600">
+                    {item.product.name} {item.size && `(${item.size})`} x {item.quantity}
+                  </span>
+                  <span className="font-medium">
+                    {formatPrice(item.product.price * item.quantity)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-4">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-base font-medium text-gray-900">Итого к оплате:</span>
+              <span className="text-lg font-bold text-[#0088CC]">
+                {formatPrice(totalPrice)}
+              </span>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-[#0088CC] hover:bg-[#0077B5] text-white"
+            >
+              Подтвердить заказ
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

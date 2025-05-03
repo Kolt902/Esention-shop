@@ -10,35 +10,229 @@ interface TelegramUser {
 
 export class TelegramBot {
   private token: string;
-  private adminIds: string[];
   private apiBaseUrl: string;
+  private adminIds: string[];
+  private isPolling: boolean;
+  private pollTimeout: NodeJS.Timeout | null;
 
-  constructor() {
-    // Allow development mode without token
-    if (!process.env.TELEGRAM_BOT_TOKEN) {
-      console.warn('TELEGRAM_BOT_TOKEN not provided, running in development mode with limited functionality');
-      this.token = 'dev_mode_token';
-    } else {
-      this.token = process.env.TELEGRAM_BOT_TOKEN;
+  constructor(token: string, adminIds: string[] = []) {
+    this.token = token;
+    this.apiBaseUrl = `https://api.telegram.org/bot${token}`;
+    this.adminIds = adminIds;
+    this.isPolling = false;
+    this.pollTimeout = null;
+  }
+
+  // Set bot commands
+  public async setCommands(commands: Array<{ command: string; description: string }>): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/setMyCommands`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ commands })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to set commands: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data.ok;
+    } catch (error) {
+      console.error('Error setting bot commands:', error);
+      return false;
     }
-    
-    this.apiBaseUrl = `https://api.telegram.org/bot${this.token}`;
-    
-    // Parse admin IDs from env var (comma-separated list)
-    this.adminIds = (process.env.TELEGRAM_ADMIN_IDS || '').split(',').map(id => id.trim());
-    
-    // Обязательно добавляем Illia2323 и zakharr99 как администраторов
-    if (!this.adminIds.includes("818421912")) {
-      this.adminIds.push("818421912"); // ID пользователя @Illia2323
+  }
+
+  // Set menu button
+  public async setMenuButton(button: {
+    type: string;
+    text: string;
+    web_app: { url: string };
+  }): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/setChatMenuButton`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ menu_button: button })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to set menu button: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data.ok;
+    } catch (error) {
+      console.error('Error setting menu button:', error);
+      return false;
     }
-    
-    // Добавляем zakharr99 как администратора
-    if (!this.adminIds.includes("7633144414")) {
-      this.adminIds.push("7633144414"); // ID пользователя @zakharr99
+  }
+
+  // Start polling
+  public async startPolling(timeout: number = 30): Promise<void> {
+    if (this.isPolling) {
+      console.log('Polling already started');
+      return;
     }
-    
-    // Per requirements, bot is accessible to everyone, but we still log the admin status
-    console.log('Bot will be accessible to everyone as requested');
+
+    this.isPolling = true;
+    let offset = 0;
+
+    const poll = async () => {
+      if (!this.isPolling) return;
+
+      try {
+        const response = await fetch(`${this.apiBaseUrl}/getUpdates`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            offset,
+            timeout
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Polling failed: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.ok && data.result.length > 0) {
+          // Process updates
+          for (const update of data.result) {
+            // Update offset
+            offset = update.update_id + 1;
+            
+            // Handle update
+            await this.handleUpdate(update);
+          }
+        }
+
+        // Schedule next poll
+        this.pollTimeout = setTimeout(() => poll(), 1000);
+      } catch (error) {
+        console.error('Error in polling:', error);
+        // Retry after delay
+        this.pollTimeout = setTimeout(() => poll(), 5000);
+      }
+    };
+
+    // Start polling
+    await poll();
+  }
+
+  // Stop polling
+  public stopPolling(): void {
+    this.isPolling = false;
+    if (this.pollTimeout) {
+      clearTimeout(this.pollTimeout);
+      this.pollTimeout = null;
+    }
+  }
+
+  // Handle update
+  private async handleUpdate(update: any): Promise<void> {
+    try {
+      if (update.message) {
+        const { message } = update;
+        
+        // Handle commands
+        if (message.text && message.text.startsWith('/')) {
+          const command = message.text.split(' ')[0].substring(1);
+          await this.handleCommand(command, message);
+        }
+      }
+    } catch (error) {
+      console.error('Error handling update:', error);
+    }
+  }
+
+  // Handle command
+  private async handleCommand(command: string, message: any): Promise<void> {
+    try {
+      switch (command) {
+        case 'start':
+          await this.sendWelcomeMessage(message.chat.id);
+          break;
+        case 'help':
+          await this.sendMessage(message.chat.id, 'Используйте кнопку меню для открытия магазина');
+          break;
+        default:
+          await this.sendMessage(message.chat.id, 'Неизвестная команда');
+      }
+    } catch (error) {
+      console.error('Error handling command:', error);
+    }
+  }
+
+  // Send message helper
+  private async sendMessage(chatId: number, text: string, replyMarkup?: any): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text,
+          parse_mode: 'HTML',
+          reply_markup: replyMarkup
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to send message: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data.ok;
+    } catch (error) {
+      console.error('Error sending message:', error);
+      return false;
+    }
+  }
+
+  // Delete webhook
+  public async deleteWebhook(): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/deleteWebhook`, {
+        method: 'POST'
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete webhook: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data.ok;
+    } catch (error) {
+      console.error('Error deleting webhook:', error);
+      return false;
+    }
+  }
+
+  // Set webhook
+  public async setWebhook(url: string): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/setWebhook`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url,
+          allowed_updates: ['message', 'callback_query']
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to set webhook: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data.ok;
+    } catch (error) {
+      console.error('Error setting webhook:', error);
+      return false;
+    }
   }
 
   // Verify if a user is authorized to use the bot
@@ -55,238 +249,74 @@ export class TelegramBot {
 
   // Generate web app URL
   public generateWebAppUrl(): string {
-    // Логируем переменные окружения для понимания проблемы
-    console.log("Доступные переменные окружения для генерации URL:");
-    console.log("WEB_APP_URL:", process.env.WEB_APP_URL);
-    console.log("REPLIT_DEV_DOMAIN:", process.env.REPLIT_DEV_DOMAIN);
-    console.log("REPLIT_DOMAINS:", process.env.REPLIT_DOMAINS);
-    console.log("REPL_ID:", process.env.REPL_ID);
-    console.log("REPL_SLUG:", process.env.REPL_SLUG);
-    console.log("REPL_OWNER:", process.env.REPL_OWNER);
-    
-    // Используем специальную переменную окружения WEB_APP_URL, если она доступна
+    // Use WEB_APP_URL from environment if available
     if (process.env.WEB_APP_URL) {
-      console.log("Используем WEB_APP_URL:", process.env.WEB_APP_URL);
+      console.log("Using WEB_APP_URL:", process.env.WEB_APP_URL);
       return process.env.WEB_APP_URL;
     }
     
-    // Приоритет 1: Используем REPLIT_DEV_DOMAIN - наиболее надежный вариант в Replit
-    if (process.env.REPLIT_DEV_DOMAIN) {
-      const url = `https://${process.env.REPLIT_DEV_DOMAIN}`;
-      console.log("Используем REPLIT_DEV_DOMAIN:", url);
-      return url;
-    }
-    
-    // Приоритет 2: Используем REPLIT_DOMAINS
-    if (process.env.REPLIT_DOMAINS) {
-      const url = `https://${process.env.REPLIT_DOMAINS}`;
-      console.log("Используем REPLIT_DOMAINS:", url);
-      return url;
-    }
-    
-    // Приоритет 3: Используем новый формат id.repl.co
-    if (process.env.REPL_ID) {
-      const url = `https://${process.env.REPL_ID}.id.repl.co`;
-      console.log("Используем REPL_ID:", url);
-      return url;
-    }
-    
-    // Приоритет 4: Используем формат REPL_SLUG.REPL_OWNER.repl.co
-    if (process.env.REPL_SLUG && process.env.REPL_OWNER) {
-      const url = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`;
-      console.log("Используем REPL_SLUG и REPL_OWNER:", url);
-      return url;
-    }
-    
-    // Fallback для локальной разработки
-    console.log("Используем локальный URL: http://localhost:5000");
-    return 'http://localhost:5000';
-  }
-
-  // Send message to a user
-  public async sendMessage(chatId: number, text: string, replyMarkup?: any): Promise<any> {
-    try {
-      const url = `${this.apiBaseUrl}/sendMessage`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text,
-          parse_mode: 'HTML',
-          reply_markup: replyMarkup,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Telegram API error: ${JSON.stringify(errorData)}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error sending Telegram message:', error);
-      throw error;
-    }
+    // Fallback for local development
+    const port = process.env.PORT || 5000;
+    const host = process.env.HOST || 'localhost';
+    const url = `http://${host}:${port}`;
+    console.log("Using local development URL:", url);
+    return url;
   }
 
   // Send welcome message with web app button
   public async sendWelcomeMessage(chatId: number): Promise<any> {
-    // Получаем URL через единую функцию для согласованности
-    let webAppUrl = this.generateWebAppUrl();
-    
-    // Логируем URL для отладки
-    console.log(`Generating welcome message with WebApp URL: ${webAppUrl}`);
-    
-    // Проверяем доступность URL с повторными попытками
-    let isUrlAccessible = false;
-    let retryCount = 0;
-    const maxRetries = 3;
-    
-    // Повторяем проверку доступности несколько раз в случае проблем с сетью
-    while (!isUrlAccessible && retryCount < maxRetries) {
-      try {
-        console.log(`Checking WebApp URL availability (attempt ${retryCount + 1}/${maxRetries}): ${webAppUrl}`);
-        // Создаем контроллер для обработки таймаута
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 секунд таймаут
-        
-        const response = await fetch(webAppUrl, { 
-          method: 'HEAD',
-          headers: { 'Cache-Control': 'no-cache' }, // Избегаем кеширования
-          signal: controller.signal // Используем AbortController вместо timeout
-        });
-        
-        // Очищаем таймаут, если запрос завершился до его срабатывания
-        clearTimeout(timeoutId);
-        
-        if (response.ok) {
-          console.log(`WebApp URL is accessible: ${response.status} ${response.statusText}`);
-          isUrlAccessible = true;
-        } else {
-          console.warn(`WebApp URL responded with status: ${response.status} ${response.statusText}`);
-        }
-      } catch (e) {
-        const errorMessage = e instanceof Error ? e.message : String(e);
-        console.warn(`Error checking WebApp URL (attempt ${retryCount + 1}): ${errorMessage}`);
-        
-        // Только для последней попытки выводим детали
-        if (retryCount === maxRetries - 1) {
-          console.error(`Final WebApp URL check failed after ${maxRetries} attempts`);
-        }
-      }
-      
-      retryCount++;
-      
-      if (!isUrlAccessible && retryCount < maxRetries) {
-        // Ждем перед следующей попыткой (с нарастающим временем ожидания)
-        const waitTime = 1000 * retryCount; 
-        console.log(`Waiting ${waitTime}ms before next attempt...`);
-        await new Promise(resolve => setTimeout(resolve, waitTime));
-      }
-    }
-    
-    // Если URL недоступен после всех попыток, используем альтернативные варианты
-    if (!isUrlAccessible) {
-      console.warn("WebApp URL is not accessible, trying alternative methods");
-      
-      // Пробуем другие варианты URL
-      if (process.env.REPLIT_DEV_DOMAIN) {
-        const altUrl = `https://${process.env.REPLIT_DEV_DOMAIN}`;
-        console.log(`Trying alternative URL (REPLIT_DEV_DOMAIN): ${altUrl}`);
-        
-        try {
-          const altResponse = await fetch(altUrl, { method: 'HEAD' });
-          if (altResponse.ok) {
-            console.log(`Alternative URL is accessible: ${altResponse.status}`);
-            webAppUrl = altUrl;
-            isUrlAccessible = true;
-          }
-        } catch (e) {
-          console.warn(`Alternative URL is also not accessible`);
-        }
-      }
-    }
-    
-    // Проверяем, является ли пользователь администратором
-    const isAdmin = this.adminIds.includes(chatId.toString()) || 
-                   chatId.toString() === "818421912" ||  // ID пользователя @Illia2323
-                   chatId.toString() === "7633144414"; // ID пользователя @zakharr99
-    console.log(`Checking admin status for chat ID ${chatId}: ${isAdmin ? 'Admin' : 'Not admin'}`);
-    
-    // Создаем кнопки меню
-    const keyboard = [
-      [
-        {
-          text: 'Открыть магазин',
-          web_app: { url: webAppUrl },
-        },
-      ],
-      [
-        {
-          text: 'Помощь',
-          callback_data: 'help'
-        }
-      ]
-    ];
-    
-    // Добавляем кнопку администрирования только для администраторов
-    if (isAdmin) {
-      // Используем query параметр вместо пути - более надежно в мини-приложениях Telegram
-      const adminUrl = `${webAppUrl}?admin=true`;
-      console.log(`Adding admin button with URL: ${adminUrl}`);
-      keyboard.push([
-        {
-          text: 'Администрирование',
-          web_app: { url: adminUrl },
-        }
-      ]);
-    }
-    
-    const replyMarkup = {
-      inline_keyboard: keyboard,
-      resize_keyboard: true,
-      one_time_keyboard: false
-    };
-
-    return this.sendMessage(
-      chatId,
-      'Добро пожаловать в магазин одежды! Нажмите кнопку ниже, чтобы открыть каталог или воспользуйтесь кнопкой меню.',
-      replyMarkup
-    );
-  }
-  
-  // Set up webhook for the bot
-  public async setWebhook(webhookUrl: string): Promise<boolean> {
     try {
-      console.log(`Setting webhook to: ${webhookUrl}`);
-      
-      const url = `${this.apiBaseUrl}/setWebhook`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          url: webhookUrl,
-          drop_pending_updates: true,
-        }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Failed to set webhook: ${JSON.stringify(errorData)}`);
+      // Get WebApp URL from environment variable or use default
+      const webAppUrl = process.env.WEB_APP_URL || 'http://localhost:5000';
+      console.log(`Using WebApp URL: ${webAppUrl}`);
+
+      // Create menu buttons
+      const keyboard = [
+        [
+          {
+            text: 'Открыть магазин',
+            web_app: { url: webAppUrl },
+          },
+        ],
+        [
+          {
+            text: 'Помощь',
+            callback_data: 'help'
+          }
+        ]
+      ];
+
+      // Check if user is admin
+      const isAdmin = this.adminIds.includes(chatId.toString()) || 
+                     chatId.toString() === "818421912" ||
+                     chatId.toString() === "7633144414";
+
+      // Add admin button for admins
+      if (isAdmin) {
+        const adminUrl = `${webAppUrl}?admin=true`;
+        keyboard.push([
+          {
+            text: 'Администрирование',
+            web_app: { url: adminUrl },
+          }
+        ]);
       }
-      
-      const data = await response.json();
-      console.log('Webhook set response:', data);
-      
-      return data.ok;
+
+      const replyMarkup = {
+        inline_keyboard: keyboard,
+        resize_keyboard: true,
+        one_time_keyboard: false
+      };
+
+      // Send welcome message with buttons
+      return this.sendMessage(
+        chatId,
+        'Добро пожаловать в магазин одежды! Нажмите кнопку ниже, чтобы открыть каталог или воспользуйтесь кнопкой меню.',
+        replyMarkup
+      );
     } catch (error) {
-      console.error('Error setting webhook:', error);
-      return false;
+      console.error('Error sending welcome message:', error);
+      throw error;
     }
   }
   
@@ -305,143 +335,6 @@ export class TelegramBot {
     } catch (error) {
       console.error('Error getting webhook info:', error);
       return { ok: false, error: 'Failed to get webhook info' };
-    }
-  }
-  
-  // Delete webhook and use polling instead
-  public async deleteWebhook(): Promise<boolean> {
-    try {
-      const url = `${this.apiBaseUrl}/deleteWebhook`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          drop_pending_updates: true,
-        }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Failed to delete webhook: ${JSON.stringify(errorData)}`);
-      }
-      
-      const data = await response.json();
-      console.log('Webhook deleted response:', data);
-      
-      return data.ok;
-    } catch (error) {
-      console.error('Error deleting webhook:', error);
-      return false;
-    }
-  }
-  
-  // Start long polling for updates
-  public async startPolling(): Promise<void> {
-    try {
-      // First, delete any existing webhook
-      await this.deleteWebhook();
-      
-      console.log('Starting Telegram updates polling...');
-      
-      let offset = 0;
-      
-      // Continuous polling loop
-      while (true) {
-        try {
-          const url = `${this.apiBaseUrl}/getUpdates?offset=${offset}&timeout=30`;
-          const response = await fetch(url);
-          
-          if (!response.ok) {
-            const errorData = await response.json();
-            console.error(`Telegram getUpdates error: ${JSON.stringify(errorData)}`);
-            
-            // Wait before retrying on error
-            await new Promise(resolve => setTimeout(resolve, 5000));
-            continue;
-          }
-          
-          const data = await response.json();
-          
-          if (data.ok && data.result.length > 0) {
-            console.log(`Received ${data.result.length} Telegram updates`);
-            
-            // Process each update
-            for (const update of data.result) {
-              // Update offset to acknowledge this update
-              offset = Math.max(offset, update.update_id + 1);
-              
-              // Process update
-              await this.handleUpdate(update);
-            }
-          } else {
-            // Wait a bit before next poll if no updates
-            await new Promise(resolve => { setTimeout(resolve, 1000); });
-          }
-        } catch (error) {
-          console.error('Error in polling loop:', error);
-          // Wait before retrying on error
-          await new Promise(resolve => { setTimeout(resolve, 5000); });
-        }
-      }
-    } catch (error) {
-      console.error('Error in startPolling:', error);
-    }
-  }
-  
-  // Handle a single update
-  private async handleUpdate(update: any): Promise<void> {
-    try {
-      // Log update for debugging
-      console.log('Processing update:', JSON.stringify(update, null, 2));
-      
-      // Handle /start command
-      if (update.message && update.message.text) {
-        const chatId = update.message.chat.id;
-        const text = update.message.text;
-        
-        if (text.startsWith('/start')) {
-          console.log(`Received /start command from chat ID: ${chatId}`);
-          await this.sendWelcomeMessage(chatId);
-        } else if (text.startsWith('/help')) {
-          console.log(`Received /help command from chat ID: ${chatId}`);
-          await this.sendMessage(
-            chatId, 
-            'Этот бот предоставляет доступ к магазину одежды. Используйте кнопку меню или напишите /start, чтобы открыть магазин.');
-        }
-      }
-      
-      // Handle callback queries (inline keyboard buttons)
-      if (update.callback_query) {
-        const callbackData = update.callback_query.data;
-        const chatId = update.callback_query.message.chat.id;
-        
-        console.log(`Received callback query with data: ${callbackData} from chat ID: ${chatId}`);
-        
-        if (callbackData === 'help') {
-          await this.sendMessage(
-            chatId, 
-            'Этот бот предоставляет доступ к магазину одежды. Используйте кнопку "Открыть магазин" или кнопку в меню, чтобы перейти в каталог.');
-          
-          // Answer callback query to remove the loading state
-          try {
-            await fetch(`${this.apiBaseUrl}/answerCallbackQuery`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                callback_query_id: update.callback_query.id,
-              }),
-            });
-          } catch (error) {
-            console.error('Error answering callback query:', error);
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error handling update:', error);
     }
   }
 
@@ -493,5 +386,8 @@ export class TelegramBot {
   }
 }
 
-// Create singleton instance
-export const telegramBot = new TelegramBot();
+// Create bot instance
+export const telegramBot = new TelegramBot(
+  process.env.TELEGRAM_BOT_TOKEN || '',
+  (process.env.TELEGRAM_ADMIN_IDS || '').split(',').map(id => id.trim()).concat(['818421912', '7633144414'])
+);
