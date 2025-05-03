@@ -187,7 +187,7 @@ export default function ProfileSettingsPage() {
   if (isLoading) {
     return (
       <div className="container max-w-md mx-auto p-4 flex items-center justify-center min-h-screen">
-        <p>{t.loading}</p>
+        <p>{t.common.loading}</p>
       </div>
     );
   }
