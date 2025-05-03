@@ -222,33 +222,59 @@ export default function StorePage() {
   const filteredProducts = filterData?.products?.filter(product => {
     // Фильтр по категории (включая мужское/женское)
     if (selectedCategory) {
-      if (selectedCategory === 'mens' && !product.category.includes('men')) {
+      if (selectedCategory === 'mens' && product.gender !== 'men' && product.gender !== 'unisex') {
         return false;
-      } else if (selectedCategory === 'womens' && !product.category.includes('women')) {
+      } else if (selectedCategory === 'womens' && product.gender !== 'women' && product.gender !== 'unisex') {
         return false;
-      } else if (selectedCategory !== 'mens' && selectedCategory !== 'womens' && product.category !== selectedCategory) {
-        return false;
+      } else if (selectedCategory !== 'mens' && selectedCategory !== 'womens') {
+        // Для точного совпадения переводим значения в нижний регистр для сравнения
+        const normalizedCategory = product.category.toLowerCase().replace(/\s+/g, '');
+        const normalizedSelectedCategory = selectedCategory.toLowerCase().replace(/\s+/g, '');
+        
+        // В базе данных категории на русском, а в UI на английском, делаем соответствие
+        const categoryMapping: Record<string, string[]> = {
+          'sneakers': ['кроссовки'],
+          'hoodies': ['худи'],
+          'tshirts': ['футболки'],
+          'pants': ['брюки', 'джинсы'],
+          'glasses': ['очки'],
+          'bags': ['сумки'],
+          'accessories': ['аксессуары'],
+          'jackets': ['куртки'],
+          'sweaters': ['свитеры']
+        };
+        
+        // Проверяем соответствие по маппингу
+        const matchingCategories = categoryMapping[normalizedSelectedCategory];
+        if (matchingCategories && !matchingCategories.includes(normalizedCategory)) {
+          return false;
+        }
       }
     }
     
-    // Фильтр по бренду - теперь сравниваем напрямую с брендом товара
-    if (selectedBrand && product.brand !== selectedBrand) {
+    // Фильтр по бренду - теперь сравниваем напрямую с брендом товара (учитываем регистр)
+    if (selectedBrand && product.brand.toLowerCase() !== selectedBrand.toLowerCase()) {
       return false;
     }
     
-    // Фильтр по стилю
+    // Фильтр по стилю - используем поле style из базы данных
     if (selectedStyle) {
-      // Временная логика для демонстрации
-      if (selectedStyle === 'oldmoney' && !['Gucci', 'Ralph Lauren', 'Balenciaga'].includes(product.brand)) {
-        return false;
-      }
-      if (selectedStyle === 'streetwear' && !['Supreme', 'Stussy', 'Nike', 'Adidas'].includes(product.brand)) {
-        return false;
-      }
-      if (selectedStyle === 'luxury' && !['Gucci', 'Louis Vuitton', 'Balenciaga', 'Prada'].includes(product.brand)) {
-        return false;
-      }
-      if (selectedStyle === 'sport' && !['Nike', 'Adidas', 'Jordan'].includes(product.brand)) {
+      // Нормализуем стили для сравнения
+      const normalizedStyle = selectedStyle.toLowerCase().replace(/\s+/g, '');
+      const productStyle = product.style?.toLowerCase().replace(/\s+/g, '') || '';
+      
+      // Маппинг стилей из UI к стилям в БД
+      const styleMapping: Record<string, string[]> = {
+        'oldmoney': ['oldmoney', 'old money'],
+        'streetwear': ['streetwear', 'street'],
+        'luxury': ['luxury', 'люкс'],
+        'sport': ['sport', 'спорт'],
+        'casual': ['casual', 'повседневный'],
+        'vintage': ['vintage', 'винтаж']
+      };
+      
+      const matchingStyles = styleMapping[normalizedStyle];
+      if (matchingStyles && !matchingStyles.includes(productStyle)) {
         return false;
       }
     }

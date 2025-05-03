@@ -267,7 +267,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Endpoint to get all unique categories and brands
   apiRouter.get('/categories', async (req, res) => {
     try {
-      // Определяем фиксированные категории согласно требованиям
+      // Получаем все уникальные категории из базы данных
+      const allProducts = await storage.getProducts();
+      const uniqueCategories = [...new Set(allProducts.map(p => p.category))];
+      
+      // Определяем фиксированные категории для интерфейса
       const categories = [
         "sneakers", // кроссовки
         "hoodies", // худи
@@ -276,7 +280,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         "glasses", // очки
         "bags", // сумки
         "accessories", // аксессуары
+        "jackets", // куртки
+        "sweaters", // свитеры
       ];
+      
+      // Маппинг категорий из базы данных в категории для интерфейса
+      const categoryMapping: Record<string, string> = {
+        'Кроссовки': 'sneakers',
+        'Худи': 'hoodies',
+        'Футболки': 'tshirts',
+        'Брюки': 'pants',
+        'Джинсы': 'pants',
+        'Очки': 'glasses',
+        'Сумки': 'bags',
+        'Аксессуары': 'accessories',
+        'Куртки': 'jackets',
+        'Свитеры': 'sweaters',
+        'Обувь': 'shoes',
+        'Пиджаки': 'jackets',
+        'Платья': 'dresses',
+        'Юбки': 'skirts'
+      };
+      
+      // Формируем список доступных категорий в БД с маппингом на интерфейсные категории
+      const availableCategories = uniqueCategories.map(category => {
+        return { 
+          dbCategory: category,
+          uiCategory: categoryMapping[category] || category.toLowerCase()
+        };
+      });
       
       // Получаем все бренды из базы данных
       const brands = await storage.getBrands();
@@ -285,21 +317,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const styles = await storage.getStyles();
       
       // Получаем полный список продуктов с возможной фильтрацией
-      const { category, brand, style } = req.query;
-      let products = await storage.getProducts();
+      const { category, brand, style, gender, debug } = req.query;
+      let products = allProducts;
+      
+      console.log(`API запрос с фильтрами: категория=${category}, бренд=${brand}, стиль=${style}, пол=${gender}`);
       
       // Применяем фильтрацию, если указаны параметры
       if (category && typeof category === 'string') {
-        products = products.filter(p => p.category === category);
+        if (category === 'mens') {
+          products = products.filter(p => p.gender === 'men' || p.gender === 'unisex');
+        } else if (category === 'womens') {
+          products = products.filter(p => p.gender === 'women' || p.gender === 'unisex');
+        } else {
+          // Для категорий проверяем соответствие через маппинг
+          const categoryValues = Object.entries(categoryMapping)
+            .filter(([_, value]) => value === category)
+            .map(([key, _]) => key);
+          
+          if (categoryValues.length > 0) {
+            products = products.filter(p => categoryValues.includes(p.category));
+          } else {
+            products = products.filter(p => p.category.toLowerCase() === category.toLowerCase());
+          }
+        }
       }
       
       if (brand && typeof brand === 'string') {
-        products = products.filter(p => p.brand === brand);
+        products = products.filter(p => p.brand.toLowerCase() === brand.toLowerCase());
       }
       
       if (style && typeof style === 'string') {
-        // Фильтрация по стилю (при условии, что у продуктов есть поле style)
-        products = products.filter(p => p.style === style);
+        // Преобразуем для упрощенного сравнения
+        const normalizedStyle = style.toLowerCase().replace(/\s+/g, '');
+        
+        // Маппинг стилей
+        const styleMapping: Record<string, string[]> = {
+          'oldmoney': ['Old Money', 'oldmoney'],
+          'streetwear': ['Streetwear', 'streetwear'],
+          'luxury': ['Luxury', 'luxury'],
+          'sport': ['Sport', 'sport'],
+          'casual': ['Casual', 'casual'],
+          'vintage': ['Vintage', 'vintage']
+        };
+        
+        const styleValues = styleMapping[normalizedStyle] || [style];
+        
+        products = products.filter(p => 
+          p.style && styleValues.some(s => 
+            p.style!.toLowerCase().replace(/\s+/g, '') === s.toLowerCase().replace(/\s+/g, '')
+          )
+        );
+      }
+      
+      if (gender && typeof gender === 'string') {
+        products = products.filter(p => p.gender === gender || p.gender === 'unisex');
+      }
+      
+      // Для режима отладки добавляем дополнительную информацию
+      if (debug === 'true') {
+        console.log(`Найдено ${products.length} товаров`);
+        console.log('Уникальные категории в БД:', uniqueCategories);
       }
       
       // Устанавливаем заголовки для предотвращения кэширования
