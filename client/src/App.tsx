@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import StorePage from "@/pages/StorePage";
 import AdminPage from "@/pages/AdminPage";
 import ProfilePage from "@/pages/ProfilePage";
+import ProfileSettingsPage from "@/pages/ProfileSettingsPage";
 import VirtualFittingPage from "@/pages/VirtualFittingPage";
 import ProductDetailPage from "@/pages/ProductDetailPage";
 import CategoryPage from "@/pages/CategoryPage";
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/" component={StorePage}/>
       <Route path="/admin" component={AdminPage}/>
       <Route path="/profile" component={ProfilePage}/>
+      <Route path="/settings" component={ProfileSettingsPage}/>
       <Route path="/virtual-fitting" component={VirtualFittingPage}/>
       <Route path="/product/:id" component={ProductDetailPage}/>
       

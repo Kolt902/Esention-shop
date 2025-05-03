@@ -1,6 +1,26 @@
 import { Router, Request, Response } from 'express';
 import { storage } from '../storage';
 import { ensureAuthenticated } from '../middleware';
+import { z } from 'zod';
+
+// Схема для обновления профиля
+const updateProfileSchema = z.object({
+  email: z.string().email().optional().nullable(),
+  fullName: z.string().optional().nullable(),
+  phone: z.string().optional().nullable(),
+  avatarUrl: z.string().url().optional().nullable(),
+  preferences: z.object({
+    language: z.enum(['ru', 'en', 'pl', 'cs', 'de']).optional(),
+    theme: z.enum(['light', 'dark', 'auto']).optional(),
+    currency: z.enum(['EUR', 'USD', 'RUB', 'PLN']).optional()
+  }).optional(),
+  notificationSettings: z.object({
+    orderUpdates: z.boolean().optional(),
+    promotions: z.boolean().optional(),
+    newArrivals: z.boolean().optional(),
+    priceDrops: z.boolean().optional()
+  }).optional()
+});
 
 // Create router
 const router = Router();
@@ -18,6 +38,34 @@ router.get('/profile', ensureAuthenticated, async (req: Request, res: Response) 
     res.json(safeUser);
   } catch (error) {
     console.error('Error fetching user profile:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update user profile
+router.patch('/profile', ensureAuthenticated, async (req: Request, res: Response) => {
+  try {
+    // Валидация данных через схему
+    const validatedData = updateProfileSchema.parse(req.body);
+    
+    // Обновляем профиль пользователя
+    const updatedUser = await storage.updateUserProfile(req.user.id, validatedData);
+    
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Не отправляем пароль в ответе
+    const { password, ...safeUser } = updatedUser;
+    res.json(safeUser);
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ 
+        message: 'Invalid profile data', 
+        errors: error.errors 
+      });
+    }
     res.status(500).json({ message: 'Server error' });
   }
 });
