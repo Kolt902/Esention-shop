@@ -32,46 +32,6 @@ export type Translation = {
     add: string;
   };
   
-  // Settings related translations
-  settings: {
-    title: string;
-    profile: string;
-    profileDescription: string;
-    preferences: string;
-    preferencesDescription: string;
-    general: string;
-    notifications: string;
-    about: string;
-    language: string;
-    theme: string;
-    currency: string;
-    selectLanguage: string;
-    selectTheme: string;
-    selectCurrency: string;
-    lightTheme: string;
-    darkTheme: string;
-    autoTheme: string;
-    saveChanges: string;
-    cancel: string;
-    avatarUrl: string;
-    fullName: string;
-    fullNamePlaceholder: string;
-    email: string;
-    phone: string;
-    orderUpdates: string;
-    orderUpdatesDescription: string;
-    promotions: string;
-    promotionsDescription: string;
-    newArrivals: string;
-    newArrivalsDescription: string;
-    priceDrops: string;
-    priceDropsDescription: string;
-    profileUpdated: string;
-    profileUpdatedDescription: string;
-    updateError: string;
-    updateErrorDescription: string;
-  };
-  
   // Profile related translations
   profile: {
     title: string;
@@ -204,7 +164,7 @@ export type Translation = {
     basketball: string;
   };
   
-  // Settings
+  // Settings related translations
   settings: {
     title: string;
     account: string;
@@ -220,6 +180,36 @@ export type Translation = {
     referralCode: string;
     referralInfo: string;
     referralCopied: string;
+    // Profile settings
+    profile: string;
+    profileDescription: string;
+    preferences: string;
+    preferencesDescription: string;
+    general: string;
+    currency: string;
+    selectCurrency: string;
+    lightTheme: string;
+    darkTheme: string;
+    autoTheme: string;
+    saveChanges: string;
+    cancel: string;
+    avatarUrl: string;
+    fullName: string;
+    fullNamePlaceholder: string;
+    email: string;
+    phone: string;
+    orderUpdates: string;
+    orderUpdatesDescription: string;
+    promotions: string;
+    promotionsDescription: string;
+    newArrivals: string;
+    newArrivalsDescription: string;
+    priceDrops: string;
+    priceDropsDescription: string;
+    profileUpdated: string;
+    profileUpdatedDescription: string;
+    updateError: string;
+    updateErrorDescription: string;
   };
 };
 
@@ -387,6 +377,36 @@ export const ru: Translation = {
     referralCode: 'Ваш реферальный код',
     referralInfo: 'Получите 5% скидку на следующий заказ, когда ваш друг совершит первую покупку по вашей ссылке',
     referralCopied: 'Реферальная ссылка скопирована!',
+    // Новые переводы для настроек профиля
+    profile: 'Личные данные',
+    profileDescription: 'Измените свою личную информацию',
+    preferences: 'Предпочтения',
+    preferencesDescription: 'Настройте приложение под себя',
+    general: 'Основные',
+    currency: 'Валюта',
+    selectCurrency: 'Выберите валюту',
+    lightTheme: 'Светлая',
+    darkTheme: 'Темная', 
+    autoTheme: 'Автоматически',
+    saveChanges: 'Сохранить изменения',
+    cancel: 'Отмена',
+    avatarUrl: 'URL аватара',
+    fullName: 'Полное имя',
+    fullNamePlaceholder: 'Иван Иванов',
+    email: 'Email',
+    phone: 'Телефон',
+    orderUpdates: 'Обновления заказов',
+    orderUpdatesDescription: 'Получать уведомления о статусе заказов',
+    promotions: 'Акции и скидки',
+    promotionsDescription: 'Получать уведомления о специальных предложениях и скидках',
+    newArrivals: 'Новые поступления',
+    newArrivalsDescription: 'Получать уведомления о новых товарах',
+    priceDrops: 'Снижение цен',
+    priceDropsDescription: 'Получать уведомления о снижении цен на товары из избранного',
+    profileUpdated: 'Профиль обновлен',
+    profileUpdatedDescription: 'Ваш профиль был успешно обновлен',
+    updateError: 'Ошибка обновления',
+    updateErrorDescription: 'При обновлении профиля произошла ошибка. Пожалуйста, попробуйте снова.',
   },
 };
 
@@ -551,6 +571,36 @@ export const en: Translation = {
     referralCode: 'Your Referral Code',
     referralInfo: 'Get 5% off your next order when your friend makes their first purchase using your link',
     referralCopied: 'Referral link copied!',
+    // Profile settings
+    profile: 'Personal Information',
+    profileDescription: 'Change your personal information',
+    preferences: 'Preferences',
+    preferencesDescription: 'Customize your experience',
+    general: 'General',
+    currency: 'Currency',
+    selectCurrency: 'Select Currency',
+    lightTheme: 'Light',
+    darkTheme: 'Dark',
+    autoTheme: 'Auto',
+    saveChanges: 'Save Changes',
+    cancel: 'Cancel',
+    avatarUrl: 'Avatar URL',
+    fullName: 'Full Name',
+    fullNamePlaceholder: 'John Smith',
+    email: 'Email',
+    phone: 'Phone',
+    orderUpdates: 'Order Updates',
+    orderUpdatesDescription: 'Receive notifications about order status',
+    promotions: 'Promotions & Discounts',
+    promotionsDescription: 'Receive notifications about special offers and discounts',
+    newArrivals: 'New Arrivals',
+    newArrivalsDescription: 'Receive notifications about new products',
+    priceDrops: 'Price Drops',
+    priceDropsDescription: 'Receive notifications about price drops for your favorite items',
+    profileUpdated: 'Profile Updated',
+    profileUpdatedDescription: 'Your profile has been successfully updated',
+    updateError: 'Update Error',
+    updateErrorDescription: 'An error occurred while updating your profile. Please try again.',
   },
 };
 
