@@ -48,6 +48,24 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
+  
+  async updateUserProfile(id: number, updateData: Partial<User>): Promise<User | undefined> {
+    try {
+      // Удаляем пароль из обновляемых данных (он не должен обновляться через этот метод)
+      const { password, ...safeUpdateData } = updateData;
+      
+      const [updatedUser] = await db
+        .update(users)
+        .set(safeUpdateData)
+        .where(eq(users.id, id))
+        .returning();
+        
+      return updatedUser || undefined;
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      return undefined;
+    }
+  }
 
   async getAllUsers(): Promise<User[]> {
     return await db.select().from(users);

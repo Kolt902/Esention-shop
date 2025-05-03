@@ -32,6 +32,46 @@ export type Translation = {
     add: string;
   };
   
+  // Settings related translations
+  settings: {
+    title: string;
+    profile: string;
+    profileDescription: string;
+    preferences: string;
+    preferencesDescription: string;
+    general: string;
+    notifications: string;
+    about: string;
+    language: string;
+    theme: string;
+    currency: string;
+    selectLanguage: string;
+    selectTheme: string;
+    selectCurrency: string;
+    lightTheme: string;
+    darkTheme: string;
+    autoTheme: string;
+    saveChanges: string;
+    cancel: string;
+    avatarUrl: string;
+    fullName: string;
+    fullNamePlaceholder: string;
+    email: string;
+    phone: string;
+    orderUpdates: string;
+    orderUpdatesDescription: string;
+    promotions: string;
+    promotionsDescription: string;
+    newArrivals: string;
+    newArrivalsDescription: string;
+    priceDrops: string;
+    priceDropsDescription: string;
+    profileUpdated: string;
+    profileUpdatedDescription: string;
+    updateError: string;
+    updateErrorDescription: string;
+  };
+  
   // Profile related translations
   profile: {
     title: string;
