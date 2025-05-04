@@ -3,12 +3,20 @@ import cors from 'cors';
 import { Telegraf } from 'telegraf';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Telegram bot configuration
-const token = '7075179069:AAGgtpcyrVilR0ttXFDhtfCfXfG0MqkhE3s';
+if (!process.env.BOT_TOKEN) {
+  throw new Error('BOT_TOKEN environment variable is not set');
+}
+
+const token = process.env.BOT_TOKEN;
 const webAppUrl = 'https://esention-shop.onrender.com/';
 
 const bot = new Telegraf(token);
