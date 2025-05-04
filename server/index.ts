@@ -3,31 +3,31 @@ import cors from 'cors';
 import { Telegraf } from 'telegraf';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { config } from 'dotenv';
+import dotenv from 'dotenv';
 
 // Initialize environment variables
-config();
+dotenv.config();
 
 // ES modules compatibility
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Validate environment variables
+// Check required environment variables
 if (!process.env.BOT_TOKEN) {
   console.error('Error: BOT_TOKEN environment variable is not set');
   process.exit(1);
 }
 
-// App configuration
-const webAppUrl = 'https://esention-shop.onrender.com/';
-const bot = new Telegraf(process.env.BOT_TOKEN);
+// Initialize Express app and Telegram bot
 const app = express();
+const bot = new Telegraf(process.env.BOT_TOKEN);
+const webAppUrl = 'https://esention-shop.onrender.com/';
 
 // Express middleware
 app.use(cors());
 app.use(express.json());
 
-// Static files middleware with security headers
+// Serve static files
 app.use(express.static(path.join(__dirname, '../client/dist'), {
   setHeaders: (res) => {
     // Security headers for Telegram Web App
@@ -77,23 +77,18 @@ app.get('/api/products', (req, res) => {
   res.json(products);
 });
 
-// Telegram bot commands
-bot.command('start', async (ctx) => {
-  try {
-    await ctx.reply('Открыть Esention Store! 🛍️', {
-      reply_markup: {
-        inline_keyboard: [[
-          {
-            text: 'Открыть',
-            web_app: { url: webAppUrl }
-          }
-        ]]
-      }
-    });
-  } catch (error) {
-    console.error('Error handling start command:', error);
-    await ctx.reply('Произошла ошибка. Пожалуйста, попробуйте позже.');
-  }
+// Bot command handlers
+bot.command('start', (ctx) => {
+  ctx.reply('Открыть Esention Store! 🛍️', {
+    reply_markup: {
+      inline_keyboard: [[
+        {
+          text: 'Открыть',
+          web_app: { url: webAppUrl }
+        }
+      ]]
+    }
+  });
 });
 
 // Start bot

@@ -8,7 +8,6 @@
     "dev:client": "cd client && vite",
     "dev:server": "cd server && tsx watch index.ts",
     "build": "cd client && vite build",
-    "build:client": "cd client && vite build",
     "start": "cd server && tsx index.ts",
     "start:prod": "npm run build && npm run start",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
