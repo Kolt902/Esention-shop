@@ -3,39 +3,40 @@ import cors from 'cors';
 import { Telegraf } from 'telegraf';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
+import { config } from 'dotenv';
 
-// Load environment variables
-dotenv.config();
+// Initialize environment variables
+config();
 
+// ES modules compatibility
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Telegram bot configuration
+// Validate environment variables
 if (!process.env.BOT_TOKEN) {
-  throw new Error('BOT_TOKEN environment variable is not set');
+  console.error('Error: BOT_TOKEN environment variable is not set');
+  process.exit(1);
 }
 
-const token = process.env.BOT_TOKEN;
+// App configuration
 const webAppUrl = 'https://esention-shop.onrender.com/';
-
-const bot = new Telegraf(token);
+const bot = new Telegraf(process.env.BOT_TOKEN);
 const app = express();
 
-// Middleware
+// Express middleware
 app.use(cors());
 app.use(express.json());
 
-// Serve static files with proper cache control and security headers
+// Static files middleware with security headers
 app.use(express.static(path.join(__dirname, '../client/dist'), {
   setHeaders: (res) => {
-    // Disable caching for development
+    // Security headers for Telegram Web App
+    res.setHeader('X-Frame-Options', 'ALLOW-FROM https://web.telegram.org/');
+    res.setHeader('Content-Security-Policy', "frame-ancestors 'self' https://web.telegram.org/");
+    // Cache control
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
-    // Allow embedding in Telegram Web App iframe
-    res.setHeader('X-Frame-Options', 'ALLOW-FROM https://web.telegram.org/');
-    res.setHeader('Content-Security-Policy', "frame-ancestors 'self' https://web.telegram.org/");
   }
 }));
 
@@ -76,30 +77,38 @@ app.get('/api/products', (req, res) => {
   res.json(products);
 });
 
-// Bot commands
-bot.command('start', (ctx) => {
-  ctx.reply('Открыть Esention Store! 🛍️', {
-    reply_markup: {
-      inline_keyboard: [[
-        {
-          text: 'Открыть',
-          web_app: { url: webAppUrl }
-        }
-      ]]
-    }
+// Telegram bot commands
+bot.command('start', async (ctx) => {
+  try {
+    await ctx.reply('Открыть Esention Store! 🛍️', {
+      reply_markup: {
+        inline_keyboard: [[
+          {
+            text: 'Открыть',
+            web_app: { url: webAppUrl }
+          }
+        ]]
+      }
+    });
+  } catch (error) {
+    console.error('Error handling start command:', error);
+    await ctx.reply('Произошла ошибка. Пожалуйста, попробуйте позже.');
+  }
+});
+
+// Start bot
+bot.launch()
+  .then(() => console.log('Telegram bot started successfully'))
+  .catch((error) => {
+    console.error('Failed to start Telegram bot:', error);
+    process.exit(1);
   });
-});
 
-// Launch bot
-bot.launch().catch((err) => {
-  console.error('Error starting bot:', err);
-});
-
-// Enable graceful stop
+// Graceful shutdown
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
 
-// Serve SPA (Single Page Application)
+// SPA fallback
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
