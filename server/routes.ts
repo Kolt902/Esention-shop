@@ -421,17 +421,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (update.message && update.message.text && update.message.text.startsWith('/start')) {
         const chatId = update.message.chat.id;
         
-        console.log(`Sending welcome message to chat ID: ${chatId}`);
+        console.log(`Processing /start command for chat ID: ${chatId}`);
         
-        // Send welcome message with WebApp button
-        await telegramBot.sendWelcomeMessage(chatId);
+        try {
+          // Send welcome message with WebApp button
+          await telegramBot.sendWelcomeMessage(chatId);
+          console.log(`Successfully sent welcome message to chat ID: ${chatId}`);
+        } catch (error) {
+          console.error(`Failed to send welcome message to chat ID ${chatId}:`, error);
+          // Still return 200 to Telegram but log the error
+        }
       }
       
       // Always respond with 200 OK to Telegram
       res.sendStatus(200);
     } catch (error) {
-      console.error('Error handling webhook:', error);
-      res.sendStatus(200); // Still return 200 to Telegram
+      console.error('Error in webhook handler:', error);
+      // Always return 200 to Telegram even if we have an error
+      res.sendStatus(200);
     }
   });
   

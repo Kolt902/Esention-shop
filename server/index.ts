@@ -1,104 +1,103 @@
-import express, { Request, Response, NextFunction } from 'express';
-import { Server } from 'http';
-import { registerRoutes } from './routes';
-import { setupVite } from './vite';
-import { telegramBot } from './telegram';
+import express from 'express';
 import cors from 'cors';
+import { Telegraf } from 'telegraf';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Telegram bot configuration
+const token = '7075179069:AAGgtpcyrVilR0ttXFDhtfCfXfG0MqkhE3s';
+const webAppUrl = 'https://esention-shop.onrender.com/';
+
+const bot = new Telegraf(token);
 const app = express();
 
-// Включаем CORS
-app.use(cors({
-  origin: '*', // В продакшене нужно указать конкретный домен
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'X-Telegram-Init-Data', 'Authorization']
-}));
-
-// Парсинг JSON
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-// Middleware для логирования запросов
-app.use((req: Request, _res: Response, next: NextFunction) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
+// Serve static files with proper cache control and security headers
+app.use(express.static(path.join(__dirname, '../client/dist'), {
+  setHeaders: (res) => {
+    // Disable caching for development
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    // Allow embedding in Telegram Web App iframe
+    res.setHeader('X-Frame-Options', 'ALLOW-FROM https://web.telegram.org/');
+    res.setHeader('Content-Security-Policy', "frame-ancestors 'self' https://web.telegram.org/");
+  }
+}));
+
+// Sample products data
+const products = [
+  {
+    id: '1',
+    name: 'Nike Dunk Low Retro',
+    description: 'Культовые кроссовки в ретро стиле',
+    price: 23500,
+    imageUrl: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/99486859-0ff3-46b4-949b-2d16af2ad421/dunk-low-retro-shoes.png'
+  },
+  {
+    id: '2',
+    name: 'Supreme Box Logo Hoodie',
+    description: 'Классическое худи с легендарным логотипом',
+    price: 45000,
+    imageUrl: 'https://assets.supremenewyork.com/images/products/170734/1.jpg'
+  },
+  {
+    id: '3',
+    name: 'Jordan 1 Retro High',
+    description: 'Культовые баскетбольные кроссовки',
+    price: 34999,
+    imageUrl: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/99486859-0ff3-46b4-949b-2d16af2ad421/air-jordan-1-high-og-shoes.png'
+  },
+  {
+    id: '4',
+    name: 'Rolex Datejust 41',
+    description: 'Легендарные часы в классическом дизайне',
+    price: 890000,
+    imageUrl: 'https://content.rolex.com/v7/dam/new-watches/2024/datejust/m126234-0051.png'
+  }
+];
+
+// API endpoints
+app.get('/api/products', (req, res) => {
+  res.json(products);
 });
 
-// Функция для раздачи статических файлов
-function serveStatic(app: express.Application) {
-  const clientDistPath = path.join(__dirname, '../client/dist');
-  app.use(express.static(clientDistPath));
-  
-  // Всегда возвращаем index.html для всех маршрутов (кроме API)
-  app.get('*', (req: Request, res: Response) => {
-    if (!req.path.startsWith('/api')) {
-      res.sendFile(path.join(clientDistPath, 'index.html'));
-    }
-  });
-}
-
-(async () => {
-  const server = await registerRoutes(app);
-
-  // Обработка ошибок
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    console.error('Ошибка:', err);
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Внутренняя ошибка сервера";
-    res.status(status).json({ message });
-  });
-
-  if (process.env.NODE_ENV === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
-
-  const port = parseInt(process.env.PORT || '5000', 10);
-  const host = process.env.HOST || '0.0.0.0';
-  
-  server.listen(port, host, async () => {
-    console.log(`Сервер запущен на http://${host}:${port}`);
-    
-    if (process.env.TELEGRAM_BOT_TOKEN) {
-      try {
-        // Получаем URL для WebApp
-        const webAppUrl = process.env.WEB_APP_URL || `http://${host}:${port}`;
-        console.log(`Используется URL для WebApp: ${webAppUrl}`);
-        
-        // Настраиваем вебхук или поллинг
-        if (process.env.WEBHOOK_URL) {
-          const webhookUrl = process.env.WEBHOOK_URL;
-          console.log(`Настройка вебхука: ${webhookUrl}`);
-          const success = await telegramBot.setWebhook(webhookUrl);
-          console.log(`Настройка вебхука ${success ? 'успешна' : 'не удалась'}`);
-        } else {
-          console.log('Запуск бота в режиме поллинга');
-          await telegramBot.deleteWebhook();
-          telegramBot.startPolling();
-        }
-        
-        // Настраиваем команды бота
-        await telegramBot.setCommands([
-          { command: 'start', description: 'Открыть магазин' },
-          { command: 'help', description: 'Показать помощь' }
-        ]);
-        
-        // Настраиваем кнопку меню
-        await telegramBot.setMenuButton({
-          type: 'web_app',
-          text: 'Открыть магазин',
+// Bot commands
+bot.command('start', (ctx) => {
+  ctx.reply('Открыть Esention Store! 🛍️', {
+    reply_markup: {
+      inline_keyboard: [[
+        {
+          text: 'Открыть',
           web_app: { url: webAppUrl }
-        });
-        
-      } catch (error) {
-        console.error('Ошибка при настройке бота:', error);
-      }
-    } else {
-      console.log('TELEGRAM_BOT_TOKEN не указан, пропускаем инициализацию бота');
+        }
+      ]]
     }
   });
-})().catch((err) => {
-  console.error('Не удалось запустить сервер:', err);
-  process.exit(1);
+});
+
+// Launch bot
+bot.launch().catch((err) => {
+  console.error('Error starting bot:', err);
+});
+
+// Enable graceful stop
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
+
+// Serve SPA (Single Page Application)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+// Start server
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

@@ -1,83 +1,62 @@
 require('dotenv').config();
-const { Telegraf } = require('telegraf');
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
 const mongoose = require('mongoose');
-const { mainKeyboard } = require('./keyboards');
+const TelegramBot = require('node-telegram-bot-api');
 
-// Проверка значения токена
-console.log('BOT_TOKEN:', process.env.BOT_TOKEN);
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Запуск веб-сервера
-require('./server');
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.static('src/webapp'));
 
-// Инициализация бота
-const bot = new Telegraf(process.env.BOT_TOKEN);
+// MongoDB connection
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/fashion-store', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('Connected to MongoDB');
+}).catch((error) => {
+    console.error('MongoDB connection error:', error);
+});
 
-// Подключение к MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+// Initialize bot
+const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
-// Обработка команды /start
-bot.command('start', async (ctx) => {
-  console.log('Получена команда /start');
-  const firstName = ctx.from.first_name;
-  try {
-    await ctx.reply(
-      `Привет, ${firstName}! 👋\n\n` +
-      'Добро пожаловать в наш модный магазин! 🛍\n' +
-      'У нас ты найдешь самые стильные вещи по лучшим ценам.\n\n' +
-      'Нажми на кнопку "Открыть магазин" чтобы начать покупки! 🏪',
-      mainKeyboard
+// Bot commands
+bot.onText(/\/start/, (msg) => {
+    const chatId = msg.chat.id;
+    const keyboard = {
+        keyboard: [
+            [{
+                text: '🏪 Открыть магазин',
+                web_app: { url: process.env.WEBAPP_URL || `http://localhost:${PORT}` }
+            }]
+        ],
+        resize_keyboard: true
+    };
+    
+    bot.sendMessage(chatId, 
+        'Добро пожаловать в Esention - ваш премиальный магазин одежды в Европе!\n\n' +
+        '• Все цены в евро (€)\n' +
+        '• Доставка по всей Европе\n' +
+        '• Гарантия подлинности\n' +
+        '• Безопасные платежи\n\n' +
+        'Используйте кнопку ниже, чтобы открыть магазин:',
+        { reply_markup: keyboard }
     );
-    console.log('Ответ на команду /start отправлен');
-  } catch (error) {
-    console.error('Ошибка при отправке ответа:', error);
-  }
 });
 
-// Обработка команды /help
-bot.command('help', (ctx) => {
-  ctx.reply(
-    'Как пользоваться ботом:\n\n' +
-    '1. Нажмите "🏪 Открыть магазин" для просмотра каталога\n' +
-    '2. Выберите интересующие товары\n' +
-    '3. Добавьте их в корзину\n' +
-    '4. Оформите заказ\n\n' +
-    'По всем вопросам пишите: @support',
-    mainKeyboard
-  );
+// Routes
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'webapp', 'index.html'));
 });
 
-// Обработка текстовых сообщений
-bot.on('text', async (ctx) => {
-  const text = ctx.message.text;
-
-  switch (text) {
-    case '👜 Мои заказы':
-      await ctx.reply('Здесь будет история ваших заказов');
-      break;
-    case '❓ Помощь':
-      await ctx.reply(
-        'Чем могу помочь?\n\n' +
-        'По всем вопросам пишите: @support'
-      );
-      break;
-    default:
-      await ctx.reply('Используйте меню для навигации', mainKeyboard);
-  }
-});
-
-// Запуск бота
-bot.launch()
-  .then(() => {
-    console.log('Bot successfully started');
-    console.log('Bot username:', bot.botInfo?.username);
-  })
-  .catch((err) => {
-    console.error('Bot start error:', err);
-    console.error('Error details:', err.message);
-  });
-
-// Включаем graceful shutdown
-process.once('SIGINT', () => bot.stop('SIGINT'));
-process.once('SIGTERM', () => bot.stop('SIGTERM')); 
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+    console.log(`WebApp URL: ${process.env.WEBAPP_URL || `http://localhost:${PORT}`}`);
+}); 

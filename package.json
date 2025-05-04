@@ -1,30 +1,69 @@
 {
-  "name": "telegram-fashion-bot",
+  "name": "telegram-fashion-store",
+  "private": true,
   "version": "1.0.0",
-  "description": "Telegram бот для модного магазина",
-  "main": "src/index.js",
+  "type": "module",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "cd client && vite",
+    "dev:server": "cd server && tsx watch index.ts",
+    "build": "cd client && vite build",
+    "start": "cd server && tsx index.ts",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "keywords": [
     "telegram",
     "bot",
-    "shop",
-    "fashion"
+    "fashion",
+    "store"
   ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@types/node": "^20.11.0",
+    "@types/pg": "^8.11.14",
+    "@types/react": "^18.2.56",
+    "@types/react-dom": "^18.2.19",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/ws": "^8.18.1",
+    "@vitejs/plugin-react": "^4.2.1",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.1",
-    "express": "^5.1.0",
-    "https-localhost": "^4.7.1",
-    "localtunnel": "^2.0.2",
-    "mongoose": "^8.1.1",
-    "telegraf": "^4.15.3"
+    "dotenv": "^16.5.0",
+    "drizzle-orm": "^0.43.1",
+    "express": "^4.18.2",
+    "mongodb": "^6.3.0",
+    "nanoid": "^5.1.5",
+    "node-telegram-bot-api": "^0.64.0",
+    "pg": "^8.15.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.1",
+    "telegraf": "^4.16.3",
+    "typescript": "^5.3.3",
+    "ws": "^8.18.2",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "nodemon": "^3.0.3"
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/mongodb": "^4.0.7",
+    "@types/node": "^20.11.19",
+    "@types/node-telegram-bot-api": "^0.64.8",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "autoprefixer": "^10.4.17",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "nodemon": "^3.0.3",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.7.1",
+    "vite": "^5.1.3"
   }
 }

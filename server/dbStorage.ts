@@ -1,140 +1,189 @@
-import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { db } from "./db/index";
+import { eq, and, between, or, gte, lte, sql } from "drizzle-orm";
 import {
   users,
   products,
   cartItems,
   deliveryAddresses,
   orders,
-  onlineUsers,
-  type User,
-  type Product,
-  type CartItem,
-  type Order,
-  type OnlineUser,
-  type InsertUser,
-  type InsertProduct,
-  type InsertCartItem,
-  type InsertOrder,
-  insertDeliveryAddressSchema
+  onlineUsers
+} from "./db/schema";
+import {
+  User,
+  Product,
+  CartItem,
+  DeliveryAddress,
+  Order,
+  OnlineUser,
+  InsertUser,
+  InsertProduct,
+  InsertCartItem,
+  InsertOrder,
+  InsertDeliveryAddress
 } from "@shared/schema";
-
-// Type for DeliveryAddress
-type DeliveryAddress = typeof deliveryAddresses.$inferSelect;
-// Type for InsertDeliveryAddress
-type InsertDeliveryAddress = z.infer<typeof insertDeliveryAddressSchema>;
-
-import { z } from "zod";
 import { IStorage } from "./storage";
+import {
+  adaptUserToDrizzle,
+  adaptProductToDrizzle,
+  adaptCartItemToDrizzle,
+  adaptDeliveryAddressToDrizzle,
+  adaptOrderToDrizzle,
+  adaptOnlineUserToDrizzle,
+  adaptUserFromDrizzle,
+  adaptProductFromDrizzle,
+  adaptCartItemFromDrizzle,
+  adaptDeliveryAddressFromDrizzle,
+  adaptOrderFromDrizzle,
+  adaptOnlineUserFromDrizzle
+} from "./db/adapters";
 
 export class DatabaseStorage implements IStorage {
   // User Methods
-  async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+  async getUser(id: string): Promise<User | null> {
+    const [user] = await db.select().from(users).where(eq(users._id, id));
+    return user ? adaptUserFromDrizzle(user) : null;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
+  async getUserByUsername(username: string): Promise<User | null> {
     const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
+    return user ? adaptUserFromDrizzle(user) : null;
   }
 
-  async getUserByTelegramId(telegramId: string): Promise<User | undefined> {
+  async getUserByTelegramId(telegramId: string): Promise<User | null> {
     const [user] = await db.select().from(users).where(eq(users.telegramId, telegramId));
-    return user || undefined;
+    return user ? adaptUserFromDrizzle(user) : null;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values(insertUser).returning();
-    return user;
-  }
-  
-  async updateUserProfile(id: number, updateData: Partial<User>): Promise<User | undefined> {
-    try {
-      // Удаляем пароль из обновляемых данных (он не должен обновляться через этот метод)
-      const { password, ...safeUpdateData } = updateData;
-      
-      const [updatedUser] = await db
-        .update(users)
-        .set(safeUpdateData)
-        .where(eq(users.id, id))
-        .returning();
-        
-      return updatedUser || undefined;
-    } catch (error) {
-      console.error('Error updating user profile:', error);
-      return undefined;
-    }
+    const [user] = await db.insert(users).values(adaptUserToDrizzle(insertUser)).returning();
+    return adaptUserFromDrizzle(user);
   }
 
   async getAllUsers(): Promise<User[]> {
-    return await db.select().from(users);
+    const dbUsers = await db.select().from(users);
+    return dbUsers.map(adaptUserFromDrizzle);
   }
 
-  async updateUserAdminStatus(userId: number, isAdmin: boolean): Promise<User | undefined> {
+  async updateUserProfile(userId: string, updates: Partial<InsertUser>): Promise<User | null> {
+    const existingUser = await this.getUser(userId);
+    if (!existingUser) return null;
+
+    const [user] = await db
+      .update(users)
+      .set(adaptUserToDrizzle({ ...existingUser, ...updates }))
+      .where(eq(users._id, userId))
+      .returning();
+    return user ? adaptUserFromDrizzle(user) : null;
+  }
+
+  async updateUserAdminStatus(userId: string, isAdmin: boolean): Promise<User | null> {
     const [user] = await db
       .update(users)
       .set({ isAdmin })
-      .where(eq(users.id, userId))
+      .where(eq(users._id, userId))
       .returning();
-    return user || undefined;
+    return user ? adaptUserFromDrizzle(user) : null;
   }
 
   // Product Methods
   async getProducts(): Promise<Product[]> {
-    return await db.select().from(products);
+    const dbProducts = await db.select().from(products);
+    return dbProducts.map(adaptProductFromDrizzle);
   }
 
-  async getProduct(id: number): Promise<Product | undefined> {
-    const [product] = await db.select().from(products).where(eq(products.id, id));
-    return product || undefined;
+  async getProduct(id: string): Promise<Product | null> {
+    const [product] = await db.select().from(products).where(eq(products._id, id));
+    return product ? adaptProductFromDrizzle(product) : null;
   }
 
   async createProduct(insertProduct: InsertProduct): Promise<Product> {
-    const [product] = await db.insert(products).values(insertProduct).returning();
-    return product;
+    const [product] = await db.insert(products).values(adaptProductToDrizzle(insertProduct)).returning();
+    return adaptProductFromDrizzle(product);
+  }
+
+  async getProductsByFilter(filters: {
+    category?: string;
+    brand?: string;
+    style?: string;
+    gender?: string;
+    minPrice?: number;
+    maxPrice?: number;
+  }): Promise<Product[]> {
+    let conditions = [];
+
+    if (filters.category) {
+      conditions.push(eq(products.category, filters.category));
+    }
+    if (filters.brand) {
+      conditions.push(eq(products.brand, filters.brand));
+    }
+    if (filters.style) {
+      conditions.push(eq(products.style, filters.style));
+    }
+    if (filters.gender) {
+      conditions.push(eq(products.gender, filters.gender));
+    }
+    if (filters.minPrice !== undefined && filters.maxPrice !== undefined) {
+      conditions.push(between(products.price, filters.minPrice, filters.maxPrice));
+    } else if (filters.minPrice !== undefined) {
+      conditions.push(gte(products.price, filters.minPrice));
+    } else if (filters.maxPrice !== undefined) {
+      conditions.push(lte(products.price, filters.maxPrice));
+    }
+
+    if (conditions.length === 0) {
+      return this.getProducts();
+    }
+
+    const filteredProducts = await db
+      .select()
+      .from(products)
+      .where(sql.join(conditions, sql` AND `));
+    return filteredProducts.map(adaptProductFromDrizzle);
   }
 
   // Cart Methods
-  async getCartItems(userId: number): Promise<CartItem[]> {
-    return await db.select().from(cartItems).where(eq(cartItems.userId, userId));
+  async getCartItems(userId: string): Promise<CartItem[]> {
+    const items = await db.select().from(cartItems).where(eq(cartItems.userId, userId));
+    return items.map(adaptCartItemFromDrizzle);
   }
 
   async addCartItem(insertCartItem: InsertCartItem): Promise<CartItem> {
-    const [cartItem] = await db.insert(cartItems).values(insertCartItem).returning();
-    return cartItem;
+    const [cartItem] = await db.insert(cartItems).values(adaptCartItemToDrizzle(insertCartItem)).returning();
+    return adaptCartItemFromDrizzle(cartItem);
   }
 
-  async updateCartItemQuantity(id: number, quantity: number): Promise<CartItem | undefined> {
+  async updateCartItemQuantity(id: string, quantity: number): Promise<CartItem | null> {
     const [cartItem] = await db
       .update(cartItems)
       .set({ quantity })
-      .where(eq(cartItems.id, id))
+      .where(eq(cartItems._id, id))
       .returning();
-    return cartItem || undefined;
+    return cartItem ? adaptCartItemFromDrizzle(cartItem) : null;
   }
 
-  async removeCartItem(id: number): Promise<boolean> {
-    const result = await db.delete(cartItems).where(eq(cartItems.id, id)).returning();
+  async removeCartItem(id: string): Promise<boolean> {
+    const result = await db.delete(cartItems).where(eq(cartItems._id, id)).returning();
     return result.length > 0;
   }
 
-  async clearCart(userId: number): Promise<boolean> {
+  async clearCart(userId: string): Promise<boolean> {
     const result = await db.delete(cartItems).where(eq(cartItems.userId, userId)).returning();
     return true;
   }
 
   // Delivery Address Methods
-  async getDeliveryAddresses(userId: number): Promise<DeliveryAddress[]> {
-    return await db.select().from(deliveryAddresses).where(eq(deliveryAddresses.userId, userId));
+  async getDeliveryAddresses(userId: string): Promise<DeliveryAddress[]> {
+    const addresses = await db.select().from(deliveryAddresses).where(eq(deliveryAddresses.userId, userId));
+    return addresses.map(adaptDeliveryAddressFromDrizzle);
   }
 
-  async getDeliveryAddress(id: number): Promise<DeliveryAddress | undefined> {
-    const [address] = await db.select().from(deliveryAddresses).where(eq(deliveryAddresses.id, id));
-    return address || undefined;
+  async getDeliveryAddress(id: string): Promise<DeliveryAddress | null> {
+    const [address] = await db.select().from(deliveryAddresses).where(eq(deliveryAddresses._id, id));
+    return address ? adaptDeliveryAddressFromDrizzle(address) : null;
   }
 
-  async getDefaultDeliveryAddress(userId: number): Promise<DeliveryAddress | undefined> {
+  async getDefaultDeliveryAddress(userId: string): Promise<DeliveryAddress | null> {
     const [address] = await db
       .select()
       .from(deliveryAddresses)
@@ -144,122 +193,92 @@ export class DatabaseStorage implements IStorage {
           eq(deliveryAddresses.isDefault, true)
         )
       );
-    return address || undefined;
+    return address ? adaptDeliveryAddressFromDrizzle(address) : null;
   }
 
-  async createDeliveryAddress(insertAddress: InsertDeliveryAddress): Promise<DeliveryAddress> {
-    // If this address is marked as default, remove default flag from other addresses
-    if (insertAddress.isDefault) {
+  async createDeliveryAddress(address: InsertDeliveryAddress): Promise<DeliveryAddress> {
+    const [newAddress] = await db.insert(deliveryAddresses).values(adaptDeliveryAddressToDrizzle(address)).returning();
+    return adaptDeliveryAddressFromDrizzle(newAddress);
+  }
+
+  async updateDeliveryAddress(id: string, addressUpdate: Partial<InsertDeliveryAddress>): Promise<DeliveryAddress | null> {
+    const existingAddress = await this.getDeliveryAddress(id);
+    if (!existingAddress) return null;
+
+    // If this address is being marked as default, remove default flag from other addresses
+    if (addressUpdate.isDefault) {
       await db
         .update(deliveryAddresses)
         .set({ isDefault: false })
-        .where(eq(deliveryAddresses.userId, insertAddress.userId));
+        .where(eq(deliveryAddresses.userId, existingAddress.userId));
     }
-    
-    const [address] = await db.insert(deliveryAddresses).values(insertAddress).returning();
-    return address;
-  }
 
-  async updateDeliveryAddress(id: number, addressUpdate: Partial<InsertDeliveryAddress>): Promise<DeliveryAddress | undefined> {
-    // If this address is being marked as default, remove default flag from other addresses
-    if (addressUpdate.isDefault) {
-      const [currentAddress] = await db.select().from(deliveryAddresses).where(eq(deliveryAddresses.id, id));
-      if (currentAddress) {
-        await db
-          .update(deliveryAddresses)
-          .set({ isDefault: false })
-          .where(
-            and(
-              eq(deliveryAddresses.userId, currentAddress.userId),
-              eq(deliveryAddresses.id, id).not
-            )
-          );
-      }
-    }
-    
     const [updatedAddress] = await db
       .update(deliveryAddresses)
-      .set(addressUpdate)
-      .where(eq(deliveryAddresses.id, id))
+      .set(adaptDeliveryAddressToDrizzle({ ...existingAddress, ...addressUpdate }))
+      .where(eq(deliveryAddresses._id, id))
       .returning();
-    return updatedAddress || undefined;
+    return updatedAddress ? adaptDeliveryAddressFromDrizzle(updatedAddress) : null;
   }
 
-  async deleteDeliveryAddress(id: number): Promise<boolean> {
-    const result = await db.delete(deliveryAddresses).where(eq(deliveryAddresses.id, id)).returning();
+  async deleteDeliveryAddress(id: string): Promise<boolean> {
+    const result = await db.delete(deliveryAddresses).where(eq(deliveryAddresses._id, id)).returning();
     return result.length > 0;
   }
 
   // Order Methods
   async getOrders(): Promise<Order[]> {
-    return await db.select().from(orders);
+    const dbOrders = await db.select().from(orders);
+    return dbOrders.map(adaptOrderFromDrizzle);
   }
 
-  async getUserOrders(userId: number): Promise<Order[]> {
-    return await db.select().from(orders).where(eq(orders.userId, userId));
+  async getUserOrders(userId: string): Promise<Order[]> {
+    const userOrders = await db.select().from(orders).where(eq(orders.userId, userId));
+    return userOrders.map(adaptOrderFromDrizzle);
   }
 
-  async getOrder(id: number): Promise<Order | undefined> {
-    const [order] = await db.select().from(orders).where(eq(orders.id, id));
-    return order || undefined;
+  async getOrder(id: string): Promise<Order | null> {
+    const [order] = await db.select().from(orders).where(eq(orders._id, id));
+    return order ? adaptOrderFromDrizzle(order) : null;
   }
 
   async createOrder(insertOrder: InsertOrder): Promise<Order> {
-    const [order] = await db.insert(orders).values(insertOrder).returning();
-    return order;
+    const [order] = await db.insert(orders).values(adaptOrderToDrizzle(insertOrder)).returning();
+    return adaptOrderFromDrizzle(order);
   }
 
-  async updateOrderStatus(id: number, status: string): Promise<Order | undefined> {
+  async updateOrderStatus(id: string, status: string): Promise<Order | null> {
     const [order] = await db
       .update(orders)
       .set({ status })
-      .where(eq(orders.id, id))
+      .where(eq(orders._id, id))
       .returning();
-    return order || undefined;
+    return order ? adaptOrderFromDrizzle(order) : null;
   }
 
   // Online Users Methods
   async getOnlineUsers(): Promise<OnlineUser[]> {
-    return await db.select().from(onlineUsers);
+    const dbUsers = await db.select().from(onlineUsers);
+    return dbUsers.map(adaptOnlineUserFromDrizzle);
   }
 
   async addOnlineUser(user: OnlineUser): Promise<void> {
-    // Проверяем существует ли уже пользователь
-    const existingUsers = await db
-      .select()
-      .from(onlineUsers)
-      .where(eq(onlineUsers.userId, user.userId));
-
-    if (existingUsers.length > 0) {
-      // Если пользователь уже существует, обновляем время активности
-      await db
-        .update(onlineUsers)
-        .set({ lastActive: user.lastActive })
-        .where(eq(onlineUsers.userId, user.userId));
-    } else {
-      // Иначе добавляем нового пользователя
-      await db.insert(onlineUsers).values({
-        userId: user.userId,
-        telegramId: user.telegramId,
-        username: user.username,
-        lastActive: user.lastActive
-      });
-    }
+    await db.insert(onlineUsers).values(adaptOnlineUserToDrizzle(user));
   }
 
-  async removeOnlineUser(userId: number): Promise<void> {
+  async removeOnlineUser(userId: string): Promise<void> {
     await db.delete(onlineUsers).where(eq(onlineUsers.userId, userId));
   }
 
-  async updateUserActivity(userId: number): Promise<void> {
+  async updateUserActivity(userId: string): Promise<void> {
     await db
       .update(onlineUsers)
-      .set({ lastActive: new Date().toISOString() })
+      .set({ lastActive: new Date() })
       .where(eq(onlineUsers.userId, userId));
   }
 
   // Admin check
-  async isAdmin(userId: number): Promise<boolean> {
+  async isAdmin(userId: string): Promise<boolean> {
     const user = await this.getUser(userId);
     return user?.isAdmin || false;
   }

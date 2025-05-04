@@ -2,397 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Nike-inspired theme colors */
 :root {
-  --brand-black: #111111;
-  --brand-red: #ff1a1a;
-  --brand-white: #ffffff;
-  --brand-gray: #f5f5f5;
-  --brand-gray-dark: #757575;
-  --brand-light-gray: #e5e5e5;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Global typography adjustments */
 body {
-  font-family: "Helvetica Neue", Arial, sans-serif;
-  letter-spacing: -0.015em;
-}
-
-/* Telegram WebApp specific styles */
-.telegram-webapp {
-  background-color: var(--tg-theme-bg-color, #ffffff);
-  color: var(--tg-theme-text-color, #000000);
-}
-
-.telegram-webapp button {
-  background-color: var(--tg-theme-button-color, #111111);
-  color: var(--tg-theme-button-text-color, #ffffff);
-}
-
-.telegram-webapp a, a {
-  color: var(--tg-theme-link-color, #111111);
-  text-decoration: none;
-}
-
-/* Make sure content is visible in Telegram Mini App */
-html, body, #root {
-  min-height: 100vh;
   margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+  min-height: 100vh;
+  background-color: white;
 }
 
-/* Override Telegram blue styles - more aggressive approach */
-/* Target blue buttons */
-button.bg-blue-600, 
-button.bg-blue-500,
-button.bg-blue-400,
-button.bg-blue-300,
-button.bg-blue-200,
-button.bg-blue-100,
-button.bg-blue-50,
-button.bg-\[\#0088CC\],
-button[style*="background"],
-.tg-button,
-.tg-main-button,
-a[href].tg-button,
-div[role="button"].tg-button,
-.telegram-button,
-button.telegram-button {
-  background-color: #111111 !important;
-  color: white !important;
-  border-color: #111111 !important;
-}
-
-/* Hover states for buttons */
-button.hover\:bg-blue-800:hover,
-button.hover\:bg-blue-700:hover,
-button.hover\:bg-blue-600:hover,
-button.hover\:bg-blue-500:hover,
-button.hover\:bg-blue-400:hover,
-button.hover\:bg-blue-300:hover,
-button.hover\:bg-blue-200:hover,
-button.hover\:bg-blue-100:hover,
-button.hover\:bg-blue-50:hover,
-button[style*="background"]:hover,
-.tg-button:hover,
-.tg-main-button:hover,
-.telegram-button:hover {
-  background-color: #333333 !important;
-}
-
-/* Override blue text */
-.text-blue-900,
-.text-blue-800,
-.text-blue-700,
-.text-blue-600,
-.text-blue-500,
-.text-blue-400,
-.text-blue-300,
-.text-blue-200,
-.text-blue-100,
-.text-blue-50,
-.hover\:text-blue-900:hover,
-.hover\:text-blue-800:hover,
-.hover\:text-blue-700:hover,
-.hover\:text-blue-600:hover,
-.hover\:text-blue-500:hover,
-.hover\:text-blue-400:hover,
-.hover\:text-blue-300:hover,
-.hover\:text-blue-200:hover,
-.hover\:text-blue-100:hover,
-.hover\:text-blue-50:hover {
-  color: #111111 !important;
-}
-
-/* Ensure loading screen looks good in Telegram */
-.loading-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--tg-theme-bg-color, #ffffff);
-  color: var(--tg-theme-text-color, #000000);
-  z-index: 9999;
-  padding: 20px;
-  text-align: center;
-}
-
-/* Ensure text is visible even on dark or image backgrounds */
-.loading-screen p {
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 5px 10px;
-  border-radius: 5px;
-  margin-top: 10px;
-  font-weight: 500;
-  color: #111111;
-  max-width: 80%;
-}
-
-/* Stylish background for store */
-.store-background {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+#root {
   min-height: 100vh;
 }
 
-/* Enhanced product cards */
-.product-card {
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: none;
-}
-
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-}
-
-/* Category Cards */
-.category-card {
-  transition: all 0.3s ease;
-  border-radius: 12px;
-  background: #ffffff;
-  overflow: hidden;
-}
-
-.category-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.category-icon-container {
-  transition: all 0.3s ease;
-  background: linear-gradient(145deg, #f0f0f0, #e6e6e6);
-  border-radius: 50%;
-  font-size: 2rem;
-  color: #111111;
-}
-
-.category-card:hover .category-icon-container {
-  background: linear-gradient(145deg, #111111, #333333);
-  color: white;
-}
-
-/* Stylish welcome banner */
-.welcome-banner {
-  background: linear-gradient(90deg, #111111, #333333);
-  border-radius: 0;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  position: relative;
-}
-
-.welcome-banner::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 100%);
-  transform: skewX(-20deg) translateX(-100%);
-  animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-  100% {
-    transform: skewX(-20deg) translateX(100%);
-  }
-}
-
-/* Button styles */
-.telegram-button {
-  background: #111111;
-  color: white;
-  font-weight: normal;
-  border-radius: 0;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-size: 0.9rem;
-}
-
-.telegram-button:hover {
-  background: #333333;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-:root {
-      --background: 0 0% 100%;
---foreground: 20 14.3% 4.1%;
---muted: 60 4.8% 95.9%;
---muted-foreground: 25 5.3% 44.7%;
---popover: 0 0% 100%;
---popover-foreground: 20 14.3% 4.1%;
---card: 0 0% 100%;
---card-foreground: 20 14.3% 4.1%;
---border: 20 5.9% 90%;
---input: 20 5.9% 90%;
---primary: 0 0% 7%;
---primary-foreground: 0 0% 100%;
---secondary: 60 4.8% 95.9%;
---secondary-foreground: 24 9.8% 10%;
---accent: 60 4.8% 95.9%;
---accent-foreground: 24 9.8% 10%;
---destructive: 0 84.2% 60.2%;
---destructive-foreground: 60 9.1% 97.8%;
---ring: 20 14.3% 4.1%;
---radius: 0.5rem;
-  }
-  .dark {
-      --background: 240 10% 3.9%;
---foreground: 0 0% 98%;
---muted: 240 3.7% 15.9%;
---muted-foreground: 240 5% 64.9%;
---popover: 240 10% 3.9%;
---popover-foreground: 0 0% 98%;
---card: 240 10% 3.9%;
---card-foreground: 0 0% 98%;
---border: 240 3.7% 15.9%;
---input: 240 3.7% 15.9%;
---primary: 0 0% 7%;
---primary-foreground: 0 0% 100%;
---secondary: 240 3.7% 15.9%;
---secondary-foreground: 0 0% 98%;
---accent: 240 3.7% 15.9%;
---accent-foreground: 0 0% 98%;
---destructive: 0 62.8% 30.6%;
---destructive-foreground: 0 0% 98%;
---ring: 240 4.9% 83.9%;
---radius: 0.5rem;
-  }
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply font-sans antialiased bg-background text-foreground;
-  }
-}
-
-/* More aggressive Telegram specific overrides for mobile */
-/* This targets elements that may be injected by Telegram on mobile */
-*[style*="background-color: rgb(0, 136, 204)"],
-*[style*="background-color: rgb(0, 136, 204, 0.)"],
-*[style*="background-color:#0088cc"],
-*[style*="background-color: #0088cc"],
-*[style*="background-color:rgb(0,136,204)"],
-*[style*="background: rgb(0, 136, 204)"],
-*[style*="background:#0088cc"],
-*[style*="background: #0088cc"],
-*[style*="background:rgb(0,136,204)"],
-*[data-telegram-color="true"] {
-  background-color: #111111 !important;
-  color: white !important;
-  border-color: #111111 !important;
-}
-
-/* Target any native Telegram UI elements */
-*[class*="telegram-"],
-*[class*="tgme_"],
-*[class*="tgme-"],
-*[class*="tg-"],
-nav[role="navigation"] a,
-nav[role="navigation"] button,
-.bottom-bar .bottom-bar__button,
-.navigation-bar .navigation-bar__button {
-  background-color: #111111 !important;
-  color: white !important;
-}
-
-/* Target custom navigation elements that might be on mobile */
-.mobile-navigation-button,
-.mobile-nav,
-.mobile-menu button,
-.telegram-mobile-button,
-.menu-icon-button,
-.bottom-nav-button,
-.tab-button {
-  background-color: #111111 !important;
-  color: white !important;
-  border-color: #111111 !important;
-}
-
-/* Override any Telegram-specific links and icons */
-a[href^="tg://"],
-a[href^="https://t.me/"],
-button[data-telegram-action],
-[class*="telegram-icon"] {
-  color: #111111 !important;
-}
-
-/* Override any color that matches Telegram blue with black */
-*[style*="color: rgb(0, 136, 204)"],
-*[style*="color: #0088cc"],
-*[style*="color:rgb(0,136,204)"],
-*[style*="color:#0088cc"] {
-  color: #111111 !important;
-}
-
-/* Custom scrollbar styling */
-.scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
-}
-
-/* Horizontal scroll snap styling */
-.snap-x {
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.snap-center {
-  scroll-snap-align: center;
-}
-
-/* Mobile horizontal category styles */
-.mobile-horizontal-scroll {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding-bottom: 1rem;
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  padding: 1rem;
 }
 
-.mobile-horizontal-scroll::-webkit-scrollbar {
-  display: none;
+.product-card {
+  background: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.mobile-scroll-item {
-  scroll-snap-align: start;
-  flex-shrink: 0;
+.product-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
 }
 
-/* Better mobile styling for card layouts */
-@media (max-width: 640px) {
-  .brand-grid {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 1rem;
-    padding-bottom: 1rem;
-    margin-left: -1rem;
-    margin-right: -1rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  
-  .brand-item {
-    min-width: 220px;
-    scroll-snap-align: start;
-  }
-}
+.product-info {
+  padding: 1rem;
+} 

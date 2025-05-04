@@ -1,29 +1,41 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { storage } from '../storage';
 import { ensureAuthenticated } from '../middleware';
 import { z } from 'zod';
-import { insertAvatarParamsSchema } from '@shared/schema';
+import { User } from '@shared/schema';
+
+// Extend Request type to include user
+declare module 'express-serve-static-core' {
+  interface Request {
+    user?: User;
+  }
+}
 
 const router = express.Router();
 
-// Валидация для обновления аватара
-const updateAvatarSchema = insertAvatarParamsSchema.omit({ userId: true });
+// Avatar parameter validation schema
+const updateAvatarSchema = z.object({
+  height: z.number().min(100).max(250).default(175),
+  weight: z.number().min(30).max(200).default(70),
+  bodyType: z.enum(['slim', 'regular', 'athletic']).default('regular'),
+  gender: z.enum(['male', 'female']).default('male'),
+  measurements: z.record(z.string(), z.number()).default({})
+});
 
-// Получить параметры аватара пользователя
-router.get('/params', async (req: Request, res: Response) => {
+// Get user's avatar parameters
+router.get('/params', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // Если пользователь авторизован, получаем его параметры
-    if (req.user) {
-      const userId = (req.user as any).id;
-      const avatarParams = await storage.getAvatarParams(userId);
+    // If user is authenticated, get their parameters
+    if (req.user?._id) {
+      const avatarParams = await storage.getAvatarParams(req.user._id);
       
       if (avatarParams) {
         return res.json(avatarParams);
       }
     }
     
-    // Для неавторизованных пользователей или если параметры не найдены,
-    // возвращаем значения по умолчанию
+    // For unauthenticated users or if parameters not found,
+    // return default values
     return res.json({
       height: 175,
       weight: 70,
@@ -32,30 +44,31 @@ router.get('/params', async (req: Request, res: Response) => {
       measurements: {}
     });
   } catch (error) {
-    console.error('Error fetching avatar params:', error);
-    return res.status(500).json({ message: 'Failed to fetch avatar parameters' });
+    next(error);
   }
 });
 
-// Обновить или создать параметры аватара
-router.post('/params', ensureAuthenticated, async (req: Request, res: Response) => {
+// Update or create avatar parameters
+router.post('/params', ensureAuthenticated, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req.user as any).id;
+    if (!req.user?._id) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
     
-    // Валидируем входные данные
+    // Validate input data
     const validatedData = updateAvatarSchema.parse(req.body);
     
-    // Проверяем, существуют ли уже параметры для этого пользователя
-    const existingParams = await storage.getAvatarParams(userId);
+    // Check if parameters already exist for this user
+    const existingParams = await storage.getAvatarParams(req.user._id);
     
     let avatarParams;
     if (existingParams) {
-      // Обновляем существующие параметры
-      avatarParams = await storage.updateAvatarParams(userId, validatedData);
+      // Update existing parameters
+      avatarParams = await storage.updateAvatarParams(req.user._id, validatedData);
     } else {
-      // Создаем новые параметры
+      // Create new parameters
       avatarParams = await storage.createAvatarParams({
-        userId,
+        userId: req.user._id,
         ...validatedData
       });
     }
@@ -65,49 +78,46 @@ router.post('/params', ensureAuthenticated, async (req: Request, res: Response) 
     if (error instanceof z.ZodError) {
       return res.status(400).json({ message: 'Invalid data', errors: error.errors });
     }
-    
-    console.error('Error updating avatar params:', error);
-    return res.status(500).json({ message: 'Failed to update avatar parameters' });
+    next(error);
   }
 });
 
-// Получить все доступные предметы одежды для виртуальной примерки
-router.get('/clothing', async (req: Request, res: Response) => {
+// Get all available clothing items for virtual try-on
+router.get('/clothing', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // Фильтры
+    // Filters
     const category = req.query.category as string | undefined;
     const type = req.query.type as string | undefined;
     
     const clothingItems = await storage.getVirtualClothingItems({ category, type });
     return res.json(clothingItems);
   } catch (error) {
-    console.error('Error fetching virtual clothing items:', error);
-    return res.status(500).json({ message: 'Failed to fetch virtual clothing items' });
+    next(error);
   }
 });
 
-// Получить виртуальный гардероб пользователя
-router.get('/wardrobe', async (req: Request, res: Response) => {
+// Get user's virtual wardrobe
+router.get('/wardrobe', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // Если пользователь авторизован, получаем его гардероб
-    if (req.user) {
-      const userId = (req.user as any).id;
-      const wardrobe = await storage.getUserVirtualWardrobe(userId);
+    // If user is authenticated, get their wardrobe
+    if (req.user?._id) {
+      const wardrobe = await storage.getUserVirtualWardrobe(req.user._id);
       return res.json(wardrobe);
     }
     
-    // Для неавторизованных пользователей возвращаем пустой массив
+    // For unauthenticated users return empty array
     return res.json([]);
   } catch (error) {
-    console.error('Error fetching user virtual wardrobe:', error);
-    return res.status(500).json({ message: 'Failed to fetch virtual wardrobe' });
+    next(error);
   }
 });
 
-// Добавить предмет одежды в виртуальный гардероб пользователя
-router.post('/wardrobe', ensureAuthenticated, async (req: Request, res: Response) => {
+// Add clothing item to user's virtual wardrobe
+router.post('/wardrobe', ensureAuthenticated, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req.user as any).id;
+    if (!req.user?._id) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
     
     const { clothingItemId, selectedColor, selectedSize } = req.body;
     
@@ -117,15 +127,15 @@ router.post('/wardrobe', ensureAuthenticated, async (req: Request, res: Response
       });
     }
     
-    // Проверяем, существует ли такой предмет одежды
+    // Check if clothing item exists
     const clothingItem = await storage.getVirtualClothingItem(clothingItemId);
     if (!clothingItem) {
       return res.status(404).json({ message: 'Clothing item not found' });
     }
     
-    // Добавляем в гардероб
+    // Add to wardrobe
     const wardrobeItem = await storage.addToVirtualWardrobe({
-      userId,
+      userId: req.user._id,
       clothingItemId,
       selectedColor,
       selectedSize,
@@ -135,24 +145,25 @@ router.post('/wardrobe', ensureAuthenticated, async (req: Request, res: Response
     
     return res.json(wardrobeItem);
   } catch (error) {
-    console.error('Error adding to virtual wardrobe:', error);
-    return res.status(500).json({ message: 'Failed to add item to virtual wardrobe' });
+    next(error);
   }
 });
 
-// Удалить предмет из виртуального гардероба
-router.delete('/wardrobe/:id', ensureAuthenticated, async (req: Request, res: Response) => {
+// Remove item from virtual wardrobe
+router.delete('/wardrobe/:id', ensureAuthenticated, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req.user as any).id;
-    const wardrobeItemId = parseInt(req.params.id);
-    
-    if (isNaN(wardrobeItemId)) {
+    if (!req.user?._id) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+
+    const wardrobeItemId = req.params.id;
+    if (!wardrobeItemId) {
       return res.status(400).json({ message: 'Invalid wardrobe item ID' });
     }
     
-    // Проверяем, что предмет принадлежит этому пользователю
+    // Check if item belongs to this user
     const wardrobeItem = await storage.getVirtualWardrobeItem(wardrobeItemId);
-    if (!wardrobeItem || wardrobeItem.userId !== userId) {
+    if (!wardrobeItem || wardrobeItem.userId !== req.user._id) {
       return res.status(404).json({ message: 'Wardrobe item not found' });
     }
     
@@ -163,28 +174,29 @@ router.delete('/wardrobe/:id', ensureAuthenticated, async (req: Request, res: Re
       return res.status(500).json({ message: 'Failed to remove item from wardrobe' });
     }
   } catch (error) {
-    console.error('Error removing from virtual wardrobe:', error);
-    return res.status(500).json({ message: 'Failed to remove item from virtual wardrobe' });
+    next(error);
   }
 });
 
-// Обновить предмет в виртуальном гардеробе (размер, цвет, избранное)
-router.patch('/wardrobe/:id', ensureAuthenticated, async (req: Request, res: Response) => {
+// Update item in virtual wardrobe (size, color, favorite)
+router.patch('/wardrobe/:id', ensureAuthenticated, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req.user as any).id;
-    const wardrobeItemId = parseInt(req.params.id);
-    
-    if (isNaN(wardrobeItemId)) {
+    if (!req.user?._id) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+
+    const wardrobeItemId = req.params.id;
+    if (!wardrobeItemId) {
       return res.status(400).json({ message: 'Invalid wardrobe item ID' });
     }
     
-    // Проверяем, что предмет принадлежит этому пользователю
+    // Check if item belongs to this user
     const wardrobeItem = await storage.getVirtualWardrobeItem(wardrobeItemId);
-    if (!wardrobeItem || wardrobeItem.userId !== userId) {
+    if (!wardrobeItem || wardrobeItem.userId !== req.user._id) {
       return res.status(404).json({ message: 'Wardrobe item not found' });
     }
     
-    // Обновляем только разрешенные поля
+    // Update only allowed fields
     const { selectedColor, selectedSize, isFavorite } = req.body;
     const updates: Record<string, any> = {};
     
@@ -199,8 +211,7 @@ router.patch('/wardrobe/:id', ensureAuthenticated, async (req: Request, res: Res
     const updatedItem = await storage.updateVirtualWardrobeItem(wardrobeItemId, updates);
     return res.json(updatedItem);
   } catch (error) {
-    console.error('Error updating virtual wardrobe item:', error);
-    return res.status(500).json({ message: 'Failed to update virtual wardrobe item' });
+    next(error);
   }
 });
 

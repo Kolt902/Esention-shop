@@ -1,142 +1,119 @@
-import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import StorePage from "@/pages/StorePage";
-import AdminPage from "@/pages/AdminPage";
-import ProfilePage from "@/pages/ProfilePage";
-import ProfileSettingsPage from "@/pages/ProfileSettingsPage";
-import VirtualFittingPage from "@/pages/VirtualFittingPage";
-import ProductDetailPage from "@/pages/ProductDetailPage";
-import CategoryPage from "@/pages/CategoryPage";
-import BrandPage from "@/pages/BrandPage";
-import StylePage from "@/pages/StylePage";
-import NotFound from "@/pages/not-found";
-import { useEffect, useState } from "react";
-import { getTelegramWebApp, initTelegramWebApp, isRunningInTelegram } from "@/lib/telegram";
-import { StoreProvider } from "@/lib/StoreContext";
+import React, { useEffect, useState } from 'react';
 
-function Router() {
-  return (
-    <Switch>
-      <Route path="/" component={StorePage}/>
-      <Route path="/admin" component={AdminPage}/>
-      <Route path="/profile" component={ProfilePage}/>
-      <Route path="/settings" component={ProfileSettingsPage}/>
-      <Route path="/virtual-fitting" component={VirtualFittingPage}/>
-      <Route path="/product/:id" component={ProductDetailPage}/>
-      
-      {/* Новые маршруты для категорий, брендов и стилей */}
-      <Route path="/category/:category" component={CategoryPage}/>
-      <Route path="/brand/:brand" component={BrandPage}/>
-      <Route path="/style/:style" component={StylePage}/>
-      
-      {/* Обработка всех остальных маршрутов */}
-      <Route component={NotFound} />
-    </Switch>
-  );
-}
-
-function App() {
-  const [isAppReady, setIsAppReady] = useState(false);
-  const [telegramInitialized, setTelegramInitialized] = useState(false);
-  const [initError, setInitError] = useState<string | null>(null);
-  
-  useEffect(() => {
-    const initApp = async () => {
-      try {
-        const inTelegram = isRunningInTelegram();
-        console.log(`Приложение запущено в Telegram: ${inTelegram}`);
-        
-        if (inTelegram) {
-          // Проверяем текущее состояние WebApp
-          const webApp = getTelegramWebApp();
-          if (webApp) {
-            console.log('WebApp уже инициализирован');
-            setTelegramInitialized(true);
-            setIsAppReady(true);
-            return;
-          }
-          
-          // Ждем событие готовности WebApp
-          const waitForWebApp = new Promise<boolean>((resolve) => {
-            const timeout = setTimeout(() => {
-              console.log('Таймаут инициализации WebApp');
-              resolve(false);
-            }, 5000);
-            
-            const handleReady = () => {
-              console.log('Получено событие готовности WebApp');
-              clearTimeout(timeout);
-              setTelegramInitialized(true);
-              resolve(true);
-            };
-            
-            window.addEventListener('tgWebAppReady', handleReady, { once: true });
-          });
-          
-          const initialized = await waitForWebApp;
-          if (!initialized) {
-            console.error('Не удалось инициализировать WebApp');
-            setInitError('Не удалось инициализировать Telegram WebApp. Пожалуйста, убедитесь, что вы открыли приложение через Telegram.');
-          }
-        }
-        
-        setIsAppReady(true);
-      } catch (error) {
-        console.error('Ошибка при инициализации:', error);
-        setInitError(error instanceof Error ? error.message : 'Произошла неизвестная ошибка');
-        setIsAppReady(true);
-      }
+declare global {
+  interface Window {
+    Telegram: {
+      WebApp: {
+        ready: () => void;
+        expand: () => void;
+        MainButton: {
+          show: () => void;
+          hide: () => void;
+          setText: (text: string) => void;
+        };
+      };
     };
-    
-    initApp();
-  }, []);
-  
-  if (!isAppReady) {
-    return (
-      <div className="fixed inset-0 flex flex-col items-center justify-center bg-[var(--tg-theme-bg-color,#ffffff)]">
-        <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-[var(--tg-theme-button-color,#111111)] border-r-transparent"></div>
-        <p className="mt-4 text-[var(--tg-theme-text-color,#111111)] font-medium">Загрузка приложения...</p>
-        {isRunningInTelegram() && (
-          <p className="mt-2 text-sm text-[var(--tg-theme-hint-color,#999999)]">
-            {telegramInitialized ? "Telegram WebApp инициализирован" : "Инициализация Telegram..."}
-          </p>
-        )}
-      </div>
-    );
   }
-  
-  if (initError) {
-    return (
-      <div className="fixed inset-0 flex flex-col items-center justify-center p-4 bg-[var(--tg-theme-bg-color,#ffffff)]">
-        <div className="max-w-md text-center">
-          <h1 className="text-xl font-bold text-[var(--tg-theme-text-color,#111111)] mb-4">Ошибка инициализации</h1>
-          <p className="text-[var(--tg-theme-hint-color,#999999)] mb-6">{initError}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-[var(--tg-theme-button-color,#111111)] text-[var(--tg-theme-button-text-color,#ffffff)] rounded-lg"
-          >
-            Повторить
-          </button>
-        </div>
-      </div>
-    );
-  }
-  
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <StoreProvider>
-          <div className="min-h-screen bg-[var(--tg-theme-bg-color,#ffffff)] text-[var(--tg-theme-text-color,#000000)]">
-            <Toaster />
-            <Router />
-          </div>
-        </StoreProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
-  );
 }
 
-export default App;
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  description: string;
+}
+
+const App: React.FC = () => {
+  const [activeTab, setActiveTab] = useState('home');
+
+  useEffect(() => {
+    // Initialize Telegram Web App
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+  }, []);
+
+  const products: Product[] = [
+    { id: 1, name: 'Товар 1', price: 1000, description: 'Описание товара' },
+    { id: 2, name: 'Товар 2', price: 2000, description: 'Описание товара' },
+    { id: 3, name: 'Товар 3', price: 3000, description: 'Описание товара' },
+  ];
+
+  return (
+    <div className="min-h-screen bg-white text-gray-900">
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 bg-white z-10 border-b border-gray-100">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <h1 className="text-xl font-medium tracking-tight text-center">
+            Esention Store
+          </h1>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="pt-16 pb-20 px-4">
+        <div className="max-w-4xl mx-auto">
+          {/* Product Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {products.map((product) => (
+              <div
+                key={product.id}
+                className="bg-white border border-gray-100 rounded-lg overflow-hidden hover:border-gray-200 transition-all duration-300"
+              >
+                {/* Product Image Placeholder */}
+                <div className="aspect-square bg-gray-50 flex items-center justify-center">
+                  <span className="text-gray-400 text-sm">No Image</span>
+                </div>
+                
+                {/* Product Info */}
+                <div className="p-4">
+                  <div className="mb-2">
+                    <h3 className="font-medium text-base mb-1">{product.name}</h3>
+                    <p className="text-sm text-gray-500">{product.description}</p>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">
+                      {product.price.toLocaleString()} ₽
+                    </span>
+                    <button className="bg-black text-white text-sm px-4 py-2 rounded-md hover:bg-gray-900 transition-colors">
+                      Купить
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      {/* Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex justify-between px-6 py-3">
+            {[
+              { id: 'home', label: 'Главная', icon: '🏠' },
+              { id: 'catalog', label: 'Каталог', icon: '📱' },
+              { id: 'cart', label: 'Корзина', icon: '🛒' },
+              { id: 'contacts', label: 'Контакты', icon: '📞' },
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`flex flex-col items-center ${
+                  activeTab === item.id
+                    ? 'text-black'
+                    : 'text-gray-400 hover:text-gray-600'
+                }`}
+              >
+                <span className="text-xl mb-1">{item.icon}</span>
+                <span className="text-xs font-medium">{item.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </nav>
+    </div>
+  );
+};
+
+export default App; 

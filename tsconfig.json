@@ -14,13 +14,8 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["client/src/*"],
-      "@shared/*": ["shared/*"]
-    }
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["client/src", "shared"],
-  "references": [{ "path": "./tsconfig.server.json" }]
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

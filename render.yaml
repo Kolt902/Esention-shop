@@ -1,11 +1,23 @@
 services:
   - type: web
-    name: fashion-store-bot
+    name: esention-shop
     env: node
-    buildCommand: npm install
-    startCommand: node src/index.js
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
     envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
       - key: BOT_TOKEN
+        value: 7075179069:AAGgtpcyrVilR0ttXFDhtfCfXfG0MqkhE3s
+      - key: TELEGRAM_BOT_TOKEN
         sync: false
-      - key: MONGODB_URI
-        sync: false 
+      - key: DATABASE_URL
+        sync: false
+      - key: WEB_APP_URL
+        value: https://esention-shop.onrender.com
+      - key: WEBHOOK_URL
+        value: https://esention-shop.onrender.com/webhook
+      - key: TELEGRAM_ADMIN_IDS
+        value: 818421912,7633144414 

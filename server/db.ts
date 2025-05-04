@@ -1,15 +1,26 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
-import * as schema from "@shared/schema";
+import { MongoClient, Db } from 'mongodb';
 
-neonConfig.webSocketConstructor = ws;
+let db: Db | null = null;
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+export async function connectToDatabase() {
+    try {
+        if (!process.env.MONGODB_URI) {
+            throw new Error('MONGODB_URI не установлен в переменных окружения');
+        }
+
+        const client = await MongoClient.connect(process.env.MONGODB_URI);
+        db = client.db();
+        console.log('Успешно подключились к MongoDB');
+        return db;
+    } catch (error) {
+        console.error('Ошибка подключения к MongoDB:', error);
+        throw error;
+    }
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle({ client: pool, schema });
+export function getDb() {
+    if (!db) {
+        throw new Error('База данных не инициализирована. Сначала вызовите connectToDatabase()');
+    }
+    return db;
+}

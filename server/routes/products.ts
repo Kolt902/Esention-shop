@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { storage } from '../storage';
 import { ensureAuthenticated } from '../middleware';
 
@@ -6,20 +6,19 @@ import { ensureAuthenticated } from '../middleware';
 const router = Router();
 
 // Get all products
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const products = await storage.getProducts();
     res.json(products);
   } catch (error) {
-    console.error('Error fetching products:', error);
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 
 // Get product by ID
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const productId = parseInt(req.params.id);
+    const productId = req.params.id;
     const product = await storage.getProduct(productId);
     
     if (!product) {
@@ -28,13 +27,12 @@ router.get('/:id', async (req: Request, res: Response) => {
     
     res.json(product);
   } catch (error) {
-    console.error('Error fetching product:', error);
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 
 // Get favorite products
-router.post('/favorites', async (req: Request, res: Response) => {
+router.post('/favorites', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { productIds } = req.body;
     
@@ -43,16 +41,15 @@ router.post('/favorites', async (req: Request, res: Response) => {
     }
     
     const products = await Promise.all(
-      productIds.map(id => storage.getProduct(parseInt(id)))
+      productIds.map(id => storage.getProduct(id))
     );
     
-    // Filter out any undefined products (not found)
-    const validProducts = products.filter(p => p !== undefined);
+    // Filter out any null products (not found)
+    const validProducts = products.filter(p => p !== null);
     
     res.json(validProducts);
   } catch (error) {
-    console.error('Error fetching favorite products:', error);
-    res.status(500).json({ message: 'Server error' });
+    next(error);
   }
 });
 

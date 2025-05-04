@@ -1,130 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Telegram Clothing Store</title>
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fashion Store</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
-        background-color: var(--tg-theme-bg-color, #ffffff);
-        color: var(--tg-theme-text-color, #000000);
-      }
-      
-      #root {
-        height: 100%;
-        min-height: 100vh;
-      }
-      
-      .telegram-container {
-        max-width: 100%;
-        margin: 0 auto;
-        background-color: var(--tg-theme-bg-color, #ffffff);
-        color: var(--tg-theme-text-color, #000000);
-        min-height: 100vh;
-      }
-      
-      .telegram-button {
-        background-color: var(--tg-theme-button-color, #0088CC);
-        color: var(--tg-theme-button-text-color, #ffffff);
-      }
-      
-      .product-card {
-        transition: transform 0.2s;
-      }
-      
-      .product-card:active {
-        transform: scale(0.98);
-      }
-      
-      /* Добавляем стили для обеспечения видимости контента */
-      .min-h-screen {
-        min-height: 100vh;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-      
-      /* Фиксим контейнер для мобильных устройств */
-      .container {
-        width: 100%;
-        max-width: 100%;
-        margin: 0 auto;
-        padding: 0 1rem;
-      }
-      
-      /* Уникальный класс для отладки - добавить красную границу */
-      .debug-outline {
-        border: 1px solid red;
-      }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
-  <body class="telegram-container">
+  <body class="bg-white">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
-    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
-    <!-- Скрипт для принудительного изменения стилей Telegram на мобильных устройствах -->
-    <script>
-      // Функция для принудительного применения черного стиля ко всем элементам Telegram
-      function forceTelegramStylesBlack() {
-        try {
-          // Переопределяем стили Telegram Web App если он доступен
-          if (window.Telegram && window.Telegram.WebApp) {
-            // Запрещаем стандартные темы Telegram
-            window.Telegram.WebApp.setHeaderColor('bg_color');
-            window.Telegram.WebApp.setBackgroundColor('#FFFFFF');
-            
-            // Заменяем стандартные цвета Telegram в CSS переменных
-            document.documentElement.style.setProperty('--tg-theme-button-color', '#111111');
-            document.documentElement.style.setProperty('--tg-theme-button-text-color', '#FFFFFF');
-          }
-          
-          // Находим все элементы с Telegram-специфичными классами и стилями
-          const elementsToCheck = [
-            'button', 'a', '[role="button"]', '[class*="telegram"]', '[class*="tg-"]',
-            '.bottom-bar__button', '.navigation-bar__button', '.tgme_', '.mobile-nav',
-            '[style*="color:#0088cc"]', '[style*="color: #0088cc"]', '[style*="color: rgb(0, 136, 204)"]',
-            '[style*="background-color:#0088cc"]', '[style*="background-color: #0088cc"]', 
-            '[style*="background-color: rgb(0, 136, 204)"]', '[style*="background:#0088cc"]'
-          ];
-          
-          elementsToCheck.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(el => {
-              const computedStyle = window.getComputedStyle(el);
-              const bgColor = computedStyle.backgroundColor;
-              const color = computedStyle.color;
-              
-              // Если элемент имеет синий фон Telegram (приблизительное значение)
-              if (bgColor.includes('rgb(0, 136, 204)') || bgColor.includes('rgb(0,136,204)')) {
-                el.style.backgroundColor = '#111111';
-                el.style.borderColor = '#111111';
-                el.style.color = '#FFFFFF';
-              }
-              
-              // Если текст синего цвета Telegram
-              if (color.includes('rgb(0, 136, 204)') || color.includes('rgb(0,136,204)')) {
-                el.style.color = '#111111';
-              }
-            });
-          });
-        } catch (error) {
-          console.error('Ошибка при применении стилей:', error);
-        }
-      }
-      
-      // Запускаем функцию при загрузке страницы
-      document.addEventListener('DOMContentLoaded', forceTelegramStylesBlack);
-      
-      // Запускаем функцию каждую секунду для новых элементов
-      setInterval(forceTelegramStylesBlack, 1000);
-    </script>
   </body>
-</html>
+</html> 
